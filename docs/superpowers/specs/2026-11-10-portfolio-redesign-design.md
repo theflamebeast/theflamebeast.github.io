@@ -262,8 +262,8 @@ Actions deploy exists every push to `main` publishes. So:
 
 Delete everything the old site used: `index.html`, `FB 3 NO BG - 64p.png`, `favicon.ico`,
 `github_icon.png`, the four `microsoft-office-specialist-*.png` badges, and the old README content.
-Gone with them: the tab script, the `marked` CDN script, the fetch of the `theflamebeast/FlameBeast`
-profile README (that repo itself is out of scope and stays untouched), the Discord/Twitter meta tags
+Gone with them: the tab script, the `marked` CDN script, the fetch of the GitHub profile README (that repo
+gets its own small update, see **GitHub profile README**), the Discord/Twitter meta tags
 pointing at an imgur image, and the `/ohresources` link, which was already broken (the live path had a
 hyphen).
 
@@ -281,6 +281,21 @@ Steps, in order (archiving first would block the settings changes):
 4. Verify: the URL returns 404 and `gh repo view` shows it private and archived.
 
 These change GitHub settings outside this repo: confirm with the owner at the moment of doing them.
+
+## GitHub profile README
+
+Repo `theflamebeast/theflamebeast` (local folder `GitHub\FlameBeast`), a separate repo with its own
+commit, done **after** cutover so its link lands on the new site. The owner agreed to this pass. It is
+already free of logos; the changes make it match the site's identity rules:
+
+- Lead with name, one line about what the owner builds, and a link to the portfolio.
+- Two short lines for Stashout and FlameBurst (linking the showcase repo and the portfolio's case
+  studies) and one for Server Insight (Modrinth).
+- Contact: GitHub, LinkedIn, email. The Discord handle goes (links are professional only).
+- Drop the profile-view counter and the third-party top-languages card (designer's call: it only
+  counts public repos, so it misrepresents the private work, and the hosted service is unreliable).
+- Pinned repos: add `server-insight` next to `stashout-showcase`. Pinning is done by the owner in
+  GitHub's UI; there is no API for it.
 
 ## AI workflow files
 
