@@ -95,12 +95,13 @@ tests/e2e/*.reduced.spec.ts Playwright, reduced-motion project
 
 **Files:**
 - Delete: `index.html`, `FB 3 NO BG - 64p.png`, `favicon.ico`, `github_icon.png`,
-  `microsoft-office-specialist-*.png` (4 files)
-- Create: `.nvmrc`, `.gitignore`, `package.json`, `astro.config.mjs`, `tsconfig.json`,
+  `microsoft-office-specialist-*.png` (4 files), `_config.yml`
+- Create: `.nvmrc`, `package.json`, `astro.config.mjs`, `tsconfig.json`,
   `vitest.config.ts`, `playwright.config.ts`, `src/pages/index.astro` (placeholder),
-  `tests/e2e/smoke.spec.ts`, `tests/e2e/guards.spec.ts`, `.github/workflows/deploy.yml`,
-  `CLAUDE.md`, `AGENTS.md`, `.claude/last-reviewed`
-- Modify: `README.md`
+  `tests/e2e/smoke.spec.ts`, `tests/e2e/guards.spec.ts`, `.github/workflows/deploy.yml`
+- Modify: `README.md`, `CLAUDE.md` (rewrite for the Astro stack)
+- Already on `main` since 2026-11-10, unchanged: `AGENTS.md`, `.claude/last-reviewed`, `.gitignore`
+  (it already lists every path Step 2 needs)
 
 **Interfaces:**
 - Produces: npm scripts `dev`, `build`, `preview` (`astro preview --port 4321`), `check`
@@ -118,8 +119,7 @@ Expected: `59dca97 Add the GitHub profile README pass to the redesign design`
 - [ ] **Step 2: Scaffold and install with the exact pins from Global Constraints**
 
 `astro.config.mjs`: `site: 'https://theflamebeast.github.io'`, no `base`, `output: 'static'`.
-`.gitignore`: `node_modules/`, `dist/`, `.astro/`, `.playwright-mcp/`, `.superpowers/`, `shots/`,
-`test-results/`, `playwright-report/`. Delete the old site files listed above.
+Delete the old site files and `_config.yml` listed above (the Actions deploy never runs Jekyll).
 
 - [ ] **Step 3: Write the failing smoke and guard tests**
 
@@ -156,25 +156,18 @@ Expected: smoke FAILS (no title yet); guards PASS.
 
 Expected: both PASS.
 
-- [ ] **Step 6: Workflow files**
+- [ ] **Step 6: Rewrite `CLAUDE.md` for the Astro stack**
 
-- `AGENTS.md`: copied word for word from the Stashout checkout's `AGENTS.md`
-  (`C:\Users\anish\Documents\GitHub\top-down-extraction-shooter\AGENTS.md`; identical in every repo
-  apart from line endings).
-- `.claude/last-reviewed`: the Stashout checkout's header comment block (every line before its sha)
-  verbatim, then `50f65ff`, then
-  `# 2026-11-10: baseline, not a review. 50f65ff is the last commit of the old hand-written site;
-  nothing in this repo has ever been reviewed, so everything after it is backlog.`
-- `CLAUDE.md` in the layout from `~/.claude/CLAUDE.md` § "The standard project files": `# Anish
-  Gupta portfolio` (what it is, public repo, GitHub Pages) + the shared-rules line; `## Tech stack`
+Keep its `## Blast radius` and `## Conventions` identity rules and the existing danger zones (the
+Jekyll one becomes "until cutover, `main` still runs the legacy build"). Same layout from
+`~/.claude/CLAUDE.md` § "The standard project files": `# Anish Gupta portfolio` (what it is, public
+repo, GitHub Pages) + the shared-rules line; `## Tech stack`
   (the pins, Node floor, TS 7 incompatibility); `## Architecture non-negotiables` (static output; the
   page complete without JS/WebGL; motion only through `onPage`; site facts only in `src/data/site.ts`);
   `## Layout`; `## Conventions` with the one-implementation table (ink simulation `src/ink/fluid.ts`,
   mount/teardown `src/motion/lifecycle.ts`, page-transition curtain `src/motion/curtain.ts`, project
   data the `projects` collection, site facts `src/data/site.ts`, image import `scripts/import-image.mjs`);
-  `## Danger zones` (the three from the spec: the old `/ohresources` link pointed at a path that never
-  existed; the headless browser drops `.playwright-mcp/` into the repo root; the legacy Pages build ran
-  Jekyll over `main`, publishing every Markdown file); the public-repo privacy rule; `## Workflow` with
+  `## Danger zones` (the four already in the file, plus any a later task adds); `## Workflow` with
   `### Build, test, run` (the npm scripts), `### Done-checklist gates` (Typecheck, Unit, Build, E2E,
   Visual, Lighthouse, then Review, Committed, Pushed, CI, Live), `### Review` (default
   `/code-review medium`; name `src/ink`, `src/motion`, `src/content`; `.md` and `docs/` rarely repay a

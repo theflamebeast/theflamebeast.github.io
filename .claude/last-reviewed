@@ -1,0 +1,21 @@
+# The last commit the developer has actually had reviewed in this repo
+# (/codex:review or /code-review, either one passes the gate).
+#
+# Read by the "report the review backlog" rule in CLAUDE.md: everything in
+# `git log --oneline <sha>..HEAD` is unreviewed and gets listed at the end of a
+# task, together with the command to review it. A committed file rather than
+# memory, because the backlog has to survive a new session — that is the whole
+# failure this exists to stop.
+#
+# UPDATE IT only when the developer says a review has been run, to the sha they
+# reviewed UP TO, and commit that change with the rest of the work. Never advance
+# it on your own re-read; that is `self-reviewed`, which is not this gate.
+#
+# Any `# OPEN:` block below the sha is part of the backlog too: a reviewed-but-
+# unfixed area is not a passed gate. Delete one only when its fix is committed.
+# (This header deliberately does not start with the marker, so the grep that
+# collects those blocks does not match the instructions describing them.)
+#
+50f65ff
+# 2026-11-10: baseline, not a review. 50f65ff is the last commit of the old hand-written
+# site; nothing in this repo has ever been reviewed, so everything after it is backlog.
