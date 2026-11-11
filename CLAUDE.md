@@ -42,16 +42,18 @@ Everything committed is world-readable, and anything on `main` is live within a 
   of content that is already there; reveal start states are applied by JS only.
 - **Motion mounts and tears down only through `onPage`** (`src/motion/lifecycle.ts`, Task 6), because
   `ClientRouter` swaps pages without a reload and a module that listens for anything else leaks.
-- **Site facts live only in `src/data/site.ts`** (Task 2); project facts only in the `projects`
-  content collection.
+- **Site facts live only in `src/data/site.ts`**; project facts only in the `projects` content
+  collection, whose schema fails the build on broken data (a featured project without a cover stops
+  `npm run build` with `featured projects need a cover`).
 
 ## Layout
 
 | Path | What it is |
 |---|---|
 | `src/pages/` | routes: `index.astro`, `work/[slug].astro` (Task 4), `404.astro` (Task 4) |
-| `src/content/`, `src/content.config.ts` | the `projects` collection and its schema (Task 2) |
-| `src/data/site.ts` | name, links, education, skills, certs (Task 2) |
+| `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
+| `src/data/site.ts` | name, links, education, skills, certs |
+| `src/lib/` | build-time helpers (`modrinth.ts`: download count with a fallback) |
 | `src/ink/` | the WebGL fluid simulation (Task 6) |
 | `src/motion/` | every scroll, hover and navigation effect (Tasks 6 to 9) |
 | `src/components/`, `src/layouts/`, `src/styles/` | markup and tokens (Task 3) |
@@ -89,6 +91,12 @@ Each one happened.
   of null (reading 'edgesOut')` while resolving Vitest's optional browser-runner peers. Use
   `npx -y npm@11.21.1 install ...` to change dependencies. `npm ci` on npm 10 works from the
   lockfile, so CI and fresh clones are fine.
+- **Vitest crashes from a lowercase drive letter.** With the cwd at `c:\...` (this happens in VS Code
+  terminals and in Claude Code's shell), Vite loads Vitest's runner twice and every `describe()`
+  throws `Cannot read properties of undefined (reading 'config')`, even for `expect(1).toBe(1)`.
+  Setting `root` in `vitest.config.ts` does not help. `npm test` therefore runs
+  `scripts/vitest.mjs`, which upper-cases the drive before starting Vitest; never call `npx vitest`
+  directly here.
 - **Until cutover, `main` still runs the legacy Pages build:** Jekyll over the root of `main`, which
   publishes every Markdown file as a page. `_config.yml` on `main` excludes `docs` and the instruction
   files; it was deleted on `redesign`, where Actions deploys and Jekyll never runs.
@@ -110,7 +118,7 @@ Each one happened.
 | `npm ci` | install from the lockfile |
 | `npm run dev` | local dev server |
 | `npm run check` | `astro check`: types across `.astro` and `.ts` |
-| `npm test` | Vitest unit tests |
+| `npm test` | Vitest unit tests, through `scripts/vitest.mjs` (see Danger zones); pass a file path to run one |
 | `npm run build` | static build into `dist/` |
 | `npm run e2e` | Playwright against `npm run preview` on `:4321`; needs a fresh `dist/` and `npx playwright install chromium` once |
 | `npm run verify` | all four above, in order |

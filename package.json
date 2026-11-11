@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview --port 4321",
     "check": "astro check",
-    "test": "vitest run",
+    "test": "node scripts/vitest.mjs run",
     "e2e": "playwright test",
     "verify": "npm run check && npm test && npm run build && npm run e2e"
   },
