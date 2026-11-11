@@ -53,10 +53,13 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/pages/` | routes: `index.astro`, `work/[slug].astro` (Task 4), `404.astro` (Task 4) |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
-| `src/lib/` | build-time helpers (`modrinth.ts`: download count with a fallback) |
+| `src/lib/` | build-time helpers: `modrinth.ts` (download count with a fallback), `format.ts` (`formatSpan`) |
 | `src/ink/` | the WebGL fluid simulation (Task 6) |
 | `src/motion/` | every scroll, hover and navigation effect (Tasks 6 to 9) |
-| `src/components/`, `src/layouts/`, `src/styles/` | markup and tokens (Task 3) |
+| `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, "Let's talk", footer, `#route-titles` |
+| `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
+| `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
+| `public/favicon.svg` | the "AG" monogram |
 | `scripts/` | image import, still capture, screenshots (Tasks 4, 6, 10) |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
@@ -71,6 +74,10 @@ Everything committed is world-readable, and anything on `main` is live within a 
   URLs.
 - **Projects shown are exactly three:** Stashout and FlameBurst as case studies, Server Insight as a
   compact card. Adding one is a design decision for the owner, not an edit.
+- **The accent `#2f6cf0` is a fill, never text.** On `--bg` it measures 4.34:1, below WCAG AA for
+  body text; white on the accent is 4.64:1. Muted text (`#8a93a3`) is 6.5:1 on `--bg`.
+- **Geist Mono, small and uppercase, is for metadata only** (the hero line, years, stack). Section
+  headings are sentence-case Geist Sans. Never the interpunct; separate items with spacing.
 
 ### One implementation per thing
 
@@ -106,6 +113,11 @@ Each one happened.
   Once Human site actually lived at `/oh-resources/`. Check every internal link returns 200.
 - **The headless browser (Playwright MCP) writes `.playwright-mcp/` into the repo root** whenever a
   session drives a browser from here. It happened twice on 2026-11-10; it is now gitignored.
+- **An overflow test can't see overflow on its own here.** `html` and `body` clip `overflow-x`, so
+  `scrollWidth` hides a too-wide element, and Playwright's mobile emulation zooms out to fit
+  overflow, so `innerWidth` grows with it. The footer's curved edge made the page 429 px wide at a
+  390 px viewport while the first version of the phone test passed. `home.phone.spec.ts` lifts the
+  clip and compares against the configured viewport width; keep it that way.
 - **Playwright waits forever on a 404 home page.** Its `webServer` only counts the server as ready on
   a non-404 status, so a build with no `/` shows up as a 60 s timeout, not a test failure.
 

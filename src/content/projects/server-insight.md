@@ -1,5 +1,6 @@
 ---
 title: Server Insight
+kind: Fabric mod
 tier: compact
 order: 3
 summary: A client-side Fabric mod with one command that shows what your client can legitimately learn about any server.

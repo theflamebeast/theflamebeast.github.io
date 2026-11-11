@@ -1,0 +1,59 @@
+---
+import { SITE } from '../data/site';
+---
+
+<section class="hero" data-hero aria-labelledby="hero-name">
+  <div class="hero-copy wrap">
+    <p class="hero-eyebrow meta" data-reveal="fade">
+      <span>{SITE.role}</span>
+      <span>{SITE.school}</span>
+    </p>
+    <h1 class="hero-name" id="hero-name" data-reveal="lines">{SITE.name}</h1>
+    <p class="hero-tagline" data-reveal="fade">{SITE.tagline}</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--bg);
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 1.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .hero-name {
+    margin-block: 1.25rem 1.5rem;
+    font-size: var(--step-hero);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
+  }
+
+  .hero-tagline {
+    max-width: var(--measure);
+    margin-inline: auto;
+    text-wrap: balance;
+    font-size: var(--step-1);
+    color: #c9d0db;
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import { CERTS, EDUCATION, SKILLS } from '../data/site';
+
+const skillGroups: [string, string[]][] = [
+  ['Languages', SKILLS.languages],
+  ['Frameworks', SKILLS.frameworks],
+  ['Tools', SKILLS.tools],
+];
+---
+
+<section class="about wrap" id="about" aria-labelledby="about-title">
+  <h2 class="section-title" id="about-title" data-reveal="lines">About</h2>
+  <div class="about-body">
+    <p class="about-lede" data-reveal="lines">
+      I'm studying computer science at the {EDUCATION.school}, graduating in {EDUCATION.expected}. I like owning the
+      whole thing: the simulation, the netcode, the servers, the deploy pipeline, and the page you're reading.
+    </p>
+
+    <dl class="skills" data-reveal="fade">
+      {
+        skillGroups.map(([label, items]) => (
+          <div>
+            <dt class="meta">{label}</dt>
+            <dd>{items.join(', ')}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div data-reveal="fade">
+      <h3 class="meta certs-title">Certifications</h3>
+      <ul class="certs" data-certs>
+        {
+          CERTS.map((c) => (
+            <li>
+              <span class="cert-name">{c.url ? <a href={c.url}>{c.name}</a> : c.name}</span>
+              <span class="meta">
+                {c.issuer}, {c.year}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 2rem clamp(1.5rem, 4vw, 4rem);
+    padding-block: var(--section);
+  }
+
+  .about-body {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    max-width: 44rem;
+  }
+
+  .about-lede {
+    font-size: var(--step-2);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  .skills {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .skills dd {
+    margin-top: 0.2rem;
+    color: #c9d0db;
+  }
+
+  .certs-title {
+    margin-bottom: 0.75rem;
+  }
+
+  .certs li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1.5rem;
+    padding-block: 0.9rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 860px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

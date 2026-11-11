@@ -1,0 +1,96 @@
+---
+import { SITE } from '../data/site';
+---
+
+<button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="menu-panel" hidden>
+  <span class="menu-button-lines" aria-hidden="true"></span>
+  <span class="visually-hidden">Menu</span>
+</button>
+
+<div class="menu-panel" id="menu-panel" data-menu-panel role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <nav aria-label="Menu">
+    <ul class="menu-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/#work">Work</a></li>
+      <li><a href="/#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <ul class="menu-social">
+    <li><a href={SITE.links.github}>GitHub</a></li>
+    <li><a href={SITE.links.linkedin}>LinkedIn</a></li>
+    <li><a href={SITE.links.email}>Email</a></li>
+  </ul>
+</div>
+
+<style>
+  .menu-button {
+    position: fixed;
+    top: 1.25rem;
+    right: var(--gutter);
+    z-index: 60;
+    width: 4rem;
+    height: 4rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .menu-button[hidden] {
+    display: none;
+  }
+
+  .menu-button-lines,
+  .menu-button-lines::before {
+    position: absolute;
+    left: 50%;
+    width: 1.25rem;
+    height: 1px;
+    background: currentColor;
+    translate: -50% 0;
+  }
+
+  .menu-button-lines {
+    top: calc(50% - 3px);
+  }
+
+  .menu-button-lines::before {
+    content: '';
+    top: 6px;
+  }
+
+  .menu-panel {
+    position: fixed;
+    inset: 0 0 0 auto;
+    z-index: 50;
+    width: min(100%, 32rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 7rem var(--gutter) 3rem;
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+  }
+
+  .menu-panel[hidden] {
+    display: none;
+  }
+
+  .menu-links a {
+    display: block;
+    padding-block: 0.35rem;
+    font-size: var(--step-4);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-decoration: none;
+  }
+
+  .menu-social {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,81 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatSpan } from '../lib/format';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  downloads: number;
+}
+
+const { project, downloads } = Astro.props;
+const { title, kind, summary, start, end, links } = project.data;
+---
+
+<article class="compact" data-compact-card>
+  <div class="compact-head">
+    <h3 class="compact-title">{title}</h3>
+    <p class="meta">{kind && <span>{kind}</span>}<span>{formatSpan(start, end)}</span></p>
+  </div>
+  <p class="compact-summary">{summary}</p>
+  <p class="compact-count">{downloads.toLocaleString('en-US')} downloads</p>
+  <ul class="compact-links">
+    {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+  </ul>
+</article>
+
+<style>
+  .compact {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas:
+      'head count'
+      'summary links';
+    gap: 1rem clamp(1.5rem, 4vw, 4rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
+    border-block: 1px solid var(--line);
+  }
+
+  .compact-head {
+    grid-area: head;
+  }
+
+  .compact-head .meta {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.35rem;
+  }
+
+  .compact-title {
+    font-size: var(--step-3);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  .compact-summary {
+    grid-area: summary;
+    max-width: var(--measure);
+    color: #c9d0db;
+  }
+
+  .compact-count {
+    grid-area: count;
+    align-self: end;
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+
+  .compact-links {
+    grid-area: links;
+    display: flex;
+    gap: 1.5rem;
+    align-self: end;
+  }
+
+  @media (max-width: 860px) {
+    .compact {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'head' 'summary' 'count' 'links';
+    }
+  }
+</style>

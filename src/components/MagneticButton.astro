@@ -1,0 +1,78 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  shape?: 'round' | 'pill';
+  strength?: number;
+  strengthText?: number;
+}
+
+const { href, label, shape = 'pill', strength = 40, strengthText = 20 } = Astro.props;
+---
+
+<a class:list={['mbtn', `mbtn-${shape}`]} href={href} data-magnetic data-strength={strength} data-strength-text={strengthText}>
+  <span class="mbtn-fill" aria-hidden="true"></span>
+  <span class="mbtn-text">{label}</span>
+</a>
+
+<style>
+  .mbtn {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    background: var(--surface);
+    transition: border-color 0.3s;
+  }
+
+  .mbtn-pill {
+    padding: 1.1rem 2rem;
+    border-radius: 999px;
+  }
+
+  .mbtn-round {
+    width: clamp(8.5rem, 14vw, 11rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border-color: transparent;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: var(--step-1);
+  }
+
+  .mbtn-fill {
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--text);
+    translate: 0 101%;
+    transition: translate 0.5s var(--ease-out);
+  }
+
+  .mbtn-round .mbtn-fill {
+    background: #4a80f5;
+  }
+
+  .mbtn-text {
+    position: relative;
+    display: inline-block;
+  }
+
+  .mbtn-pill:hover .mbtn-text {
+    color: var(--bg);
+  }
+
+  .mbtn:hover .mbtn-fill {
+    translate: 0 0;
+  }
+
+  .mbtn-text {
+    transition: color 0.3s;
+  }
+</style>

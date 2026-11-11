@@ -1,0 +1,98 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { formatSpan } from '../lib/format';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, summary, start, end, stack, cover } = project.data;
+const href = `/work/${project.id}`;
+---
+
+<article class="card" data-project-card>
+  <a class="card-media" href={href} tabindex="-1" aria-hidden="true">
+    {cover && <Image src={cover} alt="" widths={[640, 960, 1440]} sizes="(min-width: 960px) 58vw, 100vw" />}
+  </a>
+  <div class="card-body">
+    <p class="meta" data-reveal="fade">{formatSpan(start, end)}</p>
+    <h3 class="card-title" data-reveal="lines"><a href={href}>{title}</a></h3>
+    <p class="card-summary" data-reveal="fade">{summary}</p>
+    <ul class="card-stack meta" aria-label="Built with">
+      {stack.map((s) => <li>{s}</li>)}
+    </ul>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .card-media {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--surface);
+    aspect-ratio: 16 / 10;
+  }
+
+  .card-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.9s var(--ease-out);
+  }
+
+  .card:hover .card-media :global(img) {
+    scale: 1.03;
+  }
+
+  .card-title {
+    margin-block: 0.5rem 0.9rem;
+    font-size: var(--step-4);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .card-title a {
+    text-decoration: none;
+  }
+
+  .card-title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .card-body {
+    position: relative;
+  }
+
+  .card-summary {
+    max-width: var(--measure);
+    color: #c9d0db;
+  }
+
+  .card-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    margin-top: 1.4rem;
+  }
+
+  @media (max-width: 860px) {
+    .card {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+  }
+</style>

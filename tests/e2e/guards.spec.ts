@@ -10,6 +10,10 @@ const FORBIDDEN: [RegExp, string][] = [
   [/guns\.lol|twitch\.tv|youtube\.com/, 'gaming links'],
   [/theflamebeast(?!\.github\.io)(?<!github\.com\/theflamebeast)/, 'handle outside allowed URLs'],
   [/fonts\.(googleapis|gstatic)\.com/, 'third-party font host'],
+  [
+    /<a[^>]+href="https?:\/\/(?!localhost|theflamebeast\.github\.io|github\.com\/theflamebeast|www\.linkedin\.com\/in\/anishgupta25|modrinth\.com\/mod\/server-insight|api\.badgr\.io|www\.flameburst\.net)/,
+    'unexpected external link',
+  ],
 ];
 
 const TEXT = new Set(['.html', '.css', '.js', '.xml', '.txt', '.json', '.svg']);
@@ -30,10 +34,13 @@ test('every pattern catches its bad sample and spares the allowed URLs', () => {
     'gaming links': 'https://twitch.tv/x',
     'handle outside allowed URLs': 'theflamebeast',
     'third-party font host': 'https://fonts.googleapis.com/css2',
+    'unexpected external link': '<a class="x" href="https://example.com/">',
   };
   for (const [re, why] of FORBIDDEN) expect(bad[why], why).toMatch(re);
 
-  const allowed = 'https://github.com/theflamebeast/server-insight https://theflamebeast.github.io/work';
+  const allowed =
+    'https://github.com/theflamebeast/server-insight https://theflamebeast.github.io/work ' +
+    '<a href="https://www.linkedin.com/in/anishgupta25"> <a href="https://modrinth.com/mod/server-insight">';
   for (const [re, why] of FORBIDDEN) expect(allowed.match(re), why).toBeNull();
 });
 

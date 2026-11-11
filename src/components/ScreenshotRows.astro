@@ -1,0 +1,61 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  images: ImageMetadata[];
+}
+
+const { images } = Astro.props;
+const tiles = Array.from({ length: Math.max(6, images.length) }, (_, i) => images[i % images.length]);
+const rows = [tiles, [...tiles].reverse()];
+---
+
+{
+  images.length > 0 && (
+    <div class="rows" data-rows aria-hidden="true">
+      {rows.map((row, r) => (
+        <div class="row" data-row data-direction={r === 0 ? 'left' : 'right'}>
+          {row.map((src) => (
+            <div class="tile">
+              <Image src={src} alt="" widths={[480, 720]} sizes="(min-width: 960px) 26vw, 60vw" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .rows {
+    display: grid;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    padding-block: var(--section);
+    overflow: hidden;
+  }
+
+  .row {
+    display: flex;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    width: max-content;
+  }
+
+  .row[data-direction='right'] {
+    margin-left: -18vw;
+  }
+
+  .tile {
+    width: clamp(15rem, 26vw, 26rem);
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .tile :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+import MagneticButton from './MagneticButton.astro';
+import { SITE } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" id="contact">
+  <div class="footer-curve" data-footer-curve aria-hidden="true"></div>
+  <div class="footer-inner wrap">
+    <div class="footer-cta">
+      <h2 class="footer-title" data-reveal="lines">Have a role, a project or a question?</h2>
+      <a class="footer-email" href={SITE.links.email}>{SITE.email}</a>
+      <div class="footer-button">
+        <MagneticButton href={SITE.links.email} label="Get in touch" shape="round" strength={60} strengthText={30} />
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <dl class="footer-meta">
+        <div>
+          <dt class="meta">Local time</dt>
+          <dd><span data-clock>Eastern Time</span></dd>
+        </div>
+        <div>
+          <dt class="meta">Based in</dt>
+          <dd>{SITE.location}</dd>
+        </div>
+      </dl>
+      <ul class="footer-links">
+        <li><a href={SITE.links.github}>GitHub</a></li>
+        <li><a href={SITE.links.linkedin}>LinkedIn</a></li>
+        <li><a href={SITE.links.email}>Email</a></li>
+      </ul>
+      <p class="meta">&copy; {year} {SITE.name}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-curve {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    top: -1px;
+    height: clamp(3rem, 8vw, 7rem);
+    border-radius: 0 0 50% 50%;
+    background: var(--bg);
+    pointer-events: none;
+  }
+
+  .footer-inner {
+    position: relative;
+    padding-top: calc(var(--section) + 2rem);
+    padding-bottom: 2rem;
+  }
+
+  .footer-cta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'title button' 'email button';
+    align-items: center;
+    gap: 1.5rem 3rem;
+    padding-bottom: var(--section);
+  }
+
+  .footer-title {
+    grid-area: title;
+    max-width: 16ch;
+    font-size: var(--step-4);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+
+  .footer-email {
+    grid-area: email;
+    justify-self: start;
+    font-size: var(--step-1);
+    color: #c9d0db;
+  }
+
+  .footer-button {
+    grid-area: button;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-meta {
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  .footer-meta dd {
+    margin-top: 0.2rem;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 720px) {
+    .footer-cta {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'title' 'email' 'button';
+    }
+  }
+</style>

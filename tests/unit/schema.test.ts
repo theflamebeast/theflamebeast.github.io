@@ -64,6 +64,11 @@ describe('project schema', () => {
     expect(r.success).toBe(false);
   });
 
+  it('keeps a project kind label instead of stripping it', () => {
+    const r = schema.safeParse({ ...compact, kind: 'Fabric mod' });
+    expect(r.success && r.data.kind).toBe('Fabric mod');
+  });
+
   it('rejects an unknown tier and an unknown status', () => {
     expect(schema.safeParse({ ...featured, tier: 'hero' }).success).toBe(false);
     expect(schema.safeParse({ ...featured, status: 'paused' }).success).toBe(false);

@@ -1,9 +1,10 @@
 import { z } from 'astro/zod';
 
-export function makeProjectSchema(image: () => z.ZodType) {
+export function makeProjectSchema<Img extends z.ZodType>(image: () => Img) {
   return z
     .object({
       title: z.string().min(1),
+      kind: z.string().min(1).optional(),
       tier: z.enum(['featured', 'compact']),
       order: z.number().int(),
       summary: z.string().min(1).max(140),

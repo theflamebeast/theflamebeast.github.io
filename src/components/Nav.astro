@@ -1,0 +1,53 @@
+---
+import { SITE } from '../data/site';
+---
+
+<header class="nav">
+  <div class="nav-inner wrap">
+    <a class="nav-name" href="/">{SITE.name}</a>
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 20;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.6rem;
+  }
+
+  .nav-name {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.25rem);
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+  }
+</style>
