@@ -14,7 +14,7 @@ const href = `/work/${project.id}`;
 
 <article class="card" data-project-card>
   <a class="card-media" href={href} tabindex="-1" aria-hidden="true">
-    {cover && <Image src={cover} alt="" widths={[640, 960, 1440]} sizes="(min-width: 960px) 58vw, 100vw" />}
+    {cover && <Image src={cover.src} alt="" widths={[640, 960, 1440]} sizes="(min-width: 960px) 58vw, 100vw" />}
   </a>
   <div class="card-body">
     <p class="meta" data-reveal="fade">{formatSpan(start, end)}</p>

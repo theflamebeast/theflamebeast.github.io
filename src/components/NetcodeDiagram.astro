@@ -1,0 +1,119 @@
+<figure class="diagram wrap" data-reveal="fade">
+  <div class="diagram-scroll">
+    <svg viewBox="0 0 760 360" role="img" aria-labelledby="netcode-title netcode-desc">
+      <title id="netcode-title">How Stashout keeps the client and server in step</title>
+      <desc id="netcode-desc">
+        The client turns input into a local prediction on the shared simulation and sends its inputs to the
+        server. The server ticks the authoritative game and sends snapshots back. The client reconciles each
+        snapshot by rewinding to it and replaying the inputs the server has not seen yet, then keeps predicting.
+      </desc>
+      <defs>
+        <marker id="nc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 10 5 0 10z" fill="currentColor"></path>
+        </marker>
+      </defs>
+
+      <g class="lane-label">
+        <text x="160" y="24">Client</text>
+        <text x="600" y="24">Server</text>
+      </g>
+      <line class="divider" x1="380" y1="40" x2="380" y2="340"></line>
+
+      <g class="node"><rect x="40" y="48" width="240" height="56" rx="12"></rect><text x="160" y="81">Your input</text></g>
+      <g class="node accent"><rect x="40" y="152" width="240" height="56" rx="12"></rect><text x="160" y="185">Client prediction</text></g>
+      <g class="node"><rect x="40" y="256" width="240" height="56" rx="12"></rect><text x="160" y="289">Reconciliation</text></g>
+      <g class="node accent"><rect x="480" y="100" width="240" height="56" rx="12"></rect><text x="600" y="133">Server tick</text></g>
+      <g class="node"><rect x="480" y="204" width="240" height="56" rx="12"></rect><text x="600" y="237">Snapshot</text></g>
+
+      <g class="edge">
+        <path d="M160 104 V148" marker-end="url(#nc-arrow)"></path>
+        <path d="M280 172 C380 172 380 128 476 128" marker-end="url(#nc-arrow)"></path>
+        <path d="M600 156 V200" marker-end="url(#nc-arrow)"></path>
+        <path d="M480 232 C380 232 380 284 284 284" marker-end="url(#nc-arrow)"></path>
+        <path d="M60 256 C20 236 20 208 36 196" marker-end="url(#nc-arrow)"></path>
+      </g>
+      <g class="edge-label">
+        <text x="380" y="126">inputs</text>
+        <text x="380" y="284">snapshots</text>
+        <text x="28" y="236" text-anchor="end" class="small">replay</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption class="meta">The client never waits for the server: it predicts, then corrects.</figcaption>
+</figure>
+
+<style>
+  .diagram {
+    padding-block: var(--section) 0;
+  }
+
+  .diagram-scroll {
+    overflow-x: auto;
+    padding: clamp(1rem, 3vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  svg {
+    min-width: 640px;
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+    color: var(--text);
+  }
+
+  .lane-label text {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    stroke: var(--line-strong);
+    stroke-dasharray: 4 6;
+  }
+
+  .node rect {
+    fill: var(--surface-2);
+    stroke: var(--line-strong);
+  }
+
+  .node.accent rect {
+    fill: var(--accent);
+    stroke: none;
+  }
+
+  .node.accent text {
+    fill: var(--accent-ink);
+  }
+
+  .node text {
+    fill: currentColor;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 500;
+    text-anchor: middle;
+  }
+
+  .edge path {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    color: var(--muted);
+  }
+
+  .edge-label text {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-anchor: middle;
+  }
+
+  figcaption {
+    margin-top: 1rem;
+  }
+</style>

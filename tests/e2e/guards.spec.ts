@@ -14,6 +14,8 @@ const FORBIDDEN: [RegExp, string][] = [
     /<a[^>]+href="https?:\/\/(?!localhost|theflamebeast\.github\.io|github\.com\/theflamebeast|www\.linkedin\.com\/in\/anishgupta25|modrinth\.com\/mod\/server-insight|api\.badgr\.io|www\.flameburst\.net)/,
     'unexpected external link',
   ],
+  [/\b\d{1,3}(\.\d{1,3}){3}\b/, 'IP address'],
+  [/:(25565|8181|8200)\b/, 'server port'],
 ];
 
 const TEXT = new Set(['.html', '.css', '.js', '.xml', '.txt', '.json', '.svg']);
@@ -35,6 +37,8 @@ test('every pattern catches its bad sample and spares the allowed URLs', () => {
     'handle outside allowed URLs': 'theflamebeast',
     'third-party font host': 'https://fonts.googleapis.com/css2',
     'unexpected external link': '<a class="x" href="https://example.com/">',
+    'IP address': 'connect to 10.0.0.12 now',
+    'server port': 'play.example.net:25565',
   };
   for (const [re, why] of FORBIDDEN) expect(bad[why], why).toMatch(re);
 

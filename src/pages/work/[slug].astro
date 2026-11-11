@@ -1,0 +1,240 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Gallery from '../../components/Gallery.astro';
+import MagneticButton from '../../components/MagneticButton.astro';
+import NetcodeDiagram from '../../components/NetcodeDiagram.astro';
+import NetworkDiagram from '../../components/NetworkDiagram.astro';
+import { SITE } from '../../data/site';
+import { formatSpan } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const featured = (await getCollection('projects'))
+    .filter((p) => p.data.tier === 'featured')
+    .sort((a, b) => a.data.order - b.data.order);
+  return featured.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, next: featured[(i + 1) % featured.length] },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+  next: CollectionEntry<'projects'>;
+}
+
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const { title, summary, role, start, end, stack, links, liveUrl, cover, gallery, diagram } = entry.data;
+const Diagram = diagram === 'netcode' ? NetcodeDiagram : diagram === 'network' ? NetworkDiagram : null;
+---
+
+<Base title={`${title}, by ${SITE.name}`} description={summary}>
+  <article class="case">
+    <header class="case-head wrap">
+      <a class="case-back meta" href="/#work">All work</a>
+      <h1 class="case-title" data-reveal="lines">{title}</h1>
+      <p class="case-lede" data-reveal="fade">{summary}</p>
+
+      <dl class="case-facts" data-reveal="fade">
+        <div><dt class="meta">Role</dt><dd>{role}</dd></div>
+        <div><dt class="meta">Timeline</dt><dd>{formatSpan(start, end)}</dd></div>
+        <div><dt class="meta">Built with</dt><dd>{stack.join(', ')}</dd></div>
+      </dl>
+
+      {
+        (liveUrl || links.length > 0) && (
+          <ul class="case-links">
+            {liveUrl && (
+              <li>
+                <MagneticButton href={liveUrl} label="Play" />
+              </li>
+            )}
+            {links.map((l) => (
+              <li>
+                <MagneticButton href={l.href} label={l.label} />
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    {
+      cover && (
+        <figure class="case-cover wrap">
+          <Picture
+            src={cover.src}
+            alt={cover.alt}
+            formats={['avif', 'webp']}
+            widths={[960, 1600, 2400]}
+            sizes="(min-width: 1400px) 1300px, 92vw"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
+
+    <div class="case-body wrap">
+      <div class="prose" data-reveal="fade">
+        <Content />
+      </div>
+    </div>
+
+    {Diagram && <Diagram />}
+
+    {gallery.length > 0 && <Gallery images={gallery} />}
+
+    <nav class="next wrap" data-next-project aria-label="Next project">
+      <p class="meta">Next project</p>
+      <a class="next-link" href={`/work/${next.id}`}>{next.data.title}</a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .case-head {
+    padding-top: clamp(8rem, 18vw, 12rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .case-back {
+    text-decoration: none;
+  }
+
+  .case-back:hover {
+    color: var(--text);
+  }
+
+  .case-title {
+    margin-block: 1.5rem 1.25rem;
+    font-size: clamp(3.5rem, 1rem + 10vw, 9rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
+  }
+
+  .case-lede {
+    max-width: 38rem;
+    font-size: var(--step-2);
+    line-height: 1.4;
+    color: #c9d0db;
+  }
+
+  .case-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 3rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .case-facts dd {
+    margin-top: 0.3rem;
+  }
+
+  .case-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+
+  .case-cover {
+    overflow: hidden;
+  }
+
+  .case-cover :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+
+  .case-body {
+    padding-top: var(--section);
+  }
+
+  .prose {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .prose :global(h2) {
+    margin-top: 3.5rem;
+    margin-bottom: 1.25rem;
+    font-size: var(--step-3);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(p) {
+    margin-bottom: 1.1rem;
+    font-size: var(--step-1);
+    line-height: 1.65;
+    color: #c9d0db;
+  }
+
+  .prose :global(ul) {
+    display: grid;
+    gap: 1rem;
+    margin-block: 1.5rem;
+  }
+
+  .prose :global(li) {
+    padding-left: 1.4rem;
+    position: relative;
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: #c9d0db;
+  }
+
+  .prose :global(li)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .prose :global(strong) {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .next {
+    padding-block: var(--section);
+    border-top: 1px solid var(--line);
+  }
+
+  .next-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: clamp(3rem, 1rem + 8vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .next-link:hover {
+    color: var(--muted);
+  }
+
+  @media (max-width: 720px) {
+    .case-facts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

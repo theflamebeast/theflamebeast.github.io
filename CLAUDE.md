@@ -50,7 +50,8 @@ Everything committed is world-readable, and anything on `main` is live within a 
 
 | Path | What it is |
 |---|---|
-| `src/pages/` | routes: `index.astro`, `work/[slug].astro` (Task 4), `404.astro` (Task 4) |
+| `src/pages/` | routes: `index.astro`, `work/[slug].astro` (one case study per featured project), `404.astro` |
+| `src/assets/projects/<id>/` | case-study images, only ever written by `scripts/import-image.mjs` |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
 | `src/lib/` | build-time helpers: `modrinth.ts` (download count with a fallback), `format.ts` (`formatSpan`) |
@@ -60,7 +61,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |
-| `scripts/` | image import, still capture, screenshots (Tasks 4, 6, 10) |
+| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import); still capture and screenshots arrive in Tasks 6 and 10 |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
 | `.github/workflows/deploy.yml` | CI on every push; deploys to Pages only from `main` |
@@ -76,6 +77,12 @@ Everything committed is world-readable, and anything on `main` is live within a 
   compact card. Adding one is a design decision for the owner, not an edit.
 - **The accent `#2f6cf0` is a fill, never text.** On `--bg` it measures 4.34:1, below WCAG AA for
   body text; white on the accent is 4.64:1. Muted text (`#8a93a3`) is 6.5:1 on `--bg`.
+- **Media rules** (`scripts/media-rules.mjs`, enforced by `import-image.mjs`): nothing AI-generated
+  (`Whisk`, `Gemini`) is ever presented as real footage, nothing from a `Technical` folder (admin,
+  console, DNS), no `admin-*` or `auth` screens. Beyond what the script can check, **look at every
+  image before importing it**: no readable player names (FlameBurst's leaderboard holograms, Stashout's
+  leaderboard, which also shows the old handle) and no third-party usernames. Every cover and gallery
+  image needs alt text; the schema refuses an empty one.
 - **Geist Mono, small and uppercase, is for metadata only** (the hero line, years, stack). Section
   headings are sentence-case Geist Sans. Never the interpunct; separate items with spacing.
 

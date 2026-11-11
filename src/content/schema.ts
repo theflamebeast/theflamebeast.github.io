@@ -15,8 +15,9 @@ export function makeProjectSchema<Img extends z.ZodType>(image: () => Img) {
       stack: z.array(z.string().min(1)).min(1),
       links: z.array(z.object({ label: z.string().min(1), href: z.url() })).default([]),
       liveUrl: z.url().optional(),
-      cover: image().optional(),
+      cover: z.object({ src: image(), alt: z.string().min(1) }).optional(),
       gallery: z.array(z.object({ src: image(), alt: z.string().min(1) })).default([]),
+      diagram: z.enum(['netcode', 'network']).optional(),
       video: z
         .object({ mp4: z.string().min(1), webm: z.string().min(1), poster: image(), caption: z.string().min(1) })
         .optional(),

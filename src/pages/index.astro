@@ -24,7 +24,7 @@ const downloads = Object.fromEntries(
 );
 
 const rowImages: ImageMetadata[] = featured.flatMap((p) => [
-  ...(p.data.cover ? [p.data.cover] : []),
+  ...(p.data.cover ? [p.data.cover.src] : []),
   ...p.data.gallery.map((g) => g.src),
 ]);
 ---

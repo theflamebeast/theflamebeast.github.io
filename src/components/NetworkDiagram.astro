@@ -1,0 +1,106 @@
+<figure class="diagram wrap" data-reveal="fade">
+  <div class="diagram-scroll">
+    <svg viewBox="0 0 860 300" role="img" aria-labelledby="network-title network-desc">
+      <title id="network-title">How the FlameBurst network fits together</title>
+      <desc id="network-desc">
+        Players connect to a proxy, which routes them through a lobby server to the main survival server. Custom
+        plugins on the survival server feed live statistics to the website, and a Discord bot keeps the community
+        up to date.
+      </desc>
+      <defs>
+        <marker id="nw-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 10 5 0 10z" fill="currentColor"></path>
+        </marker>
+      </defs>
+
+      <g class="node"><rect x="20" y="40" width="160" height="56" rx="12"></rect><text x="100" y="73">Players</text></g>
+      <g class="node"><rect x="240" y="40" width="160" height="56" rx="12"></rect><text x="320" y="73">Proxy</text></g>
+      <g class="node"><rect x="460" y="40" width="160" height="56" rx="12"></rect><text x="540" y="73">Lobby</text></g>
+      <g class="node accent"><rect x="680" y="40" width="160" height="56" rx="12"></rect><text x="760" y="67">Survival</text><text x="760" y="85" class="sub">custom plugins</text></g>
+      <g class="node"><rect x="680" y="204" width="160" height="56" rx="12"></rect><text x="760" y="237">Website</text></g>
+      <g class="node"><rect x="420" y="204" width="160" height="56" rx="12"></rect><text x="500" y="237">Discord bot</text></g>
+
+      <g class="edge">
+        <path d="M180 68 H236" marker-end="url(#nw-arrow)"></path>
+        <path d="M400 68 H456" marker-end="url(#nw-arrow)"></path>
+        <path d="M620 68 H676" marker-end="url(#nw-arrow)"></path>
+        <path d="M760 96 V200" marker-end="url(#nw-arrow)"></path>
+        <path d="M680 232 H584" marker-end="url(#nw-arrow)"></path>
+      </g>
+      <g class="edge-label">
+        <text x="770" y="154" text-anchor="start">live stats</text>
+        <text x="630" y="220">updates</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption class="meta">Every hop a player takes, and where the stats on the website come from.</figcaption>
+</figure>
+
+<style>
+  .diagram {
+    padding-block: var(--section) 0;
+  }
+
+  .diagram-scroll {
+    overflow-x: auto;
+    padding: clamp(1rem, 3vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  svg {
+    min-width: 640px;
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+    color: var(--text);
+  }
+
+  .node rect {
+    fill: var(--surface-2);
+    stroke: var(--line-strong);
+  }
+
+  .node.accent rect {
+    fill: var(--accent);
+    stroke: none;
+  }
+
+  .node.accent text {
+    fill: var(--accent-ink);
+  }
+
+  .node text {
+    fill: currentColor;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 500;
+    text-anchor: middle;
+  }
+
+  .node text.sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  .edge path {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    color: var(--muted);
+  }
+
+  .edge-label text {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-anchor: middle;
+  }
+
+  figcaption {
+    margin-top: 1rem;
+  }
+</style>

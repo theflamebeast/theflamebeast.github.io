@@ -14,7 +14,7 @@ const featured = {
   end: null,
   status: 'active',
   stack: ['TypeScript', 'PixiJS'],
-  cover: 'cover.webp',
+  cover: { src: 'cover.webp', alt: 'The Stashout lobby' },
 };
 
 const compact = {
@@ -67,6 +67,16 @@ describe('project schema', () => {
   it('keeps a project kind label instead of stripping it', () => {
     const r = schema.safeParse({ ...compact, kind: 'Fabric mod' });
     expect(r.success && r.data.kind).toBe('Fabric mod');
+  });
+
+  it('rejects a cover without alt text', () => {
+    expect(schema.safeParse({ ...featured, cover: { src: 'cover.webp', alt: '' } }).success).toBe(false);
+  });
+
+  it('keeps a known diagram and rejects an unknown one', () => {
+    const r = schema.safeParse({ ...featured, diagram: 'netcode' });
+    expect(r.success && r.data.diagram).toBe('netcode');
+    expect(schema.safeParse({ ...featured, diagram: 'flowchart' }).success).toBe(false);
   });
 
   it('rejects an unknown tier and an unknown status', () => {
