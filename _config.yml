@@ -1,7 +1,0 @@
-# Read only by the legacy Pages build (Jekyll over main), which otherwise publishes every
-# Markdown file here as a page. Dead once Pages deploys the Astro build through Actions.
-exclude:
-  - CLAUDE.md
-  - AGENTS.md
-  - README.md
-  - docs
