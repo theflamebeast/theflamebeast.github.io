@@ -61,6 +61,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |
+| `public/media/` | the Stashout raid clip, 12 s, no audio, as `.webm` (VP9) and `.mp4` (H.264); its poster lives in `src/assets/projects/stashout/` |
 | `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import); still capture and screenshots arrive in Tasks 6 and 10 |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |

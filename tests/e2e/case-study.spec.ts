@@ -44,6 +44,20 @@ test('Stashout has no Play link and no link to its private repo', async ({ page 
   await expect(page.locator('a[href="https://github.com/theflamebeast/stashout-showcase"]')).toHaveCount(1);
 });
 
+test('Stashout page has a muted, looping, inline video with a poster and mp4 and webm sources', async ({ page }) => {
+  await page.goto('/work/stashout');
+  const video = page.locator('main video');
+  await expect(video).toHaveCount(1);
+  expect(await video.evaluate((v: HTMLVideoElement) => [v.muted, v.loop, v.playsInline])).toEqual([true, true, true]);
+  await expect(video).toHaveAttribute('poster', /\S/);
+  await expect(video.locator('source[type="video/webm"]')).toHaveAttribute('src', /\.webm$/);
+  await expect(video.locator('source[type="video/mp4"]')).toHaveAttribute('src', /\.mp4$/);
+  for (const type of ['video/webm', 'video/mp4']) {
+    const src = await video.locator(`source[type="${type}"]`).getAttribute('src');
+    expect((await page.request.get(src!)).status(), src!).toBe(200);
+  }
+});
+
 test('FlameBurst outbound link says it is on hiatus', async ({ page }) => {
   await page.goto('/work/flameburst');
   await expect(page.locator('main a[href="https://www.flameburst.net"]')).toContainText('on hiatus');

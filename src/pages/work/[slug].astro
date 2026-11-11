@@ -1,6 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Gallery from '../../components/Gallery.astro';
 import MagneticButton from '../../components/MagneticButton.astro';
@@ -26,8 +26,11 @@ interface Props {
 
 const { entry, next } = Astro.props;
 const { Content } = await render(entry);
-const { title, summary, role, start, end, stack, links, liveUrl, cover, gallery, diagram } = entry.data;
+const { title, summary, role, start, end, stack, links, liveUrl, cover, gallery, video, diagram } = entry.data;
 const Diagram = diagram === 'netcode' ? NetcodeDiagram : diagram === 'network' ? NetworkDiagram : null;
+const poster = video ? await getImage({ src: video.poster, width: 1280, format: 'webp' }) : null;
+// The clip takes the lead media slot when there is one; the cover then opens the gallery instead.
+const galleryItems = video && cover ? [cover, ...gallery] : gallery;
 ---
 
 <Base title={`${title}, by ${SITE.name}`} description={summary}>
@@ -62,7 +65,19 @@ const Diagram = diagram === 'netcode' ? NetcodeDiagram : diagram === 'network' ?
     </header>
 
     {
-      cover && (
+      video && poster && (
+        <figure class="case-cover wrap">
+          <video class="case-video" autoplay muted loop playsinline preload="metadata" poster={poster.src} data-case-video>
+            <source src={video.webm} type="video/webm" />
+            <source src={video.mp4} type="video/mp4" />
+          </video>
+          <figcaption class="meta case-caption">{video.caption}</figcaption>
+        </figure>
+      )
+    }
+
+    {
+      !video && cover && (
         <figure class="case-cover wrap">
           <Picture
             src={cover.src}
@@ -84,7 +99,7 @@ const Diagram = diagram === 'netcode' ? NetcodeDiagram : diagram === 'network' ?
 
     {Diagram && <Diagram />}
 
-    {gallery.length > 0 && <Gallery images={gallery} />}
+    {galleryItems.length > 0 && <Gallery images={galleryItems} />}
 
     <nav class="next wrap" data-next-project aria-label="Next project">
       <p class="meta">Next project</p>
@@ -144,6 +159,18 @@ const Diagram = diagram === 'netcode' ? NetcodeDiagram : diagram === 'network' ?
 
   .case-cover {
     overflow: hidden;
+  }
+
+  .case-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .case-caption {
+    margin-top: 0.9rem;
   }
 
   .case-cover :global(img) {

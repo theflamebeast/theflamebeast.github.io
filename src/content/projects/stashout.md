@@ -23,6 +23,11 @@ gallery:
     alt: The built-in map editor, laying out roads, buildings and spawn zones for a raid map
   - src: ../../assets/projects/stashout/skins.webp
     alt: Choosing a character skin, its colour and its armband
+video:
+  mp4: /media/stashout-raid.mp4
+  webm: /media/stashout-raid.webm
+  poster: ../../assets/projects/stashout/raid-poster.webp
+  caption: Twelve seconds of a real raid, played through the game's own test driver
 diagram: netcode
 ---
 
