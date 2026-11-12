@@ -3,7 +3,7 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { Image, Picture, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Gallery from '../../components/Gallery.astro';
-import MagneticButton from '../../components/MagneticButton.astro';
+import Button from '../../components/Button.astro';
 import NetcodeDiagram from '../../components/NetcodeDiagram.astro';
 import NetworkDiagram from '../../components/NetworkDiagram.astro';
 import { SITE } from '../../data/site';
@@ -51,12 +51,12 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
           <ul class="case-links">
             {liveUrl && (
               <li>
-                <MagneticButton href={liveUrl} label="Play" />
+                <Button href={liveUrl} label="Play" />
               </li>
             )}
             {links.map((l) => (
               <li>
-                <MagneticButton href={l.href} label={l.label} />
+                <Button href={l.href} label={l.label} />
               </li>
             ))}
           </ul>

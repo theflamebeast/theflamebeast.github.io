@@ -13,7 +13,7 @@ const href = `/work/${project.id}`;
 ---
 
 <article class="card" data-project-card>
-  <a class="card-media" href={href} tabindex="-1" aria-hidden="true">
+  <a class="card-media" href={href} tabindex="-1" aria-hidden="true" data-spotlight-target>
     {
       cover && (
         <Image
@@ -48,6 +48,7 @@ const href = `/work/${project.id}`;
   }
 
   .card-media {
+    position: relative;
     display: block;
     overflow: hidden;
     border-radius: var(--radius);
@@ -64,6 +65,17 @@ const href = `/work/${project.id}`;
 
   .card:hover .card-media :global(img) {
     scale: 1.03;
+  }
+
+  /* Dims the screenshot everywhere except around the cursor; only present once the script is running. */
+  .card-media[data-spotlight='on']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(6 7 12 / 0.4);
+    -webkit-mask-image: radial-gradient(circle 18rem at var(--mx, -100rem) var(--my, -100rem), transparent, #000);
+    mask-image: radial-gradient(circle 18rem at var(--mx, -100rem) var(--my, -100rem), transparent, #000);
+    pointer-events: none;
   }
 
   .card-title {

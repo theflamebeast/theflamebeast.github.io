@@ -1,0 +1,71 @@
+---
+interface Props {
+  href: string;
+  label: string;
+}
+
+const { href, label } = Astro.props;
+---
+
+<a class="btn" href={href}>
+  <span class="btn-fill" aria-hidden="true"></span>
+  <span class="btn-text">{label}</span>
+</a>
+
+<style>
+  .btn {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 1.1rem 2rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* A wash of the live ink colour that rises through the button; the button itself never moves. */
+  .btn-fill {
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--ink-live);
+    translate: 0 101%;
+    transition: translate 0.5s var(--ease-out);
+  }
+
+  .btn-text {
+    position: relative;
+    display: inline-block;
+    transition: color 0.3s;
+  }
+
+  .btn:focus-visible .btn-fill {
+    translate: 0 0;
+  }
+
+  .btn:focus-visible .btn-text {
+    color: var(--bg);
+  }
+
+  @media (hover: hover) {
+    .btn:hover .btn-fill {
+      translate: 0 0;
+    }
+
+    .btn:hover .btn-text {
+      color: var(--bg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-fill {
+      transition: none;
+    }
+  }
+</style>

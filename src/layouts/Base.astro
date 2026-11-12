@@ -70,6 +70,7 @@ const og = new URL(ogImage, Astro.site);
   import { initReveals } from '../motion/reveal';
   import { initScrollProgress, initSmoothScroll } from '../motion/scroll';
   import { initScrub } from '../motion/scrub';
+  import { initSpotlight } from '../motion/spotlight';
   import { initCaseVideo } from '../motion/video';
 
   onPage(() => {
@@ -79,6 +80,7 @@ const og = new URL(ogImage, Astro.site);
       initLiveAccent(),
       initReveals(),
       initScrub(),
+      initSpotlight(),
       initClock(),
       initCopyEmail(),
       initCaseVideo(),
