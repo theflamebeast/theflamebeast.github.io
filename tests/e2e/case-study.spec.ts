@@ -18,7 +18,9 @@ for (const p of PAGES) {
     expect(await imgs.count()).toBeGreaterThan(3);
     for (const img of await imgs.all()) {
       await img.scrollIntoViewIfNeeded();
-      await expect(img).toHaveAttribute('alt', /\S/);
+      // The next-project cover repeats the link beside it, so it is decorative and must stay empty.
+      const decorative = await img.evaluate((el) => el.closest('[data-next-cover]') !== null);
+      await expect(img).toHaveAttribute('alt', decorative ? '' : /\S/);
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(0);
     }
   });
@@ -36,6 +38,19 @@ for (const p of PAGES) {
     await expect(diagrams.locator('title')).not.toHaveText('');
   });
 }
+
+test('the next-project cover is clipped until the link is hovered or focused', async ({ page }) => {
+  await page.goto('/work/stashout');
+  const cover = page.locator('[data-next-cover]');
+  await cover.scrollIntoViewIfNeeded();
+  await expect(cover).toHaveCSS('clip-path', 'inset(100% 0px 0px)');
+  await page.locator('[data-next-project] a').hover();
+  await expect(cover).toHaveCSS('clip-path', 'inset(0px)');
+  await page.mouse.move(0, 0);
+  await expect(cover).toHaveCSS('clip-path', 'inset(100% 0px 0px)');
+  await page.locator('[data-next-project] a').focus();
+  await expect(cover).toHaveCSS('clip-path', 'inset(0px)');
+});
 
 test('Stashout has no Play link and no link to its private repo', async ({ page }) => {
   await page.goto('/work/stashout');

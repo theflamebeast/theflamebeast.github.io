@@ -31,11 +31,31 @@ test('the canvas runs, is not blank and logs no errors', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test('the hint shows while the sim runs and fades after the first stir', async ({ page }) => {
+  await page.goto('/');
+  const hint = page.locator('[data-ink-hint]');
+  await expect(page.locator(INK)).toHaveAttribute('data-running', 'true');
+  await expect(hint).toBeVisible();
+  // innerText, not textContent: the touch-screen wording is display: none here. It is uppercased by CSS.
+  await expect(hint).toHaveText(/^move your cursor$/i, { useInnerText: true });
+  await page.mouse.move(700, 400);
+  await page.mouse.move(760, 430);
+  await expect(hint).toHaveCSS('opacity', '0');
+});
+
+test('no rotating arrows anywhere', async ({ page }) => {
+  for (const path of ['/', '/work/stashout']) {
+    await page.goto(path);
+    await expect(page.locator('[data-rotate]')).toHaveCount(0);
+  }
+});
+
 test('the still is in the page before any script runs, sized to the hero', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/');
   await expect(page.locator(INK)).toHaveCount(0);
+  await expect(page.locator('[data-ink-hint]')).toBeHidden();
   const still = page.locator(STILL);
   await expect(still).toBeVisible();
   await expect(still).toHaveAttribute('fetchpriority', 'high');
@@ -88,6 +108,7 @@ test('no WebGL2: the still is visible, there is no canvas, zero console errors',
   await page.waitForLoadState('networkidle');
   await expect(page.locator(STILL)).toBeVisible();
   await expect(page.locator(INK)).toHaveCount(0);
+  await expect(page.locator('[data-ink-hint]')).toBeHidden();
   await expect(page.locator('[data-hero] h1')).toHaveText('Anish Gupta');
   expect(errors).toEqual([]);
 });

@@ -8,5 +8,6 @@ test('under reduced motion no canvas is created and the still is visible', async
   await page.waitForLoadState('networkidle');
   await expect(page.locator('[data-hero] [data-ink-still] img')).toBeVisible();
   await expect(page.locator('canvas')).toHaveCount(0);
+  await expect(page.locator('[data-ink-hint]')).toBeHidden();
   expect(errors).toEqual([]);
 });

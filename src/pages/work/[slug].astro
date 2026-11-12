@@ -1,8 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
-import { Picture, getImage } from 'astro:assets';
+import { Image, Picture, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
-import Arrow from '../../components/Arrow.astro';
 import Gallery from '../../components/Gallery.astro';
 import MagneticButton from '../../components/MagneticButton.astro';
 import NetcodeDiagram from '../../components/NetcodeDiagram.astro';
@@ -108,8 +107,17 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     {galleryItems.length > 0 && <Gallery images={galleryItems} />}
 
     <nav class="next wrap" data-next-project aria-label="Next project">
-      <p class="meta">Next project</p>
-      <a class="next-link" href={`/work/${next.id}`}>{next.data.title}<Arrow class="next-arrow" /></a>
+      <div class="next-copy">
+        <p class="meta">Next project</p>
+        <a class="next-link" href={`/work/${next.id}`}>{next.data.title}</a>
+      </div>
+      {
+        next.data.cover && (
+          <div class="next-cover" data-next-cover>
+            <Image src={next.data.cover.src} alt="" widths={[480, 960]} sizes="(min-width: 720px) 28vw, 80vw" />
+          </div>
+        )
+      }
     </nav>
   </article>
 </Base>
@@ -293,8 +301,50 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
   }
 
   .next {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem clamp(1.5rem, 4vw, 4rem);
     padding-block: var(--section);
     border-top: 1px solid var(--line);
+  }
+
+  .next-cover {
+    width: clamp(14rem, 28vw, 26rem);
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  .next-cover :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Where hovering exists the cover is wiped in from the bottom on hover or keyboard focus. */
+  @media (hover: hover) {
+    .next-cover {
+      clip-path: inset(100% 0 0 0);
+      transition: clip-path 0.7s var(--ease-out);
+    }
+
+    .next:hover .next-cover,
+    .next:focus-within .next-cover {
+      clip-path: inset(0);
+    }
+  }
+
+  @media (hover: none) {
+    .next-cover {
+      clip-path: inset(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .next-cover {
+      transition: none;
+    }
   }
 
   .next-link {
@@ -312,16 +362,12 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     color: var(--muted);
   }
 
-  .next-link :global(.next-arrow) {
-    display: inline-block;
-    width: 0.55em;
-    height: 0.55em;
-    margin-left: 0.25em;
-    vertical-align: 0.05em;
-  }
-
   @media (max-width: 720px) {
     .case-facts {
+      grid-template-columns: 1fr;
+    }
+
+    .next {
       grid-template-columns: 1fr;
     }
   }

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const SCRUBBED = '[data-row], [data-parallax], [data-footer-curve], [data-rotate]';
+const SCRUBBED = '[data-row], [data-parallax], [data-footer-curve]';
 
 test('no scroll-scrubbed transforms on rows, parallax, rotations or footer curve below 720px', async ({ page }) => {
   await page.goto('/');
@@ -14,4 +14,12 @@ test('no scroll-scrubbed transforms on rows, parallax, rotations or footer curve
       await expect(el).toHaveCSS('transform', 'none');
     }
   }
+});
+
+test('on a touch screen the next-project cover is always shown', async ({ page }) => {
+  await page.goto('/work/stashout');
+  const cover = page.locator('[data-next-cover]');
+  await cover.scrollIntoViewIfNeeded();
+  await expect(cover).toHaveCSS('clip-path', 'inset(0px)');
+  await expect(cover.locator('img')).toBeVisible();
 });

@@ -11,3 +11,9 @@ export function prefersReducedMotion(): boolean {
 export function isWide(minPx: number): boolean {
   return window.matchMedia(wideQuery(minPx)).matches;
 }
+
+export const HOVER = '(hover: hover)';
+
+export function canHover(): boolean {
+  return window.matchMedia(HOVER).matches;
+}

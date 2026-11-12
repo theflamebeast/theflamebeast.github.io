@@ -5,7 +5,6 @@ import { REDUCED_MOTION, wideQuery } from './prefs';
 gsap.registerPlugin(ScrollTrigger);
 
 const ROW_SHIFT_VW = 14;
-const ROTATE_DEG = 90;
 
 const through = (trigger: Element) => ({
   trigger,
@@ -39,11 +38,6 @@ export function initScrub(): () => void {
         { yPercent: -travel, scale },
         { yPercent: travel, scale, ease: 'none', scrollTrigger: through(el.parentElement ?? el) },
       );
-    }
-
-    for (const el of document.querySelectorAll<HTMLElement>('[data-rotate]')) {
-      const section = el.closest('section, nav, footer, article') ?? el;
-      gsap.fromTo(el, { rotation: 0 }, { rotation: ROTATE_DEG, ease: 'none', scrollTrigger: through(section) });
     }
 
     for (const curve of document.querySelectorAll<HTMLElement>('[data-footer-curve]')) {
