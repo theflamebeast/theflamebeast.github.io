@@ -40,7 +40,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
   build time, with a fallback).
 - **The page is complete without JS, without WebGL and under reduced motion.** Effects layer on top
   of content that is already there; reveal start states are applied by JS only.
-- **Motion mounts and tears down only through `onPage`** (`src/motion/lifecycle.ts`, Task 6), because
+- **Motion mounts and tears down only through `onPage`** (`src/motion/lifecycle.ts`), because
   `ClientRouter` swaps pages without a reload and a module that listens for anything else leaks.
 - **Site facts live only in `src/data/site.ts`**; project facts only in the `projects` content
   collection, whose schema fails the build on broken data (a featured project without a cover stops
@@ -55,14 +55,16 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
 | `src/lib/` | build-time helpers: `modrinth.ts` (download count with a fallback), `format.ts` (`formatSpan`) |
-| `src/ink/` | the WebGL fluid simulation (Task 6) |
-| `src/motion/` | every scroll, hover and navigation effect (Tasks 6 to 9) |
+| `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue), `size.ts` (canvas pixel cap, grid size) |
+| `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
+| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts`; the rest arrives in Tasks 7 to 9 |
 | `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, "Let's talk", footer, `#route-titles` |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |
+| `public/og.png` | the Open Graph image, 1200x630, captured from the live hero |
 | `public/media/` | the Stashout raid clip, 12 s, no audio, as `.webm` (VP9) and `.mp4` (H.264); its poster lives in `src/assets/projects/stashout/` |
-| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import); still capture and screenshots arrive in Tasks 6 and 10 |
+| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both); screenshots arrive in Task 10 |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
 | `.github/workflows/deploy.yml` | CI on every push; deploys to Pages only from `main` |
@@ -126,6 +128,10 @@ Each one happened.
   overflow, so `innerWidth` grows with it. The footer's curved edge made the page 429 px wide at a
   390 px viewport while the first version of the phone test passed. `home.phone.spec.ts` lifts the
   clip and compares against the configured viewport width; keep it that way.
+- **Stirring the ink from Playwright's mouse came out black 4 times in 6.** Each `mouse.move` is a
+  round trip; when they stretched past the sim's 120 ms pointer gap, every stroke was dropped. The
+  capture now dispatches the strokes in the page once per frame, and refuses to write a still whose
+  brightest channel averages under 28 (stirred 40 to 47, missed 16 to 20).
 - **Playwright waits forever on a 404 home page.** Its `webServer` only counts the server as ready on
   a non-404 status, so a build with no `/` shows up as a 60 s timeout, not a test failure.
 

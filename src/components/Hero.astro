@@ -1,8 +1,21 @@
 ---
+import { Picture } from 'astro:assets';
+import inkStill from '../assets/ink-still.webp';
 import { SITE } from '../data/site';
 ---
 
 <section class="hero" data-hero aria-labelledby="hero-name">
+  <div class="hero-still" data-ink-still aria-hidden="true">
+    <Picture
+      src={inkStill}
+      alt=""
+      formats={['avif', 'webp']}
+      widths={[640, 1280, 1920]}
+      sizes="(max-aspect-ratio: 16/9) 178vh, 100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
   <div class="hero-copy wrap">
     <p class="hero-eyebrow meta" data-reveal="fade">
       <span>{SITE.role}</span>
@@ -12,6 +25,85 @@ import { SITE } from '../data/site';
     <p class="hero-tagline" data-reveal="fade">{SITE.tagline}</p>
   </div>
 </section>
+
+<script>
+  import { createInkFluid } from '../ink/fluid';
+  import { hexToRgb } from '../ink/palette';
+  import { onPage } from '../motion/lifecycle';
+  import { prefersReducedMotion } from '../motion/prefs';
+
+  onPage(() => {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    const still = hero?.querySelector('[data-ink-still]');
+    if (!hero || !still || prefersReducedMotion()) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.dataset.ink = '';
+    canvas.dataset.running = 'false';
+    canvas.setAttribute('aria-hidden', 'true');
+    still.after(canvas);
+
+    const fluid = createInkFluid(canvas, {
+      background: hexToRgb(getComputedStyle(hero).getPropertyValue('--bg')),
+      onStateChange(state) {
+        canvas.dataset.running = String(state === 'running');
+        // A paused canvas keeps its last frame, so it stays shown; a lost one is blank.
+        if (state !== 'paused') canvas.dataset.live = String(state === 'running');
+      },
+    });
+    if (!fluid) {
+      canvas.remove();
+      return;
+    }
+
+    let inView = false;
+    const sync = () => (inView && !document.hidden ? fluid.start() : fluid.stop());
+    const visibility = new IntersectionObserver((entries) => {
+      inView = entries[entries.length - 1].isIntersecting;
+      sync();
+    });
+    visibility.observe(hero);
+    const size = new ResizeObserver(() => fluid.resize());
+    size.observe(canvas);
+
+    const listeners = new AbortController();
+    const options = { passive: true, signal: listeners.signal };
+    const at = (event: PointerEvent): [number, number] => {
+      const rect = canvas.getBoundingClientRect();
+      return [(event.clientX - rect.left) / rect.width, (event.clientY - rect.top) / rect.height];
+    };
+
+    // A finger that drags scrolls the page (the browser then cancels the pointer); only a tap inks.
+    let tap: number | null = null;
+    hero.addEventListener('pointermove', (e) => e.pointerType !== 'touch' && fluid.pointer(...at(e)), options);
+    hero.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (e.pointerType === 'touch') tap = e.pointerId;
+        else if (e.button === 0) fluid.splatRing(...at(e));
+      },
+      options,
+    );
+    hero.addEventListener(
+      'pointerup',
+      (e) => {
+        if (e.pointerId === tap) fluid.splatRing(...at(e));
+        tap = null;
+      },
+      options,
+    );
+    hero.addEventListener('pointercancel', () => (tap = null), options);
+    document.addEventListener('visibilitychange', sync, options);
+
+    return () => {
+      listeners.abort();
+      visibility.disconnect();
+      size.disconnect();
+      fluid.destroy();
+      canvas.remove();
+    };
+  });
+</script>
 
 <style>
   .hero {
@@ -25,11 +117,59 @@ import { SITE } from '../data/site';
     background: var(--bg);
   }
 
+  .hero-still,
+  .hero :global([data-ink]) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-still :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero :global([data-ink]) {
+    opacity: 0;
+    transition: opacity 0.9s ease;
+  }
+
+  .hero :global([data-ink][data-live='true']) {
+    opacity: 1;
+  }
+
+  /* Shade under the nav, and the ink melts into the page instead of ending on a hard edge. */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(to bottom, rgb(6 7 12 / 0.72), transparent 24%),
+      linear-gradient(to top, var(--bg), transparent 28%);
+    pointer-events: none;
+  }
+
   .hero-copy {
     position: relative;
     z-index: 2;
     text-align: center;
     pointer-events: none;
+  }
+
+  /* Stirred ink gets bright; this keeps the words readable wherever it goes. */
+  .hero-copy::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: -1;
+    width: min(100%, 70rem);
+    height: 190%;
+    translate: -50% -50%;
+    background: radial-gradient(closest-side, rgb(6 7 12 / 0.66), rgb(6 7 12 / 0.42) 55%, transparent);
   }
 
   .hero-eyebrow {
@@ -39,6 +179,7 @@ import { SITE } from '../data/site';
     gap: 0.4rem 1.75rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
+    color: #c9d0db;
   }
 
   .hero-name {
