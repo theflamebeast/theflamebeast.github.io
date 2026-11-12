@@ -64,27 +64,6 @@ test('screenshot rows move in opposite directions while scrolling', async ({ pag
   expect(Math.sign(moved[0])).toBe(-Math.sign(moved[1]));
 });
 
-test('marquee translateX changes over 500 ms and reverses direction after scrolling up', async ({ page }) => {
-  await page.goto('/');
-  const track = page.locator('[data-marquee]');
-  await track.scrollIntoViewIfNeeded();
-  await page.mouse.move(720, 450);
-  await page.mouse.wheel(0, 120);
-  await settle(page, 600);
-  const drift = async () => {
-    const a = (await translate(track)).x;
-    await page.waitForTimeout(500);
-    return (await translate(track)).x - a;
-  };
-  const down = await drift();
-  expect(Math.abs(down)).toBeGreaterThan(5);
-  await page.mouse.wheel(0, -120);
-  await settle(page, 600);
-  const up = await drift();
-  expect(Math.abs(up)).toBeGreaterThan(5);
-  expect(Math.sign(up)).toBe(-Math.sign(down));
-});
-
 test('clock text matches h:mm AM/PM EST/EDT and updates', async ({ page }) => {
   await page.clock.install({ time: new Date('2026-11-10T21:12:30Z') });
   await page.goto('/');

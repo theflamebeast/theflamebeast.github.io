@@ -15,13 +15,3 @@ test('no scroll-scrubbed transforms on rows, parallax, rotations or footer curve
     }
   }
 });
-
-test('the marquee still rolls on a phone', async ({ page }) => {
-  await page.goto('/');
-  const track = page.locator('[data-marquee]');
-  await track.scrollIntoViewIfNeeded();
-  const x = () => track.evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
-  const a = await x();
-  await page.waitForTimeout(500);
-  expect(Math.abs((await x()) - a)).toBeGreaterThan(5);
-});

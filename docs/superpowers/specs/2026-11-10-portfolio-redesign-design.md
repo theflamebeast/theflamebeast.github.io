@@ -69,8 +69,10 @@ The same change also gives this repo the owner's standard AI-workflow files (see
 - Address: keep `theflamebeast.github.io`.
 - FlameBurst media comes from the owner's `C:\Users\anish\Pictures\FlameBurst` folder.
 - Archive and hide the Once Human Resources site and repo.
-- Accepted these calls proposed during design: an ink preloader; use the rolling giant text for "Let's talk" above the footer, not as the hero; own code on
+- Accepted these calls proposed during design: an ink preloader; own code on
   GSAP and Lenis; turn magnetic and heavy scroll effects off on small screens; respect reduced motion.
+- 2026-11-11: cut the rolling "Let's talk" text above the footer after seeing it built: the owner
+  disliked it, and it repeated the footer's own "Get in touch" call.
 
 ## Site structure
 
@@ -93,8 +95,7 @@ Top to bottom:
    the page scrolls.
 5. **About:** two or three sentences (CS at the University of Georgia, what the owner likes building),
    a skills line, and the three certifications.
-6. **"Let's talk"** as giant rolling text that reverses direction when the user scrolls up.
-7. **Footer:** curved top edge that flattens as it scrolls into view; a magnetic "Get in touch" button
+6. **Footer:** curved top edge that flattens as it scrolls into view; a magnetic "Get in touch" button
    (`mailto:`); local time and place; GitHub, LinkedIn, email.
 
 ### Case-study pages (`/work/stashout`, `/work/flameburst`)
@@ -209,14 +210,13 @@ behaviour; the builder picks the implementation.
 | Screenshot rows | Two rows of screenshots drift sideways in opposite directions, driven by scroll. |
 | Parallax | Selected elements move at slightly different speeds on scroll. |
 | Scroll-turned icons | Arrow icons rotate as their section scrolls. |
-| "Let's talk" | Giant rolling text that reverses with scroll direction. |
 | Curved footer | The footer's curved top edge flattens as it scrolls into view. |
 | Local clock | Live Eastern time in the footer. |
 
 - Below 720 px wide, drop the scroll-scrubbed effects (rows, parallax, rotations, footer curve) to a
   static layout.
 - Under `prefers-reduced-motion: reduce`: no preloader, no curtain animation (instant navigation), no
-  smooth scroll, no reveals (content simply present), no marquee motion, static ink.
+  smooth scroll, no reveals (content simply present), static ink.
 
 ## Visual design
 

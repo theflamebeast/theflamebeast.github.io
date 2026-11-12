@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('no data-smooth, reveals already visible, marquee static', async ({ page }) => {
+test('no data-smooth, reveals already visible', async ({ page }) => {
   await page.goto('/');
   const html = page.locator('html');
   await expect(page.locator('[data-hero] h1')).toBeVisible();
@@ -12,12 +12,6 @@ test('no data-smooth, reveals already visible, marquee static', async ({ page })
     await expect(el).toHaveCSS('opacity', '1');
     await expect(el).toHaveCSS('transform', 'none');
   }
-  const track = page.locator('[data-marquee]');
-  await track.scrollIntoViewIfNeeded();
-  const before = await track.evaluate((el) => getComputedStyle(el).transform);
-  await page.waitForTimeout(500);
-  expect(await track.evaluate((el) => getComputedStyle(el).transform)).toBe(before);
-  expect(before).toBe('none');
 });
 
 test('the case-study video waits for the visitor: paused, with a play button', async ({ page }) => {

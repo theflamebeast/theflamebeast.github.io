@@ -48,7 +48,7 @@ argues from it and does not repeat its rationale.
    hidden at rest, and the number of live ScrollTriggers equals a fresh load of that page (no
    duplicates). Test owned by Task 9.
 3. **Resizing from desktop to phone width mid-session:** no horizontal page scroll, the ink canvas
-   resizes, the marquee has no gap. Test owned by Task 7.
+   resizes. Test owned by Task 7 (the marquee it also covered was cut on 2026-11-11).
 4. **A touch user drags on the hero:** the page scrolls; the hero never captures the gesture. Test
    owned by Task 6.
 5. **No WebGL2 (or no float render targets):** the still ink frame shows, no console errors, no

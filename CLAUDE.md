@@ -57,8 +57,8 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/lib/` | pure helpers: `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`), `clock.ts` (`formatLocalTime`, Eastern by default) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
-| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `marquee.ts`, `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. Magnetic, menu, preloader and curtain arrive in Tasks 8 and 9 |
-| `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, "Let's talk", footer, `#route-titles` |
+| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. Magnetic, menu, preloader and curtain arrive in Tasks 8 and 9 |
+| `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, footer, `#route-titles` |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |

@@ -3,7 +3,6 @@ import { ClientRouter } from 'astro:transitions';
 import { getCollection } from 'astro:content';
 import Nav from '../components/Nav.astro';
 import MenuPanel from '../components/MenuPanel.astro';
-import TalkMarquee from '../components/TalkMarquee.astro';
 import Footer from '../components/Footer.astro';
 import { SITE } from '../data/site';
 import '../styles/global.css';
@@ -55,7 +54,6 @@ const og = new URL(ogImage, Astro.site);
     <main id="main">
       <slot />
     </main>
-    <TalkMarquee />
     <Footer />
     <script type="application/json" id="route-titles" set:html={JSON.stringify(routeTitles)} />
   </body>
@@ -65,14 +63,13 @@ const og = new URL(ogImage, Astro.site);
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { initClock } from '../motion/clock';
   import { onPage } from '../motion/lifecycle';
-  import { initMarquee } from '../motion/marquee';
   import { initReveals } from '../motion/reveal';
   import { initSmoothScroll } from '../motion/scroll';
   import { initScrub } from '../motion/scrub';
   import { initCaseVideo } from '../motion/video';
 
   onPage(() => {
-    const cleanups = [initSmoothScroll(), initReveals(), initScrub(), initMarquee(), initClock(), initCaseVideo()];
+    const cleanups = [initSmoothScroll(), initReveals(), initScrub(), initClock(), initCaseVideo()];
     ScrollTrigger.refresh();
     return () => {
       for (const cleanup of cleanups.reverse()) cleanup();
