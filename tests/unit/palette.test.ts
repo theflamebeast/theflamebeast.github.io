@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { INK_HUE_CYCLE_MS, INK_HUE_START_MS, hexToRgb, hsvToRgb, inkColor, inkHue } from '../../src/ink/palette';
+import {
+  INK_HUE_CYCLE_MS,
+  INK_HUE_START_MS,
+  hexToRgb,
+  hsvToRgb,
+  inkColor,
+  inkHue,
+  liveInkHue,
+  liveInkRgb,
+  rgbToCss,
+  type Rgb,
+} from '../../src/ink/palette';
 
 const SAMPLES = 10_000;
 const sample = (i: number) => ({ timeMs: i * 137.31, rand: (i * 0.6180339887) % 1 });
@@ -86,5 +97,30 @@ describe('inkColor', () => {
 
   it('defaults the multiplier to 1', () => {
     expect(inkColor(1234, 0.5)).toEqual(inkColor(1234, 0.5, 1));
+  });
+});
+
+describe('the live colour', () => {
+  const BG: Rgb = [6 / 255, 7 / 255, 12 / 255];
+  const luminance = ([r, g, b]: Rgb) => {
+    const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  };
+  const contrast = (a: Rgb, b: Rgb) =>
+    (Math.max(luminance(a), luminance(b)) + 0.05) / (Math.min(luminance(a), luminance(b)) + 0.05);
+
+  it('liveInkHue starts at cyan on the page clock and reaches pink half a cycle later', () => {
+    expect(liveInkHue(0)).toBeCloseTo(0.52, 9);
+    expect(liveInkHue(INK_HUE_CYCLE_MS / 2)).toBeCloseTo(0.92, 9);
+  });
+
+  it('dark text on the live colour meets WCAG AA at every point in the cycle', () => {
+    for (let i = 0; i < 1000; i++) {
+      expect(contrast(liveInkRgb((i / 1000) * INK_HUE_CYCLE_MS), BG)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('rgbToCss writes whole channels, space separated', () => {
+    expect(rgbToCss([1, 0.4, 0])).toBe('rgb(255 102 0)');
   });
 });

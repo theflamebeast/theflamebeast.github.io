@@ -49,3 +49,20 @@ export function inkColor(timeMs: number, rand: number, mult = 1): Rgb {
   const m = INTENSITY * mult;
   return [r * m, g * m, b * m];
 }
+
+const LIVE_SATURATION = 0.6;
+
+/** The hue of the page's live accent, on the same clock as the hero's ink (`performance.now()`). */
+export function liveInkHue(pageMs: number): number {
+  return inkHue(pageMs + INK_HUE_START_MS, 0);
+}
+
+/** Lighter than the ink itself, so dark text on it always clears WCAG AA. */
+export function liveInkRgb(pageMs: number): Rgb {
+  return hsvToRgb(liveInkHue(pageMs), LIVE_SATURATION, 1);
+}
+
+export function rgbToCss([r, g, b]: Rgb): string {
+  const channel = (c: number) => Math.round(Math.min(1, Math.max(0, c)) * 255);
+  return `rgb(${channel(r)} ${channel(g)} ${channel(b)})`;
+}

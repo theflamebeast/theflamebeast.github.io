@@ -58,9 +58,10 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
 | `src/lib/` | pure helpers: `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`), `clock.ts` (`formatLocalTime`, Eastern by default) |
-| `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue), `size.ts` (canvas pixel cap, grid size) |
+| `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
-| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. The header picker, page transitions and the rest of round 2 arrive in Tasks 1 to 7 of the round-2 plan |
+| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`, the scroll-progress line), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. The header picker, page transitions and the rest of round 2 arrive in Tasks 1 to 7 of the round-2 plan |
+| `src/components/ScrollProgress.astro` | the 2 px progress line fixed to the top |
 | `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, footer, `#route-titles` |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
@@ -81,6 +82,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
   URLs.
 - **Projects shown are exactly three:** Stashout and FlameBurst as case studies, Server Insight as a
   compact card. Adding one is a design decision for the owner, not an edit.
+- **`--ink-live` is a fill, line or glow, never text.** `initLiveAccent` writes it on `<html>` every 200 ms from the ink's hue (saturation 0.6, value 1), on the same clock as the hero's ink; under reduced motion the token keeps its resting value. Dark text on it measures at least 4.5:1 through the whole cycle (a unit test checks 1000 points).
 - **The accent `#2f6cf0` is a fill, never text.** On `--bg` it measures 4.34:1, below WCAG AA for
   body text; white on the accent is 4.64:1. Muted text (`#8a93a3`) is 6.5:1 on `--bg`.
 - **Media rules** (`scripts/media-rules.mjs`, enforced by `import-image.mjs`): nothing AI-generated

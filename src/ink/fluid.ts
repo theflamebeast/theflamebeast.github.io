@@ -142,8 +142,7 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
   let idleMs = 0;
   const ptr = { x: 0, y: 0, dx: 0, dy: 0, at: -Infinity, moved: false };
 
-  const born = performance.now();
-  const hueTime = (now: number) => now - born + INK_HUE_START_MS;
+  const hueTime = (now: number) => now + INK_HUE_START_MS;
 
   const release = () => gl.getExtension('WEBGL_lose_context')?.loseContext();
 
