@@ -39,20 +39,6 @@ export function initScrub(): () => void {
         { yPercent: travel, scale, ease: 'none', scrollTrigger: through(el.parentElement ?? el) },
       );
     }
-
-    for (const curve of document.querySelectorAll<HTMLElement>('[data-footer-curve]')) {
-      gsap.fromTo(
-        curve,
-        { scaleY: 1 },
-        {
-          scaleY: 0,
-          transformOrigin: '50% 0%',
-          ease: 'none',
-          // The footer ends the page, so its own bottom reaching the viewport's is the furthest scroll.
-          scrollTrigger: { trigger: curve.parentElement ?? curve, start: 'top bottom', end: 'bottom bottom', scrub: true },
-        },
-      );
-    }
   });
   return () => mm.revert();
 }

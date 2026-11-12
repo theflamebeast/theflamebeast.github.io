@@ -1,18 +1,18 @@
 ---
-import MagneticButton from './MagneticButton.astro';
 import { SITE } from '../data/site';
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer" id="contact">
-  <div class="footer-curve" data-footer-curve aria-hidden="true"></div>
+  <div class="footer-horizon" aria-hidden="true"></div>
   <div class="footer-inner wrap">
     <div class="footer-cta">
-      <h2 class="footer-title" data-reveal="lines">Have a role, a project or a question?</h2>
-      <a class="footer-email" href={SITE.links.email}>{SITE.email}</a>
-      <div class="footer-button">
-        <MagneticButton href={SITE.links.email} label="Get in touch" shape="round" strength={60} strengthText={30} />
+      <p class="meta footer-label">Contact</p>
+      <a class="footer-email" href={SITE.links.email} data-copy-email={SITE.email}>{SITE.email}</a>
+      <div class="footer-actions">
+        <a class="meta footer-mail" href={SITE.links.email}>Open in your mail app</a>
+        <p class="meta footer-status" data-copy-status role="status" aria-live="polite"></p>
       </div>
     </div>
 
@@ -30,7 +30,6 @@ const year = new Date().getFullYear();
       <ul class="footer-links">
         <li><a href={SITE.links.github}>GitHub</a></li>
         <li><a href={SITE.links.linkedin}>LinkedIn</a></li>
-        <li><a href={SITE.links.email}>Email</a></li>
       </ul>
       <p class="meta">&copy; {year} {SITE.name}</p>
     </div>
@@ -40,20 +39,25 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     position: relative;
-    overflow: hidden;
     background: var(--surface);
-    border-top: 1px solid var(--line);
   }
 
-  .footer-curve {
+  /* A thin line of the live ink colour, with a soft glow of the same colour above it. */
+  .footer-horizon {
     position: absolute;
-    left: -10%;
-    right: -10%;
-    top: -1px;
-    height: clamp(3rem, 8vw, 7rem);
-    border-radius: 0 0 50% 50%;
-    background: var(--bg);
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--ink-live);
     pointer-events: none;
+  }
+
+  .footer-horizon::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 100%;
+    height: clamp(3rem, 8vw, 6rem);
+    background: linear-gradient(to top, color-mix(in srgb, var(--ink-live) 26%, transparent), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
   }
 
   .footer-inner {
@@ -64,31 +68,72 @@ const year = new Date().getFullYear();
 
   .footer-cta {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: 'title button' 'email button';
-    align-items: center;
-    gap: 1.5rem 3rem;
+    gap: 1.25rem;
     padding-bottom: var(--section);
   }
 
-  .footer-title {
-    grid-area: title;
-    max-width: 16ch;
-    font-size: var(--step-4);
-    font-weight: 500;
-    letter-spacing: -0.035em;
-    line-height: 1.02;
-  }
-
   .footer-email {
-    grid-area: email;
     justify-self: start;
-    font-size: var(--step-1);
-    color: #c9d0db;
+    max-width: 100%;
+    font-size: clamp(1.25rem, 6.3vw, 6.25rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    white-space: nowrap;
+    text-decoration: none;
+    color: var(--text);
+    background: linear-gradient(
+      90deg,
+      var(--text) 0 33.3%,
+      var(--ink-live) 44%,
+      var(--ink-live) 56%,
+      var(--text) 66.6% 100%
+    );
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration-color: var(--text);
   }
 
-  .footer-button {
-    grid-area: button;
+  /* One pass of ink colour through the letters; leaving the link snaps it back to rest. */
+  .footer-email:hover,
+  .footer-email:focus-visible {
+    animation: email-sweep 0.9s var(--ease-out) both;
+  }
+
+  @keyframes email-sweep {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: 0% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-email:hover,
+    .footer-email:focus-visible {
+      animation: none;
+      text-decoration: underline;
+      text-underline-offset: 0.12em;
+    }
+  }
+
+  .footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .footer-status {
+    color: var(--text);
+  }
+
+  .footer-mail:hover {
+    color: var(--text);
   }
 
   .footer-bottom {
@@ -113,12 +158,5 @@ const year = new Date().getFullYear();
   .footer-links {
     display: flex;
     gap: 1.5rem;
-  }
-
-  @media (max-width: 720px) {
-    .footer-cta {
-      grid-template-columns: 1fr;
-      grid-template-areas: 'title' 'email' 'button';
-    }
   }
 </style>

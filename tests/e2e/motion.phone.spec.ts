@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const SCRUBBED = '[data-row], [data-parallax], [data-footer-curve]';
+const SCRUBBED = '[data-row], [data-parallax]';
 
 test('no scroll-scrubbed transforms on rows, parallax, rotations or footer curve below 720px', async ({ page }) => {
   await page.goto('/');

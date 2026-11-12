@@ -65,6 +65,7 @@ const og = new URL(ogImage, Astro.site);
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { initLiveAccent } from '../motion/accent';
   import { initClock } from '../motion/clock';
+  import { initCopyEmail } from '../motion/copy';
   import { onPage } from '../motion/lifecycle';
   import { initReveals } from '../motion/reveal';
   import { initScrollProgress, initSmoothScroll } from '../motion/scroll';
@@ -79,6 +80,7 @@ const og = new URL(ogImage, Astro.site);
       initReveals(),
       initScrub(),
       initClock(),
+      initCopyEmail(),
       initCaseVideo(),
     ];
     ScrollTrigger.refresh();
