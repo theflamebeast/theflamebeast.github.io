@@ -69,8 +69,8 @@ The same change also gives this repo the owner's standard AI-workflow files (see
 - Address: keep `theflamebeast.github.io`.
 - FlameBurst media comes from the owner's `C:\Users\anish\Pictures\FlameBurst` folder.
 - Archive and hide the Once Human Resources site and repo.
-- Accepted these calls proposed during design: an ink preloader; own code on
-  GSAP and Lenis; turn magnetic and heavy scroll effects off on small screens; respect reduced motion.
+- Accepted these calls proposed during design: an ink preloader; own code on GSAP and Lenis; turn
+  magnetic and heavy scroll effects off on small screens; respect reduced motion.
 - 2026-11-11: cut the rolling "Let's talk" text above the footer after seeing it built: the owner
   disliked it, and it repeated the footer's own "Get in touch" call.
 

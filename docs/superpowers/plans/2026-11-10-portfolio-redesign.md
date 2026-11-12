@@ -15,6 +15,9 @@ over a pre-rendered still, so the page is complete with no JS, no WebGL, or redu
 **Tech Stack:** Astro 7, TypeScript 6, GSAP (ScrollTrigger, SplitText), Lenis, Fontsource Geist, sharp,
 Vitest, Playwright, GitHub Actions.
 
+**Status:** Tasks 1 to 7 are done. Tasks 8 to 15 below are superseded by
+`docs/superpowers/plans/2026-11-11-ink-signature.md` and kept only as history.
+
 **Spec:** `docs/superpowers/specs/2026-11-10-portfolio-redesign-design.md`. Read it first; this plan
 argues from it and does not repeat its rationale.
 

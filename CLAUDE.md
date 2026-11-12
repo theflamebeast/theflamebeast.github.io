@@ -6,9 +6,12 @@ and engineers.
 
 It is being rebuilt from the old hand-written page on branch `redesign`, following:
 
-- Design: `docs/superpowers/specs/2026-11-10-portfolio-redesign-design.md` (the authority)
-- Plan: `docs/superpowers/plans/2026-11-10-portfolio-redesign.md` (15 tasks; `main` keeps the old
-  site until the Task 13 cutover)
+- Design: `docs/superpowers/specs/2026-11-10-portfolio-redesign-design.md`, amended by
+  `docs/superpowers/specs/2026-11-11-ink-signature-design.md` (round 2; where they disagree the newer
+  wins)
+- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks; `main` keeps the old site
+  until its Task 11 cutover). The first plan, `2026-11-10-portfolio-redesign.md`, built Tasks 1 to 7
+  and is history from there on.
 
 Paths below marked "(Task N)" don't exist yet; that task creates them.
 
@@ -57,14 +60,14 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/lib/` | pure helpers: `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`), `clock.ts` (`formatLocalTime`, Eastern by default) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
-| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. Magnetic, menu, preloader and curtain arrive in Tasks 8 and 9 |
+| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. The header picker, page transitions and the rest of round 2 arrive in Tasks 1 to 7 of the round-2 plan |
 | `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, footer, `#route-titles` |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |
 | `public/og.png` | the Open Graph image, 1200x630, captured from the live hero |
 | `public/media/` | the Stashout raid clip, 12 s, no audio, as `.webm` (VP9) and `.mp4` (H.264); its poster lives in `src/assets/projects/stashout/` |
-| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both); screenshots arrive in Task 10 |
+| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both); screenshots arrive in Task 8 |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
 | `.github/workflows/deploy.yml` | CI on every push; deploys to Pages only from `main` |
@@ -97,7 +100,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | Mount and teardown of any client script | `onPage` in `src/motion/lifecycle.ts` |
 | Smooth scroll and the Lenis instance | `src/motion/scroll.ts` (`getLenis()`; never a second `new Lenis`) |
 | Media queries for motion | `src/motion/prefs.ts` (`REDUCED_MOTION`, `wideQuery`, `isWide`) |
-| Page-transition curtain | `src/motion/curtain.ts` |
+| Page-transition and preloader cover | `src/motion/wipe.ts` (Task 7) |
 | Project data | the `projects` collection |
 | Site facts | `src/data/site.ts` |
 | Importing an image into `src/assets` | `scripts/import-image.mjs` (enforces the media rules) |
@@ -157,7 +160,7 @@ Each one happened.
 ### Done-checklist gates
 
 **Typecheck, Unit, Build, E2E**, plus **Visual** (screenshots looked at) and **Lighthouse** once
-Task 10's scripts exist, then the standard tail: Review, Committed, Pushed, CI (the `deploy` workflow
+Task 8's scripts exist, then the standard tail: Review, Committed, Pushed, CI (the `deploy` workflow
 run for that commit), and **Live** (after cutover: the site returns 200).
 
 ```
