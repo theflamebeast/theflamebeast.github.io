@@ -4,6 +4,8 @@ on:
   push:
     branches: [main, redesign]
   workflow_dispatch:
+  schedule:
+    - cron: '23 10 * * 1'
 
 permissions:
   contents: read

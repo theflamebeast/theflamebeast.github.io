@@ -71,7 +71,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both); screenshots arrive in Task 8 |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
-| `.github/workflows/deploy.yml` | CI on every push; deploys to Pages only from `main` |
+| `.github/workflows/deploy.yml` | CI on every push, and every Monday to refresh the download figure; deploys to Pages only from `main` |
 | `docs/superpowers/` | the design, the plan, and the approved ink prototype |
 
 ## Conventions
