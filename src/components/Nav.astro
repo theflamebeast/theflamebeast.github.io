@@ -1,13 +1,17 @@
 ---
 import { SITE } from '../data/site';
+import WorkPicker from './WorkPicker.astro';
 ---
 
-<header class="nav">
+<header class="nav" data-header>
   <div class="nav-inner wrap">
     <a class="nav-name" href="/">{SITE.name}</a>
     <nav aria-label="Primary">
       <ul class="nav-links">
-        <li><a href="/#work">Work</a></li>
+        <li>
+          <a href="/#work" data-work-toggle aria-controls="work-panel">Work</a>
+          <WorkPicker />
+        </li>
         <li><a href="/#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -17,9 +21,27 @@ import { SITE } from '../data/site';
 
 <style>
   .nav {
-    position: absolute;
+    position: fixed;
     inset: 0 0 auto;
     z-index: 20;
+    border-bottom: 1px solid transparent;
+    transition:
+      translate 0.45s var(--ease-out),
+      background-color 0.3s,
+      border-color 0.3s,
+      backdrop-filter 0.3s;
+  }
+
+  :global(html[data-header-hidden]) .nav {
+    translate: 0 -100%;
+  }
+
+  .nav[data-solid],
+  .nav[data-picker-open] {
+    background: rgb(6 7 12 / 0.72);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom-color: var(--line);
   }
 
   .nav-inner {
@@ -47,7 +69,14 @@ import { SITE } from '../data/site';
     transition: color 0.2s;
   }
 
-  .nav-links a:hover {
+  .nav-links a:hover,
+  .nav-links a[aria-expanded='true'] {
     color: var(--text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav {
+      transition: none;
+    }
   }
 </style>

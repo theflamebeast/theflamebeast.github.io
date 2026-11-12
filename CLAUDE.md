@@ -47,7 +47,8 @@ Everything committed is world-readable, and anything on `main` is live within a 
   `ClientRouter` swaps pages without a reload and a module that listens for anything else leaks.
 - **Site facts live only in `src/data/site.ts`**; project facts only in the `projects` content
   collection, whose schema fails the build on broken data (a featured project without a cover stops
-  `npm run build` with `featured projects need a cover`).
+  `npm run build` with `featured projects need a cover`). Pages and components read it only through
+  `loadProjects()` (`src/lib/projects.ts`), which also fetches the download count once per build.
 
 ## Layout
 
@@ -57,14 +58,16 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/assets/projects/<id>/` | case-study images, only ever written by `scripts/import-image.mjs` |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
-| `src/lib/` | pure helpers: `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`), `clock.ts` (`formatLocalTime`, Eastern by default) |
+| `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
-| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`, `HOVER`, `canHover`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`, the scroll-progress line), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `scrub.ts` (rows and `[data-parallax]`; 720 px and up only), `copy.ts` (click the footer email to copy it), `spotlight.ts` (the project cards' cursor light; hover screens only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. The header picker, page transitions and the rest of round 2 arrive in Tasks 1 to 7 of the round-2 plan |
+| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`, `HOVER`, `canHover`), `scroll.ts` (Lenis on the GSAP ticker with `anchors: true`, `html[data-triggers]`, the scroll-progress line), `header.ts` (`initHeader`: `data-solid` past 40 px, `html[data-header-hidden]` on scrolling down past 30% of the viewport, never while the picker is open, focus is inside or under reduced motion), `picker.ts` (`initWorkPicker`: opens on hover at 720 px and up, click, tap, Enter or Space; Escape returns focus to Work), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `scrub.ts` (rows and `[data-parallax]`; 720 px and up only), `copy.ts` (click the footer email to copy it), `spotlight.ts` (the project cards' cursor light; hover screens only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. Page transitions and the preloader arrive in Task 7 of the round-2 plan |
 | `src/components/Button.astro` | the one button: ink-wash hover, no lean; `.btn`, `.btn-fill`, `.btn-text` |
 | `src/components/Footer.astro` | the email headline with its ink sweep, copy note and glowing top edge |
 | `src/components/ScrollProgress.astro` | the 2 px progress line fixed to the top |
-| `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, footer, `#route-titles` |
+| `src/components/Nav.astro` | the fixed header; "Work" is a link to `/#work` until `picker.ts` upgrades it to the picker's toggle |
+| `src/components/WorkPicker.astro` | the panel under the header: one row per project (featured to its case study, compact to its first link) and a fixed preview area beside them, hidden below 720 px |
+| `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, scroll-progress line, header with the Work picker, footer, `#route-titles` |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |
@@ -102,10 +105,10 @@ Everything committed is world-readable, and anything on `main` is live within a 
 |---|---|
 | Fluid simulation | `src/ink/fluid.ts` |
 | Mount and teardown of any client script | `onPage` in `src/motion/lifecycle.ts` |
-| Smooth scroll and the Lenis instance | `src/motion/scroll.ts` (`getLenis()`; never a second `new Lenis`) |
+| Smooth scroll and the Lenis instance | `src/motion/scroll.ts` (never a second `new Lenis`) |
 | Media queries for motion | `src/motion/prefs.ts` (`REDUCED_MOTION`, `wideQuery`, `isWide`) |
 | Page-transition and preloader cover | `src/motion/wipe.ts` (Task 7) |
-| Project data | the `projects` collection |
+| Project data | the `projects` collection, read only through `loadProjects()` in `src/lib/projects.ts` |
 | Site facts | `src/data/site.ts` |
 | Importing an image into `src/assets` | `scripts/import-image.mjs` (enforces the media rules) |
 

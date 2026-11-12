@@ -1,0 +1,166 @@
+---
+import { Image } from 'astro:assets';
+import { formatCount, formatSpan } from '../lib/format';
+import { loadProjects } from '../lib/projects';
+
+const { featured, compact, downloads } = await loadProjects();
+const rows = [
+  ...featured.map((p) => ({ project: p, href: `/work/${p.id}` })),
+  ...compact.map((p) => ({ project: p, href: p.data.links[0]?.href ?? '/#work' })),
+];
+---
+
+<div class="work-panel" id="work-panel" data-work-panel data-lenis-prevent hidden>
+  <div class="work-inner wrap">
+    <ul class="work-rows">
+      {
+        rows.map(({ project, href }) => (
+          <li>
+            <a class="work-row" data-work-item={project.id} href={href}>
+              <span class="work-title">{project.data.title}</span>
+              <span class="work-meta meta">
+                {project.data.kind ?? formatSpan(project.data.start, project.data.end)}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="work-previews" aria-hidden="true">
+      {
+        featured.map((p) => (
+          <div class="work-preview" data-work-preview={p.id}>
+            {p.data.cover && <Image src={p.data.cover.src} alt="" widths={[480, 960]} sizes="(min-width: 720px) 40vw, 1px" loading="lazy" />}
+          </div>
+        ))
+      }
+      {
+        compact.map((p) => (
+          <div class="work-preview work-preview-figure" data-work-preview={p.id}>
+            <span class="work-figure">{formatCount(downloads[p.id] ?? 0)}</span>
+            <span class="meta">downloads on Modrinth</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .work-panel {
+    position: absolute;
+    inset: 100% 0 auto;
+    max-height: calc(100dvh - 5rem);
+    overflow-y: auto;
+    background: var(--surface);
+    border-block: 1px solid var(--line);
+  }
+
+  .work-panel[hidden] {
+    display: none;
+  }
+
+  .work-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .work-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+
+  .work-row:hover,
+  .work-row:focus-visible {
+    color: var(--text);
+  }
+
+  /* The active row names the preview beside it, so it only stands out where that preview shows. */
+  @media (min-width: 720px) {
+    .work-row[data-active] {
+      color: var(--text);
+    }
+  }
+
+  .work-title {
+    font-size: var(--step-3);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .work-meta {
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .work-previews {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+  }
+
+  .work-preview {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out);
+  }
+
+  .work-preview[data-active] {
+    opacity: 1;
+  }
+
+  .work-preview :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .work-preview-figure {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.75rem;
+  }
+
+  .work-figure {
+    font-size: var(--step-hero);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .work-preview-figure .meta {
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 719.98px) {
+    .work-inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-previews {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-preview {
+      transition: none;
+    }
+  }
+</style>

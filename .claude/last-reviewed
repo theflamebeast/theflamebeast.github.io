@@ -22,7 +22,3 @@ deeb382
 # Task 7) and the floating menu is never shown (open, below). The reviewer then ran at low
 # effort; ~/.codex/config.toml now sets review_model gpt-6.1-sol at medium effort.
 # Earlier: 50f65ff was a baseline, not a review (the last commit of the old site).
-
-# OPEN: [P2] the floating menu button and panel are permanently `hidden`; no script shows the
-# button after ~30% of a viewport or opens the panel (src/components/MenuPanel.astro). Task 8
-# builds it (src/motion/menu.ts); delete this block in that commit.

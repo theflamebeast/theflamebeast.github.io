@@ -1,11 +1,10 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import { getCollection } from 'astro:content';
 import Nav from '../components/Nav.astro';
 import ScrollProgress from '../components/ScrollProgress.astro';
-import MenuPanel from '../components/MenuPanel.astro';
 import Footer from '../components/Footer.astro';
 import { SITE } from '../data/site';
+import { loadProjects } from '../lib/projects';
 import '../styles/global.css';
 
 interface Props {
@@ -15,7 +14,7 @@ interface Props {
 }
 
 const { title, description, ogImage = '/og.png' } = Astro.props;
-const featured = (await getCollection('projects')).filter((p) => p.data.tier === 'featured');
+const { featured } = await loadProjects();
 const routeTitles: Record<string, string> = {
   '/': 'Home',
   ...Object.fromEntries(featured.map((p) => [`/work/${p.id}`, p.data.title])),
@@ -52,7 +51,6 @@ const og = new URL(ogImage, Astro.site);
     <ScrollProgress />
     <a class="skip" href="#main">Skip to content</a>
     <Nav />
-    <MenuPanel />
     <main id="main">
       <slot />
     </main>
@@ -66,7 +64,9 @@ const og = new URL(ogImage, Astro.site);
   import { initLiveAccent } from '../motion/accent';
   import { initClock } from '../motion/clock';
   import { initCopyEmail } from '../motion/copy';
+  import { initHeader } from '../motion/header';
   import { onPage } from '../motion/lifecycle';
+  import { initWorkPicker } from '../motion/picker';
   import { initReveals } from '../motion/reveal';
   import { initScrollProgress, initSmoothScroll } from '../motion/scroll';
   import { initScrub } from '../motion/scrub';
@@ -77,6 +77,8 @@ const og = new URL(ogImage, Astro.site);
     const cleanups = [
       initSmoothScroll(),
       initScrollProgress(),
+      initHeader(),
+      initWorkPicker(),
       initLiveAccent(),
       initReveals(),
       initScrub(),
