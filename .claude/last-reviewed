@@ -16,6 +16,13 @@
 # (This header deliberately does not start with the marker, so the grep that
 # collects those blocks does not match the instructions describing them.)
 #
-50f65ff
-# 2026-11-10: baseline, not a review. 50f65ff is the last commit of the old hand-written
-# site; nothing in this repo has ever been reviewed, so everything after it is backlog.
+deeb382
+# 2026-11-11: /codex:review --base 50f65ff (Codex, low effort) covered 50f65ff..deeb382,
+# Tasks 1 to 6. It found 2 real P2s: the looping case-study video had no pause (fixed in
+# Task 7) and the floating menu is never shown (open, below). The reviewer then ran at low
+# effort; ~/.codex/config.toml now sets review_model gpt-6.1-sol at medium effort.
+# Earlier: 50f65ff was a baseline, not a review (the last commit of the old site).
+
+# OPEN: [P2] the floating menu button and panel are permanently `hidden`; no script shows the
+# button after ~30% of a viewport or opens the panel (src/components/MenuPanel.astro). Task 8
+# builds it (src/motion/menu.ts); delete this block in that commit.

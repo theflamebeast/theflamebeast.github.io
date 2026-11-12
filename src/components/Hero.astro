@@ -1,6 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import inkStill from '../assets/ink-still.webp';
+import Arrow from './Arrow.astro';
 import { SITE } from '../data/site';
 ---
 
@@ -16,7 +17,7 @@ import { SITE } from '../data/site';
       fetchpriority="high"
     />
   </div>
-  <div class="hero-copy wrap">
+  <div class="hero-copy wrap" data-parallax="18">
     <p class="hero-eyebrow meta" data-reveal="fade">
       <span>{SITE.role}</span>
       <span>{SITE.school}</span>
@@ -24,6 +25,7 @@ import { SITE } from '../data/site';
     <h1 class="hero-name" id="hero-name" data-reveal="lines">{SITE.name}</h1>
     <p class="hero-tagline" data-reveal="fade">{SITE.tagline}</p>
   </div>
+  <div class="hero-cue wrap" aria-hidden="true"><Arrow class="hero-arrow" /></div>
 </section>
 
 <script>
@@ -170,6 +172,22 @@ import { SITE } from '../data/site';
     height: 190%;
     translate: -50% -50%;
     background: radial-gradient(closest-side, rgb(6 7 12 / 0.66), rgb(6 7 12 / 0.42) 55%, transparent);
+  }
+
+  .hero-cue {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(1.5rem, 4vw, 2.5rem);
+    z-index: 2;
+    margin-inline: auto;
+    color: #c9d0db;
+    pointer-events: none;
+  }
+
+  .hero-cue :global(.hero-arrow) {
+    width: clamp(1.5rem, 2.5vw, 2.25rem);
+    height: auto;
   }
 
   .hero-eyebrow {

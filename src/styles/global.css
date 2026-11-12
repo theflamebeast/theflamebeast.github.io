@@ -115,6 +115,24 @@ a {
   top: 1rem;
 }
 
+/* Lenis: its own easing replaces CSS smooth scrolling, and a stopped instance locks the page. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

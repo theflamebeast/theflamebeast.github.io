@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { Picture, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import Arrow from '../../components/Arrow.astro';
 import Gallery from '../../components/Gallery.astro';
 import MagneticButton from '../../components/MagneticButton.astro';
 import NetcodeDiagram from '../../components/NetcodeDiagram.astro';
@@ -67,10 +68,15 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     {
       video && poster && (
         <figure class="case-cover wrap">
-          <video class="case-video" autoplay muted loop playsinline preload="metadata" poster={poster.src} data-case-video>
-            <source src={video.webm} type="video/webm" />
-            <source src={video.mp4} type="video/mp4" />
-          </video>
+          <div class="case-video-frame">
+            <video class="case-video" controls muted loop playsinline preload="metadata" poster={poster.src} data-case-video>
+              <source src={video.webm} type="video/webm" />
+              <source src={video.mp4} type="video/mp4" />
+            </video>
+            <button class="video-toggle" type="button" data-video-toggle hidden aria-label="Play video">
+              <span class="video-icon" aria-hidden="true" />
+            </button>
+          </div>
           <figcaption class="meta case-caption">{video.caption}</figcaption>
         </figure>
       )
@@ -103,7 +109,7 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
 
     <nav class="next wrap" data-next-project aria-label="Next project">
       <p class="meta">Next project</p>
-      <a class="next-link" href={`/work/${next.id}`}>{next.data.title}</a>
+      <a class="next-link" href={`/work/${next.id}`}>{next.data.title}<Arrow class="next-arrow" /></a>
     </nav>
   </article>
 </Base>
@@ -159,6 +165,53 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
 
   .case-cover {
     overflow: hidden;
+  }
+
+  .case-video-frame {
+    position: relative;
+  }
+
+  .video-toggle {
+    position: absolute;
+    left: clamp(0.75rem, 2vw, 1.25rem);
+    bottom: clamp(0.75rem, 2vw, 1.25rem);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: rgb(6 7 12 / 0.72);
+    color: var(--text);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+
+  .video-toggle[hidden] {
+    display: none;
+  }
+
+  .video-toggle:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Two bars while playing, a triangle while paused. */
+  .video-icon {
+    width: 0.75rem;
+    height: 0.85rem;
+    border-inline: 0.22rem solid currentColor;
+  }
+
+  .video-toggle[data-state='paused'] .video-icon {
+    width: 0;
+    height: 0;
+    margin-left: 0.2rem;
+    border-block: 0.45rem solid transparent;
+    border-inline: 0.75rem solid transparent;
+    border-left-color: currentColor;
+    border-right-width: 0;
   }
 
   .case-video {
@@ -257,6 +310,14 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
 
   .next-link:hover {
     color: var(--muted);
+  }
+
+  .next-link :global(.next-arrow) {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 0.25em;
+    vertical-align: 0.05em;
   }
 
   @media (max-width: 720px) {

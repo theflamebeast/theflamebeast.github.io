@@ -54,10 +54,10 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/assets/projects/<id>/` | case-study images, only ever written by `scripts/import-image.mjs` |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
-| `src/lib/` | build-time helpers: `modrinth.ts` (download count with a fallback), `format.ts` (`formatSpan`) |
+| `src/lib/` | pure helpers: `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`), `clock.ts` (`formatLocalTime`, Eastern by default) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
-| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts`; the rest arrives in Tasks 7 to 9 |
+| `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`), `scroll.ts` (Lenis on the GSAP ticker, `getLenis`, `html[data-triggers]`), `reveal.ts`, `scrub.ts` (rows, `[data-parallax]`, `[data-rotate]`, footer curve; 720 px and up only), `marquee.ts`, `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`. Magnetic, menu, preloader and curtain arrive in Tasks 8 and 9 |
 | `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter`, nav, menu, "Let's talk", footer, `#route-titles` |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
 | `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
@@ -95,6 +95,8 @@ Everything committed is world-readable, and anything on `main` is live within a 
 |---|---|
 | Fluid simulation | `src/ink/fluid.ts` |
 | Mount and teardown of any client script | `onPage` in `src/motion/lifecycle.ts` |
+| Smooth scroll and the Lenis instance | `src/motion/scroll.ts` (`getLenis()`; never a second `new Lenis`) |
+| Media queries for motion | `src/motion/prefs.ts` (`REDUCED_MOTION`, `wideQuery`, `isWide`) |
 | Page-transition curtain | `src/motion/curtain.ts` |
 | Project data | the `projects` collection |
 | Site facts | `src/data/site.ts` |
@@ -132,6 +134,9 @@ Each one happened.
   round trip; when they stretched past the sim's 120 ms pointer gap, every stroke was dropped. The
   capture now dispatches the strokes in the page once per frame, and refuses to write a still whose
   brightest channel averages under 28 (stirred 40 to 47, missed 16 to 20).
+- **`page.clock.runFor` on the home page times out.** It steps every animation frame, and the ink
+  sim renders WebGL on each, so a simulated minute outlasts the 30 s test timeout; the failure then
+  reads as an empty element, not a timeout. Use `page.clock.fastForward` to move time.
 - **Playwright waits forever on a 404 home page.** Its `webServer` only counts the server as ready on
   a non-404 status, so a build with no `/` shows up as a 60 s timeout, not a test failure.
 
