@@ -10,7 +10,7 @@ import sharp from 'sharp';
 
 const ROOT = new URL('..', import.meta.url);
 const PORT = 4399;
-const CHROME = 'body > header';
+const CHROME = 'body > header, [data-ink-wipe]';
 const SWEEP_MS = 1500;
 const SETTLE_MS = 300;
 // Brightest-channel means measured over 6 seeds: a stirred still 40 to 47, one the stir missed

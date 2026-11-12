@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 import ScrollProgress from '../components/ScrollProgress.astro';
 import Footer from '../components/Footer.astro';
+import InkWipe from '../components/InkWipe.astro';
 import { SITE } from '../data/site';
 import { loadProjects } from '../lib/projects';
 import '../styles/global.css';
@@ -45,9 +46,17 @@ const og = new URL(ogImage, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={og} />
+    <script is:inline>
+      try {
+        if (!sessionStorage.getItem('ag:intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.dataset.intro = '';
+        }
+      } catch {}
+    </script>
     <ClientRouter />
   </head>
   <body>
+    <InkWipe />
     <ScrollProgress />
     <a class="skip" href="#main">Skip to content</a>
     <Nav />
@@ -72,6 +81,9 @@ const og = new URL(ogImage, Astro.site);
   import { initScrub } from '../motion/scrub';
   import { initSpotlight } from '../motion/spotlight';
   import { initCaseVideo } from '../motion/video';
+  import { initInkWipe } from '../motion/wipe';
+
+  initInkWipe();
 
   onPage(() => {
     const cleanups = [

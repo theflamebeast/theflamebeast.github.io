@@ -16,13 +16,25 @@ test('html[data-smooth="on"] and a wheel scroll eases (scrollY keeps changing af
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-smooth', 'on');
   await page.mouse.move(720, 450);
+  // Sample every frame in the page: Lenis damps by elapsed time, so a wall-clock read from the test
+  // can land after a stalled frame that already reached the target, eased or not.
+  await page.evaluate(() => {
+    const w = window as unknown as { scrollSamples: number[] };
+    w.scrollSamples = [];
+    const start = performance.now();
+    const tick = () => {
+      w.scrollSamples.push(window.scrollY);
+      if (performance.now() - start < 1500) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
   await page.mouse.wheel(0, 800);
-  await page.waitForTimeout(80);
-  const early = await page.evaluate(() => window.scrollY);
-  await page.waitForTimeout(250);
-  const later = await page.evaluate(() => window.scrollY);
-  expect(early).toBeGreaterThan(0);
-  expect(later).toBeGreaterThan(early);
+  await expect
+    .poll(() => page.evaluate(() => (window as unknown as { scrollSamples: number[] }).scrollSamples.at(-1)))
+    .toBeGreaterThan(700);
+  const samples = await page.evaluate(() => (window as unknown as { scrollSamples: number[] }).scrollSamples);
+  const between = samples.filter((y) => y > 0 && y < 790);
+  expect(between.length).toBeGreaterThan(1);
 });
 
 test('a [data-reveal="lines"] heading below the fold is hidden before and visible after scrolling to it', async ({

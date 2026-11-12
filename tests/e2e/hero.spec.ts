@@ -4,7 +4,7 @@ import sharp from 'sharp';
 const INK = '[data-hero] canvas[data-ink]';
 const STILL = '[data-hero] [data-ink-still] img';
 const ONLY_THE_CANVAS = `
-  [data-hero] > :not([data-ink]), [data-hero]::after, body > header { visibility: hidden !important; }
+  [data-hero] > :not([data-ink]), [data-hero]::after, body > header, [data-ink-wipe] { visibility: hidden !important; }
 `;
 
 function collectErrors(page: Page): string[] {
