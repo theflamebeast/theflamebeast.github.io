@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('at 390 px the email stays on one line and nothing overflows sideways', async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  const email = page.locator('footer [data-copy-email]');
+  const email = page.locator('footer .footer-email[data-copy-email]');
   await expect(email).toBeVisible();
   const box = (await email.boundingBox())!;
   const size = await email.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));

@@ -1,7 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const EMAIL = 'anishguptaa18@gmail.com';
-const EMAIL_LINK = 'footer [data-copy-email]';
+const EMAIL_LINK = 'footer .footer-email[data-copy-email]';
+const TILES = 'footer [data-contact-tile]';
 
 test.use({ permissions: ['clipboard-read', 'clipboard-write'] });
 
@@ -42,6 +43,32 @@ test('the email is the footer headline, on one line, inside the viewport', async
   expect(box.x + box.width).toBeLessThanOrEqual(1440);
   await expect(page.locator('footer')).not.toContainText('Have a role');
   await expect(page.locator('[data-footer-curve]')).toHaveCount(0);
+});
+
+test('under the headline an invitation and three contact tiles: Email, LinkedIn, GitHub', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('footer [data-contact-invite]')).toBeVisible();
+  const tiles = page.locator(TILES);
+  await expect(tiles).toHaveCount(3);
+  await expect(tiles.locator('.tile-label')).toHaveText([/email/i, /linkedin/i, /github/i]);
+  await expect(tiles.locator('.tile-value')).toHaveText([EMAIL, 'anishgupta25', 'Code and projects']);
+  const hrefs = await tiles.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
+  expect(hrefs).toEqual([
+    `mailto:${EMAIL}`,
+    'https://www.linkedin.com/in/anishgupta25',
+    'https://github.com/theflamebeast',
+  ]);
+  for (const tile of await tiles.all()) await expect(tile.locator('svg')).toHaveCount(2);
+  // The tiles replace the plain text links that used to sit in the bottom row.
+  await expect(page.locator('footer .footer-links')).toHaveCount(0);
+});
+
+test('clicking the Email tile copies the address and says Copied', async ({ page }) => {
+  await page.goto('/');
+  await page.locator(TILES).first().click();
+  await expect(page.locator('[data-copy-status]')).toHaveText('Copied');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(EMAIL);
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test('clicking the email copies it and says Copied, then the note clears', async ({ page }) => {
