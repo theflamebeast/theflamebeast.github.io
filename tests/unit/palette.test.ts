@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   INK_HUE_CYCLE_MS,
@@ -42,7 +43,8 @@ describe('hexToRgb', () => {
 });
 
 describe('inkHue', () => {
-  it('stays between cyan (0.52) and pink (0.92) for any time and rand', () => {
+  // Deep red sits just below 0; hsvToRgb wraps it, so the arc never crosses into magenta or green.
+  it('stays between deep red (-0.01) and amber (0.11) for any time and rand', () => {
     let min = Infinity;
     let max = -Infinity;
     for (let i = 0; i < SAMPLES; i++) {
@@ -51,9 +53,9 @@ describe('inkHue', () => {
       min = Math.min(min, hue);
       max = Math.max(max, hue);
     }
-    expect(min).toBeGreaterThanOrEqual(0.52);
-    expect(max).toBeLessThanOrEqual(0.92);
-    expect(max - min).toBeGreaterThan(0.35);
+    expect(min).toBeGreaterThanOrEqual(-0.01);
+    expect(max).toBeLessThanOrEqual(0.11);
+    expect(max - min).toBeGreaterThan(0.1);
   });
 });
 
@@ -68,16 +70,16 @@ describe('INK_HUE_CYCLE_MS', () => {
       max = Math.max(max, hue);
       expect(inkHue(timeMs + INK_HUE_CYCLE_MS, 0)).toBeCloseTo(hue, 9);
     }
-    expect(min).toBeCloseTo(0.52, 3);
-    expect(max).toBeCloseTo(0.92, 3);
+    expect(min).toBeCloseTo(-0.01, 3);
+    expect(max).toBeCloseTo(0.11, 3);
   });
 });
 
 describe('INK_HUE_START_MS', () => {
-  it('is the cyan end of the cycle, and the hue climbs from there through blue to pink', () => {
-    expect(inkHue(INK_HUE_START_MS, 0)).toBeCloseTo(0.52, 9);
-    expect(inkHue(INK_HUE_START_MS + INK_HUE_CYCLE_MS / 4, 0)).toBeCloseTo(0.72, 9);
-    expect(inkHue(INK_HUE_START_MS + INK_HUE_CYCLE_MS / 2, 0)).toBeCloseTo(0.92, 9);
+  it('is the red end of the cycle, and the hue climbs from there through orange to amber', () => {
+    expect(inkHue(INK_HUE_START_MS, 0)).toBeCloseTo(-0.01, 9);
+    expect(inkHue(INK_HUE_START_MS + INK_HUE_CYCLE_MS / 4, 0)).toBeCloseTo(0.05, 9);
+    expect(inkHue(INK_HUE_START_MS + INK_HUE_CYCLE_MS / 2, 0)).toBeCloseTo(0.11, 9);
   });
 });
 
@@ -109,9 +111,24 @@ describe('the live colour', () => {
   const contrast = (a: Rgb, b: Rgb) =>
     (Math.max(luminance(a), luminance(b)) + 0.05) / (Math.min(luminance(a), luminance(b)) + 0.05);
 
-  it('liveInkHue starts at cyan on the page clock and reaches pink half a cycle later', () => {
-    expect(liveInkHue(0)).toBeCloseTo(0.52, 9);
-    expect(liveInkHue(INK_HUE_CYCLE_MS / 2)).toBeCloseTo(0.92, 9);
+  it('liveInkHue starts at deep red on the page clock and reaches amber half a cycle later', () => {
+    expect(liveInkHue(0)).toBeCloseTo(-0.01, 9);
+    expect(liveInkHue(INK_HUE_CYCLE_MS / 2)).toBeCloseTo(0.11, 9);
+  });
+
+  const token = (name: string) => {
+    const css = readFileSync('src/styles/tokens.css', 'utf8');
+    const value = new RegExp(`${name}:\\s*(#[0-9a-f]{6});`, 'i').exec(css)?.[1];
+    return hexToRgb(value ?? '');
+  };
+
+  it('the resting accent is an ember orange that dark text reads on at WCAG AA', () => {
+    const accent = token('--accent')!;
+    expect(accent).toBeDefined();
+    const [r, g, b] = accent;
+    expect(r).toBeGreaterThan(g);
+    expect(g).toBeGreaterThan(b);
+    expect(contrast(accent, BG)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('dark text on the live colour meets WCAG AA at every point in the cycle', () => {

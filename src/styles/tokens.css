@@ -8,9 +8,9 @@
   --line-strong: rgba(255, 255, 255, 0.14);
   --text: #e9edf3;
   --muted: #8a93a3;
-  --accent: #2f6cf0;
-  --accent-ink: #ffffff;
-  --ink-live: rgb(151 102 255);
+  --accent: #f06a2a;
+  --accent-ink: #06070c;
+  --ink-live: rgb(255 148 102);
 
   --font-sans: 'Geist Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;

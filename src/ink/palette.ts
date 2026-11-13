@@ -1,15 +1,17 @@
 export type Rgb = [number, number, number];
 
-const HUE_START = 0.52;
-const HUE_SPAN = 0.4;
+// Deep red (just below 0, which hsvToRgb wraps) to amber: neighbouring hues, so the fluid mixes
+// them cleanly instead of into brown.
+const HUE_START = -0.01;
+const HUE_SPAN = 0.12;
 const HUE_PERIOD_MS = 3500;
 const SATURATION = 0.85;
 const INTENSITY = 0.15;
 
-/** How long the hue takes to travel from cyan to pink and back. */
+/** How long the hue takes to travel from deep red to amber and back. */
 export const INK_HUE_CYCLE_MS = 2 * Math.PI * HUE_PERIOD_MS;
 
-/** The point in the cycle where the hue is cyan and about to climb through blue and violet to pink. */
+/** The point in the cycle where the hue is deep red and about to climb through orange to amber. */
 export const INK_HUE_START_MS = -INK_HUE_CYCLE_MS / 4;
 
 export function hsvToRgb(h: number, s: number, v: number): Rgb {

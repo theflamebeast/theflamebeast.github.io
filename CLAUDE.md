@@ -63,7 +63,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
 | `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default) |
-| `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the cyan-to-pink hue, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
+| `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss), `shaders.ts`, `palette.ts` (the fire hue, red through orange to amber, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
 | `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`, `HOVER`, `canHover`), `scroll.ts` (Lenis on the GSAP ticker; same-page `#` links glide through its own `<body>` click handler, `html[data-triggers]`, the scroll-progress line), `header.ts` (`initHeader`: `data-solid` past 40 px, `html[data-header-hidden]` on scrolling down past 30% of the viewport, never while the picker is open, focus is inside or under reduced motion), `picker.ts` (`initWorkPicker`: opens on hover at 720 px and up, click, tap, Enter or Space; Escape returns focus to Work), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `scrub.ts` (rows and `[data-parallax]`; 720 px and up only), `copy.ts` (click the footer email to copy it), `spotlight.ts` (the project cards' cursor light; hover screens only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro`; `wipe.ts` (`initInkWipe`: the page-transition cover and the once-per-session preloader, registered once outside `onPage`) |
 | `src/components/Button.astro` | the one button: ink-wash hover, no lean; `.btn`, `.btn-fill`, `.btn-text` |
@@ -93,8 +93,10 @@ Everything committed is world-readable, and anything on `main` is live within a 
 - **Projects shown are exactly three:** Stashout and FlameBurst as case studies, Server Insight as a
   compact card. Adding one is a design decision for the owner, not an edit.
 - **`--ink-live` is a fill, line or glow, never text.** `initLiveAccent` writes it on `<html>` every 200 ms from the ink's hue (saturation 0.6, value 1), on the same clock as the hero's ink; under reduced motion the token keeps its resting value. Dark text on it measures at least 4.5:1 through the whole cycle (a unit test checks 1000 points).
-- **The accent `#2f6cf0` is a fill, never text.** On `--bg` it measures 4.34:1, below WCAG AA for
-  body text; white on the accent is 4.64:1. Muted text (`#8a93a3`) is 6.5:1 on `--bg`.
+- **The accent `#f06a2a` (ember) is a fill, focus ring or line, never text.** Anything on it is
+  dark: `--accent-ink` is `--bg`, 6.52:1 (a unit test reads the token and checks at least 4.5:1).
+  White on it is only 3.09:1, so never put white on the accent. Muted text (`#8a93a3`) is 6.5:1 on
+  `--bg`.
 - **Media rules** (`scripts/media-rules.mjs`, enforced by `import-image.mjs`): nothing AI-generated
   (`Whisk`, `Gemini`) is ever presented as real footage, nothing from a `Technical` folder (admin,
   console, DNS), no `admin-*` or `auth` screens. Beyond what the script can check, **look at every

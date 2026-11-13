@@ -250,7 +250,7 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
     }
   };
 
-  // Strokes follow the hue clock, which starts every visit at cyan. The opening splats each take a
+  // Strokes follow the hue clock, which starts every visit at deep red. The opening splats each take a
   // random point in the cycle instead, so the first frame already shows the whole range.
   const openingSplats = (g: Gpu) =>
     randomSplats(g, params.startSplats, START_SPLAT.intensity, () => Math.random() * INK_HUE_CYCLE_MS);
