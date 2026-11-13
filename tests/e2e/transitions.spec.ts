@@ -28,10 +28,26 @@ async function recordStates(page: Page): Promise<string[]> {
   return states;
 }
 
+// The intro lets go within about 0.6 s on a fast machine, sooner than a test can reliably poll for
+// it, so each document records whether <html> ever carried data-intro, however briefly.
+async function watchIntro(page: Page) {
+  await page.addInitScript(() => {
+    // Init scripts run before <html> exists, so watch the document for it.
+    const w = window as unknown as { introSeen: boolean };
+    w.introSeen = false;
+    new MutationObserver(() => {
+      if (document.documentElement?.hasAttribute('data-intro')) w.introSeen = true;
+    }).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-intro'] });
+  });
+}
+
+const introSeen = (page: Page) => page.evaluate(() => (window as unknown as { introSeen: boolean }).introSeen);
+
 test('first load starts under the ink and opens within 1500 ms', async ({ page }) => {
+  await watchIntro(page);
   await page.goto('/', { waitUntil: 'commit' });
-  await expect(page.locator('html')).toHaveAttribute('data-intro', '');
   await page.waitForLoadState('load');
+  expect(await introSeen(page)).toBe(true);
   await expect(wipe(page)).toHaveAttribute('data-state', 'idle', { timeout: 1500 });
   await expect(wipe(page)).toBeHidden();
   await expect(page.locator('[data-hero] h1')).toBeVisible();
@@ -39,23 +55,23 @@ test('first load starts under the ink and opens within 1500 ms', async ({ page }
 });
 
 test('a reload in the same session does not show it again', async ({ page }) => {
+  await watchIntro(page);
   await page.goto('/');
-  await expect(page.locator('html')).not.toHaveAttribute('data-intro', /.*/);
-  await page.reload({ waitUntil: 'commit' });
-  await page.waitForLoadState('domcontentloaded');
-  await expect(page.locator('html')).not.toHaveAttribute('data-intro', /.*/);
+  expect(await introSeen(page)).toBe(true);
+  await page.reload();
+  expect(await introSeen(page)).toBe(false);
   await atRest(page);
 });
 
 test('a first visit straight to /work/flameburst also plays it once', async ({ page }) => {
+  await watchIntro(page);
   await page.goto('/work/flameburst', { waitUntil: 'commit' });
-  await expect(page.locator('html')).toHaveAttribute('data-intro', '');
   await page.waitForLoadState('load');
+  expect(await introSeen(page)).toBe(true);
   await expect(wipe(page)).toHaveAttribute('data-state', 'idle', { timeout: 1500 });
   await expect(page.locator('html')).not.toHaveAttribute('data-intro', /.*/);
-  await page.goto('/', { waitUntil: 'commit' });
-  await page.waitForLoadState('domcontentloaded');
-  await expect(page.locator('html')).not.toHaveAttribute('data-intro', /.*/);
+  await page.goto('/');
+  expect(await introSeen(page)).toBe(false);
 });
 
 test('if the page scripts never load, the cover still lifts and the page is readable', async ({ page }) => {
