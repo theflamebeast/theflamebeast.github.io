@@ -26,10 +26,6 @@ c39b97d
 # effort; ~/.codex/config.toml now sets review_model gpt-6.1-sol at medium effort.
 # Earlier: 50f65ff was a baseline, not a review (the last commit of the old site).
 
-# OPEN: [P2] clicking the upgraded Work toggle on the home page also scrolls to #work: Lenis's
-# anchors option handles every same-page hash link on click and ignores preventDefault
-# (src/motion/scroll.ts, Lenis 1.3.27 onClick). Delete this block in the commit that fixes it.
-
 # OPEN: [P2] when the browser rejects autoplay the case-study video sits paused under a "Pause
 # video" button, and the first click only flips the flag without playing (src/motion/video.ts,
 # the swallowed play() rejection). Delete this block in the commit that fixes it.

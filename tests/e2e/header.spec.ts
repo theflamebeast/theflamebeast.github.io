@@ -212,3 +212,20 @@ test('resizing 1440 -> 390 with the picker open keeps the panel inside the viewp
     expect(r.x + r.width).toBeLessThanOrEqual(390);
   }
 });
+
+test('opening the picker with a click on the home page leaves the page where it is', async ({ page }) => {
+  await page.goto('/');
+  await page.locator(TOGGLE).click();
+  await expect(page.locator(PANEL)).toBeVisible();
+  await page.waitForTimeout(900);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
+
+test('an ordinary same-page link still glides to its section', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.nav-links a[href="/#about"]').click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
+  await expect
+    .poll(async () => (await page.locator('#about').boundingBox())!.y)
+    .toBeLessThan(200);
+});
