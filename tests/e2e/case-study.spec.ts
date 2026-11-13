@@ -78,6 +78,11 @@ test('FlameBurst outbound link says it is on hiatus', async ({ page }) => {
   await expect(page.locator('main a[href="https://www.flameburst.net"]')).toContainText('on hiatus');
 });
 
+test('FlameBurst links to its architecture write-up', async ({ page }) => {
+  await page.goto('/work/flameburst');
+  await expect(page.locator('.case-links a[href="https://www.flameburst.net/architecture"]')).toHaveText('Architecture');
+});
+
 test('an unknown path responds 404 with a link home', async ({ page }) => {
   const res = await page.goto('/nope');
   expect(res!.status()).toBe(404);

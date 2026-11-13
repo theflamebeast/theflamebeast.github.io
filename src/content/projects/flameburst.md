@@ -11,6 +11,8 @@ stack: [Java, Paper / Purpur API, Velocity, Linux, TypeScript, Next.js]
 links:
   - label: flameburst.net (on hiatus)
     href: https://www.flameburst.net
+  - label: Architecture
+    href: https://www.flameburst.net/architecture
 cover:
   src: ../../assets/projects/flameburst/lobby-water.webp
   alt: The FlameBurst spawn at dusk, seen across the water with lanterns lit
