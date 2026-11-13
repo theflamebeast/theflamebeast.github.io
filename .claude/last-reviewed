@@ -25,7 +25,3 @@ c39b97d
 # Task 7) and the floating menu is never shown (open, below). The reviewer then ran at low
 # effort; ~/.codex/config.toml now sets review_model gpt-6.1-sol at medium effort.
 # Earlier: 50f65ff was a baseline, not a review (the last commit of the old site).
-
-# OPEN: [P2] when the browser rejects autoplay the case-study video sits paused under a "Pause
-# video" button, and the first click only flips the flag without playing (src/motion/video.ts,
-# the swallowed play() rejection). Delete this block in the commit that fixes it.

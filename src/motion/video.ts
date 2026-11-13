@@ -15,8 +15,18 @@ export function initCaseVideo(): () => void {
     toggle.dataset.state = wanted ? 'playing' : 'paused';
   };
   const sync = () => {
-    if (wanted && inView) void video.play().catch(() => {});
-    else video.pause();
+    if (!wanted || !inView) {
+      video.pause();
+      return;
+    }
+    video.play().catch((error: unknown) => {
+      // An autoplay policy refused it: show Play, so the first click is the gesture that starts
+      // it. An AbortError only means a pause (scrolled away) cut the request short; ignore that.
+      if (error instanceof DOMException && error.name === 'NotAllowedError') {
+        wanted = false;
+        label();
+      }
+    });
   };
 
   video.removeAttribute('controls');

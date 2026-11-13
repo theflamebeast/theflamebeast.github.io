@@ -124,6 +124,28 @@ test('the case-study video plays, and its pause button stops it and starts it ag
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
 });
 
+test('when the browser refuses autoplay the button offers Play, and one click starts the clip', async ({ page }) => {
+  // Mimic an autoplay policy: play() without a user gesture is refused.
+  await page.addInitScript(() => {
+    const play = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
+      if (!navigator.userActivation.isActive) {
+        return Promise.reject(new DOMException('play() needs a user gesture', 'NotAllowedError'));
+      }
+      return play.call(this);
+    };
+  });
+  await page.goto('/work/stashout');
+  const video = page.locator('[data-case-video]');
+  const toggle = page.locator('[data-video-toggle]');
+  await video.scrollIntoViewIfNeeded();
+  await expect(toggle).toHaveAccessibleName('Play video');
+  expect(await video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+  await toggle.click();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
+  await expect(toggle).toHaveAccessibleName('Pause video');
+});
+
 test('without JS the case-study video does not autoplay and has native controls', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
