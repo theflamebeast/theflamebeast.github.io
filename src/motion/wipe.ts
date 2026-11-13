@@ -7,9 +7,13 @@ type State = 'idle' | 'covering' | 'covered' | 'opening';
 const INTRO_KEY = 'ag:intro';
 const FONT_WAIT_MS = 600;
 const FAILSAFE_MS = 4000;
-// The intro's CSS failsafe starts fading the cover at 2.2 s. Opening it after that would bring
-// the ink back, so past this point the script just lets the CSS finish.
-const INTRO_LATE_MS = 2100;
+// Content is never held back more than 1.5 s, so the intro is over by this time after navigation
+// start however slow the device: the font wait and the opening both shrink to fit. A deadline
+// rather than fixed waits, because on a slow CI runner the fixed ones ran past 1.5 s.
+const INTRO_DONE_BY_MS = 1300;
+const INTRO_OPEN_MS = 700;
+// Below this an opening is a flicker, not an animation; the cover just goes.
+const INTRO_MIN_OPEN_MS = 250;
 // A pointerdown older than this did not start the navigation; cover from the centre instead.
 const POINTER_FRESH_MS = 1500;
 const LABEL_HOLD_MS = 350;
@@ -92,8 +96,8 @@ export function initInkWipe(): void {
     await new Promise((r) => setTimeout(r, LABEL_HOLD_MS));
   };
 
-  const open = async () => {
-    if (await animate('opening', 0.7, 'power2.out', 0)) setState('idle');
+  const open = async (seconds = INTRO_OPEN_MS / 1000) => {
+    if (await animate('opening', seconds, 'power2.out', 0)) setState('idle');
   };
 
   const intro = async () => {
@@ -102,13 +106,17 @@ export function initInkWipe(): void {
     } catch {
       // Storage blocked: the intro may play again on the next load, which is harmless.
     }
-    await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, FONT_WAIT_MS))]);
-    if (performance.now() > INTRO_LATE_MS) {
+    const fontBudget = Math.min(FONT_WAIT_MS, INTRO_DONE_BY_MS - INTRO_OPEN_MS - performance.now());
+    if (fontBudget > 0) {
+      await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, fontBudget))]);
+    }
+    const left = Math.min(INTRO_OPEN_MS, INTRO_DONE_BY_MS - performance.now());
+    if (left < INTRO_MIN_OPEN_MS) {
       delete root.dataset.intro;
       return;
     }
     centre();
-    const opening = open();
+    const opening = open(left / 1000);
     // The intro rule only applies while idle; the cover is now in the opening state.
     delete root.dataset.intro;
     await opening;
