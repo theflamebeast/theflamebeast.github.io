@@ -1,0 +1,52 @@
+<div class="progress" data-progress aria-hidden="true"></div>
+<div class="edge edge-left" data-edge="left" aria-hidden="true"></div>
+<div class="edge edge-right" data-edge="right" aria-hidden="true"></div>
+
+<style>
+  .progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 30;
+    height: 2px;
+    background: var(--ink-live);
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  /* As thin as the footer's top edge, with a faint glow leaning into the page. */
+  .edge {
+    position: fixed;
+    inset-block: 0;
+    z-index: 30;
+    width: 1px;
+    background: var(--ink-live);
+    pointer-events: none;
+  }
+
+  .edge-left {
+    left: 0;
+  }
+
+  .edge-right {
+    right: 0;
+  }
+
+  .edge::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    width: 12px;
+    background: linear-gradient(var(--glow-to), color-mix(in srgb, var(--ink-live) 14%, transparent), transparent);
+  }
+
+  .edge-left::before {
+    --glow-to: to right;
+    left: 1px;
+  }
+
+  .edge-right::before {
+    --glow-to: to left;
+    right: 1px;
+  }
+</style>
