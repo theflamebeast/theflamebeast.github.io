@@ -36,6 +36,9 @@ export interface InkFluid {
   /** Coordinates are 0..1 of the canvas, y down. */
   pointer(x: number, y: number): void;
   splatRing(x: number, y: number): void;
+  /** While pressed, bright ink pours at the pointer every frame, moving or not. */
+  press(x: number, y: number): void;
+  release(): void;
   readonly running: boolean;
 }
 
@@ -44,6 +47,11 @@ const POINTER_GAP_MS = 120;
 const START_SPLAT = { speed: 1000, intensity: 8 };
 const IDLE_SPLAT = { intensity: 6, repeatAfter: 0.8 };
 const RING_SPLAT = { speed: 900, intensity: 5, radius: 0.35 };
+// Per frame while the button is held: a small, bright pour with a slow random stir so it blooms
+// instead of stacking into one flat disc.
+const HOLD_SPLAT = { intensity: 1.6, radius: 0.12, stir: 240 };
+// Strokes drawn with the button held are this much brighter than ordinary ones.
+const HOLD_STROKE = 3;
 
 type GL = WebGL2RenderingContext;
 
@@ -141,6 +149,7 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
   let lastFrame = 0;
   let idleMs = 0;
   const ptr = { x: 0, y: 0, dx: 0, dy: 0, at: -Infinity, moved: false };
+  let held = false;
 
   const hueTime = (now: number) => now + INK_HUE_START_MS;
 
@@ -353,11 +362,26 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
       randomSplats(gpu, 1, IDLE_SPLAT.intensity, () => hueTime(now));
     }
 
+    if (held) {
+      const angle = Math.random() * Math.PI * 2;
+      splat(
+        gpu,
+        ptr.x,
+        ptr.y,
+        Math.cos(angle) * HOLD_SPLAT.stir,
+        Math.sin(angle) * HOLD_SPLAT.stir,
+        inkColor(hueTime(now), Math.random(), HOLD_SPLAT.intensity),
+        HOLD_SPLAT.radius,
+      );
+      idleMs = 0;
+    }
+
     if (ptr.moved) {
       const aspect = canvas.width / canvas.height;
       const dx = aspect < 1 ? ptr.dx * aspect : ptr.dx;
       const dy = aspect > 1 ? ptr.dy / aspect : ptr.dy;
-      splat(gpu, ptr.x, ptr.y, dx * params.splatForce, dy * params.splatForce, inkColor(hueTime(now), Math.random()));
+      const color = inkColor(hueTime(now), Math.random(), held ? HOLD_STROKE : 1);
+      splat(gpu, ptr.x, ptr.y, dx * params.splatForce, dy * params.splatForce, color);
       ptr.dx = 0;
       ptr.dy = 0;
       ptr.moved = false;
@@ -451,6 +475,17 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
       ptr.y = flippedY;
       ptr.at = now;
       idleMs = 0;
+    },
+
+    press(x, y) {
+      ptr.x = x;
+      ptr.y = 1 - y;
+      held = true;
+      idleMs = 0;
+    },
+
+    release() {
+      held = false;
     },
 
     splatRing(x, y) {

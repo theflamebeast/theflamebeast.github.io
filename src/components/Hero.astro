@@ -99,10 +99,20 @@ import { SITE } from '../data/site';
       'pointerdown',
       (e) => {
         if (e.pointerType === 'touch') tap = e.pointerId;
-        else if (e.button === 0) fluid.splatRing(...at(e));
+        else if (e.button === 0) {
+          fluid.splatRing(...at(e));
+          // A held finger is a scroll, so only a mouse pours.
+          if (e.pointerType === 'mouse') fluid.press(...at(e));
+        }
       },
       options,
     );
+    // Released anywhere: the button can come up outside the hero, or the window can lose focus.
+    const release = () => fluid.release();
+    window.addEventListener('pointerup', release, options);
+    window.addEventListener('pointercancel', release, options);
+    window.addEventListener('blur', release, options);
+    hero.addEventListener('pointerleave', release, options);
     hero.addEventListener(
       'pointerup',
       (e) => {

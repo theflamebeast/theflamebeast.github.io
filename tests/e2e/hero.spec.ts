@@ -171,6 +171,47 @@ test('leaving for a case study and coming back leaves exactly one canvas, paused
   expect(errors).toEqual([]);
 });
 
+// How much brighter a 160 px square around (x, y) got after `act`, as the mean of its channels.
+async function brightening(page: Page, x: number, y: number, act: () => Promise<void>): Promise<number> {
+  const mean = async () => {
+    const png = await page.screenshot({ clip: { x: x - 80, y: y - 80, width: 160, height: 160 } });
+    const { channels } = await sharp(png).stats();
+    return channels.slice(0, 3).reduce((sum, c) => sum + c.mean, 0) / 3;
+  };
+  const before = await mean();
+  await act();
+  return (await mean()) - before;
+}
+
+test('holding the mouse button keeps pouring bright ink, far more than one click', async ({ page }) => {
+  const [x, y] = [260, 720];
+  const open = async () => {
+    await page.addInitScript(() => sessionStorage.setItem('ag:intro', '1'));
+    await page.goto('/');
+    await expect(page.locator(INK)).toHaveAttribute('data-running', 'true');
+    await page.addStyleTag({ content: ONLY_THE_CANVAS });
+    await page.mouse.move(x, y);
+    await page.waitForTimeout(300);
+  };
+
+  await open();
+  const click = await brightening(page, x, y, async () => {
+    await page.mouse.down();
+    await page.mouse.up();
+    await page.waitForTimeout(2000);
+  });
+
+  await open();
+  const hold = await brightening(page, x, y, async () => {
+    await page.mouse.down();
+    await page.waitForTimeout(2000);
+  });
+  await page.mouse.up();
+
+  expect(hold).toBeGreaterThan(click * 1.5);
+  expect(hold).toBeGreaterThan(15);
+});
+
 test('the canvas follows the hero when the window is resized from desktop to phone width', async ({ page }) => {
   await page.goto('/');
   const canvas = page.locator(INK);
