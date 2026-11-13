@@ -47,9 +47,10 @@ const POINTER_GAP_MS = 120;
 const START_SPLAT = { speed: 1000, intensity: 8 };
 const IDLE_SPLAT = { intensity: 6, repeatAfter: 0.8 };
 const RING_SPLAT = { speed: 900, intensity: 5, radius: 0.35 };
-// Per frame while the button is held: a small, bright pour with a slow random stir so it blooms
-// instead of stacking into one flat disc.
-const HOLD_SPLAT = { intensity: 1.6, radius: 0.12, stir: 240 };
+// While the button is held: a small, bright pour with a slow random stir so it blooms instead of
+// stacking into one flat disc. Intensity is per sixtieth of a second and scales with the real time
+// since the last frame, so a 144 Hz screen and a struggling 20 fps one pour the same amount.
+const HOLD_SPLAT = { intensity: 1.6, radius: 0.12, stir: 240, maxGapS: 0.1 };
 // Strokes drawn with the button held are this much brighter than ordinary ones.
 const HOLD_STROKE = 3;
 
@@ -353,7 +354,8 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
     if (!gpu) return;
-    const dt = Math.min(Math.max(0, (now - lastFrame) / 1000), MAX_STEP_S);
+    const elapsed = Math.max(0, (now - lastFrame) / 1000);
+    const dt = Math.min(elapsed, MAX_STEP_S);
     lastFrame = now;
 
     idleMs += dt * 1000;
@@ -370,7 +372,7 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
         ptr.y,
         Math.cos(angle) * HOLD_SPLAT.stir,
         Math.sin(angle) * HOLD_SPLAT.stir,
-        inkColor(hueTime(now), Math.random(), HOLD_SPLAT.intensity),
+        inkColor(hueTime(now), Math.random(), HOLD_SPLAT.intensity * Math.min(elapsed, HOLD_SPLAT.maxGapS) * 60),
         HOLD_SPLAT.radius,
       );
       idleMs = 0;

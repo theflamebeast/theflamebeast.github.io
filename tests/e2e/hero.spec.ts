@@ -171,45 +171,43 @@ test('leaving for a case study and coming back leaves exactly one canvas, paused
   expect(errors).toEqual([]);
 });
 
-// How much brighter a 160 px square around (x, y) got after `act`, as the mean of its channels.
-async function brightening(page: Page, x: number, y: number, act: () => Promise<void>): Promise<number> {
-  const mean = async () => {
-    const png = await page.screenshot({ clip: { x: x - 80, y: y - 80, width: 160, height: 160 } });
-    const { channels } = await sharp(png).stats();
-    return channels.slice(0, 3).reduce((sum, c) => sum + c.mean, 0) / 3;
-  };
-  const before = await mean();
-  await act();
-  return (await mean()) - before;
+// Mean channel value of a 160 px square around (x, y).
+async function spot(page: Page, x: number, y: number): Promise<number> {
+  const png = await page.screenshot({ clip: { x: x - 80, y: y - 80, width: 160, height: 160 } });
+  const { channels } = await sharp(png).stats();
+  return channels.slice(0, 3).reduce((sum, c) => sum + c.mean, 0) / 3;
 }
 
-test('holding the mouse button keeps pouring bright ink, far more than one click', async ({ page }) => {
-  const [x, y] = [260, 720];
-  const open = async () => {
+/**
+ * Presses at A, where the click ring fires, then moves to B and stays 2 s. Measured at B, so the
+ * ring (whose brightness varies a lot from run to run) is out of the picture: the only difference
+ * between holding and not is the pour. Returns the brightness at B with the button up and held.
+ */
+async function pourAtRest(page: Page): Promise<{ released: number; held: number }> {
+  const a = { x: 260, y: 520 };
+  const b = { x: 560, y: 760 };
+  const run = async (hold: boolean) => {
     await page.addInitScript(() => sessionStorage.setItem('ag:intro', '1'));
     await page.goto('/');
-    await expect(page.locator(INK)).toHaveAttribute('data-running', 'true');
+    await expect(page.locator('[data-hero] canvas[data-ink]')).toHaveAttribute('data-running', 'true');
     await page.addStyleTag({ content: ONLY_THE_CANVAS });
-    await page.mouse.move(x, y);
+    await page.mouse.move(a.x, a.y);
     await page.waitForTimeout(300);
+    await page.mouse.down();
+    if (!hold) await page.mouse.up();
+    await page.mouse.move(b.x, b.y, { steps: 12 });
+    await page.waitForTimeout(2000);
+    const value = await spot(page, b.x, b.y);
+    if (hold) await page.mouse.up();
+    return value;
   };
+  return { released: await run(false), held: await run(true) };
+}
 
-  await open();
-  const click = await brightening(page, x, y, async () => {
-    await page.mouse.down();
-    await page.mouse.up();
-    await page.waitForTimeout(2000);
-  });
-
-  await open();
-  const hold = await brightening(page, x, y, async () => {
-    await page.mouse.down();
-    await page.waitForTimeout(2000);
-  });
-  await page.mouse.up();
-
-  expect(hold).toBeGreaterThan(click * 1.5);
-  expect(hold).toBeGreaterThan(15);
+test('holding the mouse button pours bright ink where the cursor rests', async ({ page }) => {
+  const { released, held } = await pourAtRest(page);
+  expect(held).toBeGreaterThan(released * 1.5);
+  expect(held - released).toBeGreaterThan(25);
 });
 
 test('the canvas follows the hero when the window is resized from desktop to phone width', async ({ page }) => {
