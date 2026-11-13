@@ -119,7 +119,13 @@ export function initInkWipe(): void {
     const opening = open(left / 1000);
     // The intro rule only applies while idle; the cover is now in the opening state.
     delete root.dataset.intro;
+    // The tween runs on animation frames, which a struggling device can starve; a timer keeps the
+    // promise that content is never held back past the deadline.
+    const guard = window.setTimeout(() => {
+      if (state() === 'opening') setState('idle');
+    }, INTRO_DONE_BY_MS - performance.now());
     await opening;
+    window.clearTimeout(guard);
   };
 
   document.addEventListener(
