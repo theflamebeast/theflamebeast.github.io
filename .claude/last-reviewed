@@ -16,9 +16,20 @@
 # (This header deliberately does not start with the marker, so the grep that
 # collects those blocks does not match the instructions describing them.)
 #
-deeb382
+c39b97d
+# 2026-11-13: /codex:review --base deeb382 (Codex, gpt-6.1-sol, medium) covered deeb382..c39b97d,
+# round 2 Tasks 1 to 7. It found 2 real P2s, both open below. Codex has now found every real
+# bug a review caught in this repo (4 of 4).
 # 2026-11-11: /codex:review --base 50f65ff (Codex, low effort) covered 50f65ff..deeb382,
 # Tasks 1 to 6. It found 2 real P2s: the looping case-study video had no pause (fixed in
 # Task 7) and the floating menu is never shown (open, below). The reviewer then ran at low
 # effort; ~/.codex/config.toml now sets review_model gpt-6.1-sol at medium effort.
 # Earlier: 50f65ff was a baseline, not a review (the last commit of the old site).
+
+# OPEN: [P2] clicking the upgraded Work toggle on the home page also scrolls to #work: Lenis's
+# anchors option handles every same-page hash link on click and ignores preventDefault
+# (src/motion/scroll.ts, Lenis 1.3.27 onClick). Delete this block in the commit that fixes it.
+
+# OPEN: [P2] when the browser rejects autoplay the case-study video sits paused under a "Pause
+# video" button, and the first click only flips the flag without playing (src/motion/video.ts,
+# the swallowed play() rejection). Delete this block in the commit that fixes it.
