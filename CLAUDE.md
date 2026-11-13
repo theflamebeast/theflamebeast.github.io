@@ -7,11 +7,13 @@ and engineers.
 It is being rebuilt from the old hand-written page on branch `redesign`, following:
 
 - Design: `docs/superpowers/specs/2026-11-10-portfolio-redesign-design.md`, amended by
-  `docs/superpowers/specs/2026-11-11-ink-signature-design.md` (round 2; where they disagree the newer
-  wins)
+  `docs/superpowers/specs/2026-11-11-ink-signature-design.md` (round 2) and
+  `docs/superpowers/specs/2026-11-13-fire-round-design.md` (round 3); where they disagree the newest
+  wins
 - Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks; `main` keeps the old site
-  until its Task 11 cutover). The first plan, `2026-11-10-portfolio-redesign.md`, built Tasks 1 to 7
-  and is history from there on.
+  until its Task 11 cutover). Its Tasks 1 to 7 are done; `2026-11-13-fire-round.md` (Tasks R1 to R6)
+  runs next, then its Tasks 8 to 13. The first plan, `2026-11-10-portfolio-redesign.md`, built
+  Tasks 1 to 7 and is history from there on.
 
 Paths below marked "(Task N)" don't exist yet; that task creates them.
 
