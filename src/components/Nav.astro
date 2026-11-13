@@ -32,8 +32,9 @@ import WorkPicker from './WorkPicker.astro';
       backdrop-filter 0.3s;
   }
 
+  /* One pixel past its own height: a fractional height otherwise leaves a sliver in view. */
   :global(html[data-header-hidden]) .nav {
-    translate: 0 -100%;
+    translate: 0 calc(-100% - 1px);
   }
 
   .nav[data-solid],

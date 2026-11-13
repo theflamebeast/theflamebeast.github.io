@@ -205,6 +205,8 @@ async function pourAtRest(page: Page): Promise<{ released: number; held: number 
 }
 
 test('holding the mouse button pours bright ink where the cursor rests', async ({ page }) => {
+  // Two full loads and two 2 s rests; a slow CI runner needs more than the default 30 s.
+  test.setTimeout(60_000);
   const { released, held } = await pourAtRest(page);
   expect(held).toBeGreaterThan(released * 1.5);
   expect(held - released).toBeGreaterThan(25);
