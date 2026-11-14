@@ -4,15 +4,16 @@ The owner's portfolio site, `https://theflamebeast.github.io/`, a static Astro s
 Pages from this **public** repo (`theflamebeast/theflamebeast.github.io`). Its readers are recruiters
 and engineers.
 
-It is being rebuilt from the old hand-written page on branch `redesign`, following:
+It replaced the old hand-written page at the cutover on 2026-11-14 (Pages now builds through Actions,
+from `main`). The rebuild followed:
 
 - Design: `docs/superpowers/specs/2026-11-10-portfolio-redesign-design.md`, amended by
   `docs/superpowers/specs/2026-11-11-ink-signature-design.md` (round 2) and
   `docs/superpowers/specs/2026-11-13-fire-round-design.md` (round 3); where they disagree the newest
   wins
-- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks; `main` keeps the old site
-  until its Task 11 cutover). Its Tasks 1 to 7 are done; `2026-11-13-fire-round.md` (Tasks R1 to R6)
-  runs next, then its Tasks 8 to 13. The first plan, `2026-11-10-portfolio-redesign.md`, built
+- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks). Its Tasks 1 to 7 and
+  Task 11 (the cutover) are done, and `2026-11-13-fire-round.md` (Tasks R1 to R6) is done; Tasks 8
+  (polish), 9, 10, 12 and 13 remain. The first plan, `2026-11-10-portfolio-redesign.md`, built
   Tasks 1 to 7 and is history from there on.
 
 Paths below marked "(Task N)" don't exist yet; that task creates them.
@@ -133,9 +134,10 @@ Each one happened.
   Setting `root` in `vitest.config.ts` does not help. `npm test` therefore runs
   `scripts/vitest.mjs`, which upper-cases the drive before starting Vitest; never call `npx vitest`
   directly here.
-- **Until cutover, `main` still runs the legacy Pages build:** Jekyll over the root of `main`, which
-  publishes every Markdown file as a page. `_config.yml` on `main` excludes `docs` and the instruction
-  files; it was deleted on `redesign`, where Actions deploys and Jekyll never runs.
+- **Pages used to run Jekyll over the root of `main`** (the legacy build), which published every
+  Markdown file as a page. The cutover set the Pages build type to `workflow` and deleted
+  `_config.yml`, so Actions deploys `dist/` and Jekyll never runs. Keep the build type on
+  `workflow`: switching it back would publish `CLAUDE.md` and `docs/` as pages again.
 - **Verification links can carry personal data.** The old site's Badgr certificate link had
   `?identity__email=<the owner's email>` on it. Strip query strings from any credential link.
 - **A link to a path that never existed** sat on the old site for months: `/ohresources`, while the
@@ -198,7 +200,7 @@ run for that commit), and **Live** (after cutover: the site returns 200).
 ✅ E2E — npm run e2e, 21 passed
 ⏳ Review — owner-run; self-reviewed the diff
 ✅ Committed — <sha>
-✅ Pushed — origin/redesign
+✅ Pushed — origin/main
 ✅ CI — deploy workflow, build job success
 ```
 
@@ -209,5 +211,5 @@ The gate itself is `# The review gate` in `~/.claude/CLAUDE.md`. Local facts:
 - The marker in `.claude/last-reviewed` starts at `50f65ff`, a **baseline**, not a review.
 - Default `/code-review medium`. The areas worth naming are `src/ink`, `src/motion`, `src/content`
   and `.github/workflows`; `.md` files and `docs/` rarely repay a billed run.
-- Branch `redesign` until the cutover merges it into `main`; after that, `main`, committed straight
-  to it.
+- Branch `main`, committed straight to it (the `redesign` branch was fast-forwarded into `main` at
+  the cutover). A push to `main` deploys once the build job passes.
