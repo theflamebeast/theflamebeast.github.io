@@ -85,7 +85,10 @@ async function openStirredHero(browser, viewport, hide) {
   const page = await context.newPage();
   await page.goto(`http://localhost:${PORT}/`);
   await page.locator('canvas[data-ink][data-running="true"]').waitFor();
-  await page.addStyleTag({ content: `${hide} { visibility: hidden !important; }` });
+  // The stir's pointer moves would scatter the dot type, so captures show the heading as plain text.
+  await page.addStyleTag({
+    content: `${hide} { visibility: hidden !important; } [data-dots-canvas] { display: none !important; } [data-dots] { color: var(--text) !important; }`,
+  });
   await page.evaluate(() => document.fonts.ready);
   await stir(page);
   return page;

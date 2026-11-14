@@ -132,3 +132,24 @@ html.lenis body {
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
+
+/* Dot type (src/motion/dots.ts). The heading's text stays for screen readers and layout and is
+   only hidden while the dots are drawn. The canvas reaches past the heading so swept dots have
+   room, sideways only as far as the page gutter so it never widens the page. */
+[data-dots] {
+  position: relative;
+}
+
+[data-dots][data-dots-on] {
+  color: transparent;
+}
+
+[data-dots-canvas] {
+  position: absolute;
+  inset: -0.35em calc(-1 * var(--gutter));
+  width: calc(100% + 2 * var(--gutter));
+  height: calc(100% + 0.7em);
+  /* The reset caps every canvas at 100% of its box; this one reaches into the gutters. */
+  max-width: none;
+  pointer-events: none;
+}

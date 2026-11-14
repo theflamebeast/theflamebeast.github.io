@@ -73,6 +73,7 @@ const og = new URL(ogImage, Astro.site);
   import { initLiveAccent } from '../motion/accent';
   import { initClock } from '../motion/clock';
   import { initCopyEmail } from '../motion/copy';
+  import { initDotType } from '../motion/dots';
   import { initHeader } from '../motion/header';
   import { onPage } from '../motion/lifecycle';
   import { initWorkPicker } from '../motion/picker';
@@ -93,6 +94,7 @@ const og = new URL(ogImage, Astro.site);
       initWorkPicker(),
       initLiveAccent(),
       initReveals(),
+      initDotType(),
       initScrub(),
       initSpotlight(),
       initClock(),
