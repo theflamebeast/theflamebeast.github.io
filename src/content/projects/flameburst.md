@@ -17,20 +17,16 @@ cover:
   src: ../../assets/projects/flameburst/lobby-water.webp
   alt: The FlameBurst spawn at dusk, seen across the water with lanterns lit
 gallery:
-  - src: ../../assets/projects/flameburst/spawn-aerial.webp
-    alt: An aerial view of the spawn's courtyard and its surrounding towers
+  - src: ../../assets/projects/flameburst/courtyard.webp
+    alt: A lantern-lit courtyard inside the spawn, under a twisted teal tree
   - src: ../../assets/projects/flameburst/blitz-arena.webp
     alt: Players fighting in the red Blitz arena, surrounded by fire
   - src: ../../assets/projects/flameburst/bounty-sunset.webp
     alt: A player with a 100,000 bounty on their head, standing on a cliff at sunset
-  - src: ../../assets/projects/flameburst/lakeside.webp
-    alt: The spawn's towers seen from a lake on a clear day
-  - src: ../../assets/projects/flameburst/courtyard.webp
-    alt: A lantern-lit courtyard inside the spawn, under a twisted teal tree
+  - src: ../../assets/projects/flameburst/spawn-aerial.webp
+    alt: An aerial view of the spawn's courtyard and its surrounding towers
   - src: ../../assets/projects/flameburst/site-stats.webp
     alt: The flameburst.net stats page, showing network-wide totals for players, joins, kills and blocks broken
-  - src: ../../assets/projects/flameburst/site-wiki.webp
-    alt: The flameburst.net wiki, open on its Getting Started guide
 diagram: network
 ---
 

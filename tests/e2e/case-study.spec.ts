@@ -78,6 +78,20 @@ test('FlameBurst links to its site by name, with no status note (the site says i
   await expect(page.locator('.case-links')).not.toContainText(/hiatus/i);
 });
 
+test('the FlameBurst gallery is one wide image then two rows of two, like Stashout', async ({ page }) => {
+  await page.goto('/work/flameburst');
+  const shots = page.locator('.gallery .shot');
+  await expect(shots).toHaveCount(5);
+  const boxes = await shots.evaluateAll((els) => els.map((el) => el.getBoundingClientRect()).map((r) => [Math.round(r.top), Math.round(r.width)]));
+  const rows = new Set(boxes.map(([top]) => top));
+  expect(rows.size).toBe(3);
+  expect(boxes[0][1]).toBeGreaterThan(boxes[1][1] * 1.8);
+  // The wide lead is the courtyard, and neither dropped image is on the page.
+  await expect(shots.first().locator('img')).toHaveAttribute('alt', /courtyard/i);
+  await expect(page.locator('main img[alt*="lake"]')).toHaveCount(0);
+  await expect(page.locator('main img[alt*="wiki"]')).toHaveCount(0);
+});
+
 test('the FlameBurst lead image loads straight away, not lazily', async ({ page }) => {
   await page.goto('/work/flameburst');
   const img = page.locator('.case-cover img');

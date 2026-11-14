@@ -42,6 +42,25 @@ test('the footer headline is the word Contact, large, and not a link', async ({ 
   await expect(page.locator('footer')).not.toContainText('Open in your mail app');
 });
 
+test('hovering the Contact headline changes nothing: no animation, no colour sweep', async ({ page }) => {
+  await page.goto('/');
+  const heading = page.locator('footer').getByRole('heading', { name: 'Contact', exact: true });
+  await heading.scrollIntoViewIfNeeded();
+  const state = () =>
+    heading.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { animations: el.getAnimations().length, clip: s.backgroundClip, image: s.backgroundImage, color: s.color };
+    });
+  const before = await state();
+  await heading.hover();
+  await page.waitForTimeout(300);
+  const during = await state();
+  expect(during.animations).toBe(0);
+  expect(during).toEqual(before);
+  // Control: the headline is still drawn as plain text, not transparent.
+  expect(during.color).not.toBe('rgba(0, 0, 0, 0)');
+});
+
 test('under the headline an invitation and three contact tiles: Email, LinkedIn, GitHub', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('footer [data-contact-invite]')).toBeVisible();
