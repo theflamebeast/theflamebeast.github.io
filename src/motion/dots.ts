@@ -5,8 +5,10 @@ import { prefersReducedMotion } from './prefs';
 // name, layout and the no-JS and reduced-motion pages never change.
 
 const MAX_DOTS = 9000;
-// Grid steps per em of the heading's font size.
+// Grid steps per em of the heading's font size, but never closer than MIN_STEP_CSS_PX: on a phone
+// 1/40 em is 2 px and the dots blur into grey type.
 const DOTS_PER_EM = 40;
+const MIN_STEP_CSS_PX = 3;
 const SPRING = 0.016;
 const SPRING_SPREAD = 0.0011;
 const DAMP = 0.86;
@@ -75,6 +77,8 @@ function mount(heading: HTMLElement): () => void {
   let quietSince = 0;
   let inView = false;
   let built = false;
+  // True when the loop stopped (scrolled away) before the dots were home.
+  let unsettled = false;
   let colours: string[] = [];
   let coloursAt = -Infinity;
   const pointer = { x: 0, y: 0, vx: 0, vy: 0, near: false };
@@ -125,7 +129,11 @@ function mount(heading: HTMLElement): () => void {
     // Coarse enough that each dot reads as a dot (finer grids blur into grey type), and never more
     // than MAX_DOTS of them.
     fontPx = parseFloat(style.fontSize) * scale;
-    const step = Math.max(2, Math.round(fontPx / DOTS_PER_EM), Math.round(Math.sqrt(filled / MAX_DOTS)));
+    const step = Math.max(
+      Math.round(MIN_STEP_CSS_PX * scale),
+      Math.round(fontPx / DOTS_PER_EM),
+      Math.round(Math.sqrt(filled / MAX_DOTS)),
+    );
     const homes: number[] = [];
     for (let y = 0; y < height; y += step) {
       for (let x = 0; x < width; x += step) if (data[(y * width + x) * 4 + 3] > 127) homes.push(x, y);
@@ -144,9 +152,11 @@ function mount(heading: HTMLElement): () => void {
         dots[j + 2] = old[j + 2];
         dots[j + 3] = old[j + 3];
       } else {
-        // New dots arrive from a scatter around the heading: the dots' own reveal.
-        dots[j] = homes[i * 2] + (Math.random() - 0.5) * width * 0.6;
-        dots[j + 1] = homes[i * 2 + 1] + (Math.random() - 0.5) * height * 1.6;
+        // New dots start at home. An assembly from a scatter ran thousands of dots every frame for
+        // seconds while the page loaded (most of the blocking time Lighthouse measured), for motion
+        // nobody asked for; the dots move only when the pointer does.
+        dots[j] = homes[i * 2];
+        dots[j + 1] = homes[i * 2 + 1];
       }
       dots[j + 4] = homes[i * 2];
       dots[j + 5] = homes[i * 2 + 1];
@@ -221,6 +231,7 @@ function mount(heading: HTMLElement): () => void {
 
     if (restless || pointer.near) quietSince = now;
     if (now - quietSince > IDLE_AFTER_MS || !inView) {
+      unsettled = restless;
       if (!restless) settle();
       canvas.dataset.state = 'idle';
       return;
@@ -306,7 +317,7 @@ function mount(heading: HTMLElement): () => void {
 
   const visibility = new IntersectionObserver((entries) => {
     inView = entries[entries.length - 1].isIntersecting;
-    if (inView) wake();
+    if (inView && unsettled) wake();
   });
   const resize = new ResizeObserver(() => {
     if (!built) return;
@@ -319,6 +330,7 @@ function mount(heading: HTMLElement): () => void {
     if (!alive) return;
     refreshColours(performance.now());
     build();
+    draw();
     visibility.observe(canvas);
     resize.observe(heading);
   });
