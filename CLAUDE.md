@@ -229,7 +229,7 @@ not the headline.
 The gate itself is `# The review gate` in `~/.claude/CLAUDE.md`. Local facts:
 
 - The marker in `.claude/last-reviewed` is the sha last reviewed (it began at `50f65ff`, a baseline).
-  Codex has reviewed three times and found every real bug a review caught here; the `# OPEN:`
+  Codex has reviewed five times and found every real bug a review caught here (6); the `# OPEN:`
   blocks are findings not yet fixed.
 - Default `/code-review medium`. The areas worth naming are `src/ink`, `src/motion`, `src/content`
   and `.github/workflows`; `.md` files and `docs/` rarely repay a billed run.

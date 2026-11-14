@@ -16,7 +16,10 @@
 # (This header deliberately does not start with the marker, so the grep that
 # collects those blocks does not match the instructions describing them.)
 #
-fa010d1
+0d308f5
+# 2026-11-14: /codex:review --base fa010d1 (Codex, gpt-6.1-sol, medium) covered fa010d1..0d308f5:
+# the round-4 plan, R7 and R8 (always-on next cover, link labels, stashout.io) and R9 (the ink
+# cover removed). No findings; it read the diff and did not run the tests.
 # 2026-11-14: /codex:review --base ed330e1 (Codex, gpt-6.1-sol, medium) covered ed330e1..fa010d1:
 # the cutover, the two fixes from the review below, the Email tile and progress line removals, the
 # aria-label fix, the invisible-hero-name fix and the Task 8 docs. No findings; it read the diff and
