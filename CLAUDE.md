@@ -143,8 +143,8 @@ Each one happened.
   `workflow`: switching it back would publish `CLAUDE.md` and `docs/` as pages again.
 - **Verification links can carry personal data.** The old site's Badgr certificate link had
   `?identity__email=<the owner's email>` on it. Strip query strings from any credential link.
-- **A link to a path that never existed** sat on the old site for months: `/ohresources`, while the
-  Once Human site actually lived at `/oh-resources/`. Check every internal link returns 200.
+- **A link to a path that never existed** sat on the old site for months: it was missing a hyphen that the real path had.
+  Check every internal link returns 200.
 - **The headless browser (Playwright MCP) writes `.playwright-mcp/` into the repo root** whenever a
   session drives a browser from here. It happened twice on 2026-11-10; it is now gitignored.
 - **An overflow test can't see overflow on its own here.** `html` and `body` clip `overflow-x`, so

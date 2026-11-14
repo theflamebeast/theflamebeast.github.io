@@ -68,7 +68,7 @@ The same change also gives this repo the owner's standard AI-workflow files (see
 - About: short, with the three certifications from the resume. No photo.
 - Address: keep `theflamebeast.github.io`.
 - FlameBurst media comes from the owner's `C:\Users\anish\Pictures\FlameBurst` folder.
-- Archive and hide the Once Human Resources site and repo.
+- Archive and hide the old resources site and its repo.
 - Accepted these calls proposed during design: an ink preloader; own code on GSAP and Lenis; turn
   magnetic and heavy scroll effects off on small screens; respect reduced motion.
 - 2026-11-11: cut the rolling "Let's talk" text above the footer after seeing it built: the owner
@@ -268,14 +268,13 @@ Delete everything the old site used: `index.html`, `FB 3 NO BG - 64p.png`, `favi
 `github_icon.png`, the four `microsoft-office-specialist-*.png` badges, and the old README content.
 Gone with them: the tab script, the `marked` CDN script, the fetch of the GitHub profile README (that repo
 gets its own small update, see **GitHub profile README**), the Discord/Twitter meta tags
-pointing at an imgur image, and the `/ohresources` link, which was already broken (the live path had a
-hyphen).
+pointing at an imgur image, and a link to the old resources site, which was already broken (the live path had a
+hyphen the link lacked).
 
-## Once Human Resources: archive and hide
+## Old resources site: archive and hide
 
-State on 2026-11-10: repo `theflamebeast/oh-resources` is private and unarchived, but its Pages site is
-public and live at `https://theflamebeast.github.io/oh-resources/` (HTTP 200); the repo's homepage URL
-points at the hyphen-less path, which 404s.
+State on 2026-11-10: the site's repo is private and unarchived, but its Pages site is public and live
+(HTTP 200); the repo's homepage URL points at the hyphen-less path, which 404s.
 
 Steps, in order (archiving first would block the settings changes):
 
@@ -308,7 +307,7 @@ Same layout as the owner's other repos (`~/.claude/CLAUDE.md`, section "The stan
 - **`CLAUDE.md`**: `# <Name>`, then the shared-rules line, then `## Tech stack`, `## Architecture
   non-negotiables`, `## Layout`, `## Conventions` (with this repo's one-implementation table: the ink
   simulation, the motion helpers, the page-transition curtain, project data), `## Danger zones` (only
-  real incidents; three already exist: the broken `/ohresources` link, the headless browser dropping
+  real incidents; three already exist: the broken old-site link, the headless browser dropping
   `.playwright-mcp/` into the repo root, and Jekyll publishing every Markdown file on `main` while the
   legacy Pages build is on), and `## Workflow` last with `### Build, test, run`, `### Done-checklist
   gates`, `### Review`. It also records the privacy rule from the anti-goals: this repo is public, so

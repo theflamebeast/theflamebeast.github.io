@@ -644,16 +644,16 @@ Confirm with the owner immediately before Step 2; it changes a GitHub setting an
 
 ---
 
-### Task 14: Archive Once Human Resources
+### Task 14: Archive the old resources site
 
 Confirm with the owner immediately before Step 1. In this order, because an archived repo rejects
 settings changes:
 
-- [ ] **Step 1:** `gh api -X DELETE repos/theflamebeast/oh-resources/pages`
-- [ ] **Step 2:** `gh repo edit theflamebeast/oh-resources --homepage ""`
-- [ ] **Step 3:** `gh repo archive theflamebeast/oh-resources --yes`
-- [ ] **Step 4:** `curl -s -o /dev/null -w "%{http_code}" https://theflamebeast.github.io/oh-resources/`
-  → 404 (allow a few minutes for the CDN), and `gh repo view theflamebeast/oh-resources --json
+- [ ] **Step 1:** `gh api -X DELETE repos/<old-site-repo>/pages`
+- [ ] **Step 2:** `gh repo edit <old-site-repo> --homepage ""`
+- [ ] **Step 3:** `gh repo archive <old-site-repo> --yes`
+- [ ] **Step 4:** `curl -s -o /dev/null -w "%{http_code}" <old-site-url>`
+  → 404 (allow a few minutes for the CDN), and `gh repo view <old-site-repo> --json
   visibility,isArchived` → `PRIVATE`, `true`. No commit in this repo.
 
 ---
