@@ -41,6 +41,9 @@ through `onPage`, `--ink-live` and the accent are fills, lines or glows and neve
 
 ## Task R4: Contact block
 
+(Amended 2026-11-14: the Email tile was dropped, so below read "two tiles: LinkedIn, GitHub"; only
+the headline copies.)
+
 - `Footer.astro`: under the email headline, one short invitation line and a three-tile grid:
   Email (copy, and the mail link), LinkedIn, GitHub; inline SVG icons, mono uppercase labels,
   the handle as the value. Two columns from 720 px, one below. `copy.ts` handles both the

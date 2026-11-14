@@ -25,7 +25,9 @@ Amends `2026-11-11-ink-signature-design.md`. Where they disagree, this file wins
 - **Contact keeps the email headline and its sweep**, and gains a short invitation and three tiles
   under it: Email (copies, like the headline), LinkedIn and GitHub, each with a small icon, a mono
   label and the handle. The tiles replace the plain text links and the "open in your mail app"
-  link; the mail link moves into the Email tile. Our own words and layout.
+  link; the mail link moves into the Email tile. Our own words and layout. Amended 2026-11-14: the
+  owner dropped the Email tile, since the address already shows as the headline, so two tiles
+  remain (LinkedIn, GitHub) and the "Open in your mail app" link stays under the headline.
 - **The side lines are plain**, not progress bars, and sit outside the content gutter so they never
   touch text.
 - **The resting accent moves from blue to an ember orange**, a fill never text, with dark text on it
