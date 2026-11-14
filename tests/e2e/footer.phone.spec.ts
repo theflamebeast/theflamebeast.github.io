@@ -1,15 +1,19 @@
 import { expect, test } from '@playwright/test';
 
-test('at 390 px the email stays on one line and nothing overflows sideways', async ({ page }) => {
+test('at 390 px the headline stays on one line, the address shows in full, and nothing overflows sideways', async ({
+  page,
+}) => {
   await page.goto('/');
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  const email = page.locator('footer .footer-email[data-copy-email]');
-  await expect(email).toBeVisible();
-  const box = (await email.boundingBox())!;
-  const size = await email.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  const heading = page.locator('footer').getByRole('heading', { name: 'Contact', exact: true });
+  await expect(heading).toBeVisible();
+  const box = (await heading.boundingBox())!;
+  const size = await heading.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
   expect(box.height).toBeLessThan(size * 1.6);
-  expect(box.x).toBeGreaterThanOrEqual(0);
-  expect(box.x + box.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  // The address is the Email tile's value; at 390 px it must not be cut off with an ellipsis.
+  const value = page.locator('footer [data-contact-tile][data-copy-email] .tile-value');
+  await expect(value).toBeVisible();
+  expect(await value.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
   // html and body clip overflow-x; lift the clip, as home.phone.spec.ts does, or a too-wide
   // element would hide from scrollWidth.
   const scrollWidth = await page.evaluate(() => {
