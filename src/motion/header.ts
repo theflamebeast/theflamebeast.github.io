@@ -2,6 +2,7 @@ import { prefersReducedMotion } from './prefs';
 
 const SOLID_AFTER_PX = 40;
 const HIDE_AFTER_VIEWPORTS = 0.3;
+const DEAD_ZONE_PX = 6;
 
 export function initHeader(): () => void {
   const header = document.querySelector<HTMLElement>('[data-header]');
@@ -18,8 +19,12 @@ export function initHeader(): () => void {
   const update = () => {
     const y = window.scrollY;
     header.toggleAttribute('data-solid', y > SOLID_AFTER_PX);
-    if (y < lastY) show();
-    else if (canHide && y > lastY && y > HIDE_AFTER_VIEWPORTS * window.innerHeight && !busy()) {
+    const moved = y - lastY;
+    // Movement inside the dead zone is jitter (a trackpad, or smooth scroll settling a sub-pixel
+    // back), not a change of direction; lastY stays put so slow scrolling still adds up past it.
+    if (y > 0 && Math.abs(moved) < DEAD_ZONE_PX) return;
+    if (moved < 0 || y <= 0) show();
+    else if (canHide && y > HIDE_AFTER_VIEWPORTS * window.innerHeight && !busy()) {
       root.setAttribute('data-header-hidden', '');
     }
     lastY = y;

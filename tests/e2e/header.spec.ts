@@ -26,6 +26,17 @@ test('the header hides after scrolling down past 30% of the viewport and returns
   await expect(header).toHaveAttribute('data-solid', '');
 });
 
+test('a scroll jitter of a couple of pixels upward does not bring the header back', async ({ page }) => {
+  await page.goto('/');
+  await scrollBy(page, 700);
+  await expect.poll(() => headerState(page)).toBe(true);
+  await expect.poll(() => page.evaluate(() => (document.documentElement.dataset.smooth ? window.scrollY : 0))).toBeGreaterThan(600);
+  await page.waitForTimeout(1200);
+  await page.evaluate(() => window.scrollTo(0, window.scrollY - 2));
+  await page.waitForTimeout(300);
+  expect(await headerState(page)).toBe(true);
+});
+
 test('hovering Work opens the picker with three rows', async ({ page }) => {
   await page.goto('/');
   await page.locator(TOGGLE).hover();
