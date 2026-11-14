@@ -156,3 +156,25 @@ test('without JS the case-study video does not autoplay and has native controls'
   await expect(page.locator('[data-video-toggle]')).toBeHidden();
   await context.close();
 });
+
+test('the skip link moves keyboard focus into main: the next Tab lands in the page, not the header', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-smooth', 'on');
+  await page.keyboard.press('Tab');
+  await expect(page.locator('a.skip')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/#main$/);
+  await page.keyboard.press('Tab');
+  const inside = await page.evaluate(() => document.activeElement?.closest('main') != null);
+  expect(inside).toBe(true);
+});
+
+test('control: without using the skip link, the second Tab lands in the header', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  const inHeader = await page.evaluate(() => document.activeElement?.closest('header') != null);
+  expect(inHeader).toBe(true);
+});

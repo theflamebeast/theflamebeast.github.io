@@ -314,6 +314,13 @@ function mount(heading: HTMLElement): () => void {
     { passive: true, signal: listeners.signal },
   );
   document.addEventListener('pointerleave', () => (pointer.near = false), { signal: listeners.signal });
+  // A finger that lifts is gone; a mouse stays where it is. Not every engine sends the document-level
+  // pointerleave above for a touch, and without it the dots keep pushing away from a finger that left.
+  const fingerLifted = (event: PointerEvent) => {
+    if (event.pointerType === 'touch') pointer.near = false;
+  };
+  window.addEventListener('pointerup', fingerLifted, { passive: true, signal: listeners.signal });
+  window.addEventListener('pointercancel', fingerLifted, { passive: true, signal: listeners.signal });
 
   const visibility = new IntersectionObserver((entries) => {
     inView = entries[entries.length - 1].isIntersecting;

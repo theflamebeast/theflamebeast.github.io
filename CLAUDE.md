@@ -169,7 +169,9 @@ Each one happened.
   click even when other code cancelled it (the Work toggle scrolled to `#work` while opening the
   picker), and the router's own same-page hash handling restores the old scroll position, so
   "About" changed the URL and stayed at the top. `scroll.ts` claims those clicks on `<body>`
-  instead: after handlers on the link itself, before the router on `document`.
+  instead: after handlers on the link itself, before the router on `document`. Cancelling the click
+  also cancelled the browser's focus move, so "Skip to content" left the next Tab in the header;
+  the handler now focuses the target (`tabindex="-1"` where it isn't focusable).
 - **Playwright waits forever on a 404 home page.** Its `webServer` only counts the server as ready on
   a non-404 status, so a build with no `/` shows up as a 60 s timeout, not a test failure.
 

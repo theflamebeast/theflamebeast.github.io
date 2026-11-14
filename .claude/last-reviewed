@@ -18,23 +18,14 @@
 #
 ed330e1
 # 2026-11-14: /codex:review --base c39b97d (Codex, gpt-6.1-sol, medium) covered c39b97d..ed330e1,
-# the two round-2 review fixes and round 3 (R1 to R6) plus Task 8 so far. It found 2 real P2s,
-# both open below. Codex has now found 6 of 6 real bugs a review caught here.
+# the two round-2 review fixes and round 3 (R1 to R6) plus Task 8 so far. It found 2 P2s,
+# both fixed (the skip link now moves focus; a lifted finger clears the dots, though real
+# Chromium touch events also hid that one). Codex has found 6 of 6 real bugs a review caught here.
 # 2026-11-13: /codex:review --base deeb382 (Codex, gpt-6.1-sol, medium) covered deeb382..c39b97d,
-# round 2 Tasks 1 to 7. It found 2 real P2s, both open below. Codex has now found every real
+# round 2 Tasks 1 to 7. It found 2 real P2s, both fixed (9fe4767..d31b859). Codex has now found every real
 # bug a review caught in this repo (4 of 4).
 # 2026-11-11: /codex:review --base 50f65ff (Codex, low effort) covered 50f65ff..deeb382,
 # Tasks 1 to 6. It found 2 real P2s: the looping case-study video had no pause (fixed in
 # Task 7) and the floating menu is never shown (open, below). The reviewer then ran at low
 # effort; ~/.codex/config.toml now sets review_model gpt-6.1-sol at medium effort.
 # Earlier: 50f65ff was a baseline, not a review (the last commit of the old site).
-
-# OPEN: [P2] "Skip to content" no longer moves keyboard focus: scroll.ts claims same-page "#" clicks
-# (preventDefault, replaceState, lenis.scrollTo) and nothing moves the sequential-focus start point,
-# so the next Tab still lands in the header. Needs the target focused (tabindex -1 where needed)
-# and a keyboard test (src/motion/scroll.ts, initAnchorGlide). Delete in the fixing commit.
-
-# OPEN: [P2] on touch, a finger moving inside a dot heading sets pointer.near and nothing clears it
-# on pointerup/pointercancel (the document pointerleave listener never sees the target's
-# non-bubbling leave), so the dots repel a finger that is gone and the loop never idles
-# (src/motion/dots.ts). Delete in the fixing commit.

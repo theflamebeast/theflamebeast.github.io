@@ -74,6 +74,10 @@ function initAnchorGlide(lenis: Lenis): () => void {
       // a page to restore.
       history.replaceState(history.state, '', url.hash);
       lenis.scrollTo(target);
+      // The browser would have moved the keyboard's starting point to the target; cancelling the
+      // click meant it didn't, so the next Tab would land back in the header after "Skip to content".
+      if (!target.matches('a[href], button, input, select, textarea, [tabindex]')) target.tabIndex = -1;
+      target.focus({ preventScroll: true });
     },
     { signal: listeners.signal },
   );

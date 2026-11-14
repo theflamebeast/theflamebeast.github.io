@@ -77,6 +77,11 @@ a {
   border-radius: 4px;
 }
 
+/* A landing point for "Skip to content" and same-page links, not a control: no ring around a whole section. */
+[tabindex='-1']:focus-visible {
+  outline: none;
+}
+
 .wrap {
   width: 100%;
   max-width: 88rem;
