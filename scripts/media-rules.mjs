@@ -11,7 +11,7 @@ export function isForbiddenSource(path) {
   if (folders.includes('Whisk') || name.startsWith('Whisk')) return 'AI-generated image (Whisk), not real footage';
   if (folders.some((s) => s.includes('Gemini'))) return 'AI-generated image (Gemini), not real footage';
   if (folders.includes('Technical')) return 'admin, console or DNS screenshot (Technical folder)';
-  if (/^admin-.*\.png$/i.test(name)) return 'admin screen';
-  if (name.toLowerCase() === 'auth.png') return 'login screen';
+  if (/^admin-.*\.[a-z0-9]+$/i.test(name)) return 'admin screen';
+  if (/^auth\.[a-z0-9]+$/i.test(name)) return 'login screen';
   return null;
 }

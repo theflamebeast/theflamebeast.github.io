@@ -10,6 +10,10 @@ describe('isForbiddenSource', () => {
     ['X:\\media\\FlameBurst\\Technical\\flameburst deleted dns.png'],
     ['X:/game/ui-shots/admin-1.png'],
     ['X:/game/ui-shots/auth.png'],
+    ['X:/game/ui-shots/admin-panel.jpg'],
+    ['X:/game/ui-shots/ADMIN-2.webp'],
+    ['X:/game/ui-shots/auth.jpeg'],
+    ['X:/game/ui-shots/Auth.WEBP'],
   ])('refuses %s', (p) => {
     expect(isForbiddenSource(p)).toEqual(expect.any(String));
   });
@@ -20,6 +24,8 @@ describe('isForbiddenSource', () => {
     ['X:/game/ui-shots/lobby.png'],
     ['X:/game/ui-shots/administrator-notes.png'],
     ['X:/media/TechnicalArt/bg.png'],
+    ['X:/game/ui-shots/author.png'],
+    ['X:/game/ui-shots/auth-flow-diagram.png'],
   ])('allows %s', (p) => {
     expect(isForbiddenSource(p)).toBeNull();
   });
