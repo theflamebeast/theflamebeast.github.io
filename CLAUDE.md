@@ -13,8 +13,9 @@ from `main`). The rebuild followed:
   wins
 - Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks). Its Tasks 1 to 8 and
   Task 11 (the cutover) are done, and `2026-11-13-fire-round.md` (Tasks R1 to R6) is done; Tasks 9
-  (owner copy review), 10 (Codex review), 12 and 13 remain. `2026-11-14-round-4.md` (Tasks R7 and
-  R8: the next-project cover always shown, link labels, a `stashout.io` button) runs first. The first plan, `2026-11-10-portfolio-redesign.md`, built
+  (owner copy review), 10 (Codex review), 12 and 13 remain. `2026-11-14-round-4.md` (Tasks R7 to
+  R9: the next-project cover always shown, link labels and a `stashout.io` button, removing the ink
+  cover from page changes and the first visit) runs first. The first plan, `2026-11-10-portfolio-redesign.md`, built
   Tasks 1 to 7 and is history from there on.
 
 Shared workflow rules: ~/.claude/CLAUDE.md § Every repo. This file only holds what is local.
