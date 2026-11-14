@@ -148,7 +148,7 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     max-width: 38rem;
     font-size: var(--step-2);
     line-height: 1.4;
-    color: #c9d0db;
+    color: var(--text-soft);
   }
 
   .case-facts {
@@ -190,7 +190,7 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     padding: 0;
     border: 1px solid var(--line-strong);
     border-radius: 50%;
-    background: rgb(6 7 12 / 0.72);
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
     color: var(--text);
     cursor: pointer;
     backdrop-filter: blur(6px);
@@ -269,7 +269,7 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     margin-bottom: 1.1rem;
     font-size: var(--step-1);
     line-height: 1.65;
-    color: #c9d0db;
+    color: var(--text-soft);
   }
 
   .prose :global(ul) {
@@ -283,7 +283,7 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     position: relative;
     font-size: var(--step-1);
     line-height: 1.6;
-    color: #c9d0db;
+    color: var(--text-soft);
   }
 
   .prose :global(li)::before {

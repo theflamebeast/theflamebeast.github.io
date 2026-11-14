@@ -250,7 +250,7 @@ import { SITE } from '../data/site';
     inset: 0;
     z-index: 1;
     background:
-      linear-gradient(to bottom, rgb(6 7 12 / 0.72), transparent 24%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--bg) 72%, transparent), transparent 24%),
       linear-gradient(to top, var(--bg), transparent 28%);
     pointer-events: none;
   }
@@ -272,7 +272,7 @@ import { SITE } from '../data/site';
     width: min(100%, 70rem);
     height: 190%;
     translate: -50% -50%;
-    background: radial-gradient(closest-side, rgb(6 7 12 / 0.66), rgb(6 7 12 / 0.42) 55%, transparent);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--bg) 66%, transparent), color-mix(in srgb, var(--bg) 42%, transparent) 55%, transparent);
   }
 
   .hero-hint-pos {
@@ -288,7 +288,7 @@ import { SITE } from '../data/site';
   .hero-hint {
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: #c9d0db;
+    color: var(--text-soft);
     transition: opacity 0.6s ease;
   }
 
@@ -321,7 +321,7 @@ import { SITE } from '../data/site';
     gap: 0.4rem 1.75rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: #c9d0db;
+    color: var(--text-soft);
   }
 
   .hero-name {
@@ -338,6 +338,6 @@ import { SITE } from '../data/site';
     margin-inline: auto;
     text-wrap: balance;
     font-size: var(--step-1);
-    color: #c9d0db;
+    color: var(--text-soft);
   }
 </style>

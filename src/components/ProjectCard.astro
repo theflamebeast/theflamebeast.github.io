@@ -73,7 +73,7 @@ const href = `/work/${project.id}`;
     content: '';
     position: absolute;
     inset: 0;
-    background: rgb(6 7 12 / 0.4);
+    background: color-mix(in srgb, var(--bg) 40%, transparent);
     -webkit-mask-image: radial-gradient(circle 18rem at var(--mx, -100rem) var(--my, -100rem), transparent, #000);
     mask-image: radial-gradient(circle 18rem at var(--mx, -100rem) var(--my, -100rem), transparent, #000);
     pointer-events: none;
@@ -103,7 +103,7 @@ const href = `/work/${project.id}`;
 
   .card-summary {
     max-width: var(--measure);
-    color: #c9d0db;
+    color: var(--text-soft);
   }
 
   .card-stack {

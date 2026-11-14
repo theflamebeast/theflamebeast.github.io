@@ -74,7 +74,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/components/WorkPicker.astro` | the panel under the header: one row per project (featured to its case study, compact to its first link) and a fixed preview area beside them, hidden below 720 px |
 | `src/layouts/Base.astro` | every page's shell: meta, `ClientRouter` (pages swap instantly, no cover and no animation), the frame, header with the Work picker, footer |
 | `src/components/` | one `.astro` file per section or widget; DOM hooks for motion are `data-*` attributes only |
-| `src/styles/` | `tokens.css` (the only colour, type and spacing values) and `global.css` (fonts, reset) |
+| `src/styles/` | `tokens.css` (the only colour, type and spacing values; `tests/unit/tokens.test.ts` fails on a colour literal in any other `.astro` or `.css` file, and a translucent dark is `color-mix(in srgb, var(--bg) N%, transparent)`; `theme-color` in `Base.astro` must equal `--bg`) and `global.css` (fonts, reset) |
 | `public/favicon.svg` | the "AG" monogram |
 | `public/og.png` | the Open Graph image, 1200x630, captured from the live hero |
 | `public/media/` | the Stashout raid clip, 12 s, no audio, as `.webm` (VP9) and `.mp4` (H.264); its poster lives in `src/assets/projects/stashout/` |
