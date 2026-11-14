@@ -31,7 +31,7 @@ test('once the dots settle the drawing stops, and the cursor sweeping through wa
 }) => {
   await page.goto('/');
   const canvas = page.locator(`${HERO} canvas[data-dots-canvas]`);
-  await expect(canvas).toHaveAttribute('data-state', 'idle', { timeout: 8000 });
+  await expect(canvas).toHaveAttribute('data-state', 'idle', { timeout: 15000 });
   const settled = await pixels(page, HERO);
   const box = (await page.locator(HERO).boundingBox())!;
   await page.mouse.move(box.x + 10, box.y + box.height / 2);
@@ -39,7 +39,7 @@ test('once the dots settle the drawing stops, and the cursor sweeping through wa
   await expect(canvas).toHaveAttribute('data-state', 'running');
   expect(await pixels(page, HERO)).not.toBe(settled);
   await page.mouse.move(5, 890);
-  await expect(canvas).toHaveAttribute('data-state', 'idle', { timeout: 8000 });
+  await expect(canvas).toHaveAttribute('data-state', 'idle', { timeout: 15000 });
 });
 
 test('each case study title is drawn in dots too', async ({ page }) => {

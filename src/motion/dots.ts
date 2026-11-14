@@ -15,10 +15,14 @@ const SWIRL = 2.8;
 const DRAG = 0.16;
 const SPLASH = 42;
 const FRAME_S = 1 / 60;
-// A frame can stand in for at most this many sixtieths, so a stall cannot fling the dots.
-const MAX_STEPS = 3;
+// A frame can stand in for at most this many sixtieths, so a stall cannot fling the dots. Five keeps
+// the springs stable and lets a 12 fps device keep real time.
+const MAX_STEPS = 5;
 // Squared speed in device pixels per sixtieth: below this a dot counts as at rest.
 const REST_SPEED2 = 0.01;
+// Within this many device pixels of home a dot counts as home: the last fraction of the spring's
+// approach is invisible and took seconds on a slow device. Settled dots are snapped exactly home.
+const HOME_PX = 1.5;
 const IDLE_AFTER_MS = 500;
 const COLOUR_EVERY_MS = 200;
 
@@ -209,7 +213,7 @@ function mount(heading: HTMLElement): () => void {
       dots[j + 3] = vy;
       const s = (vx * vx + vy * vy) / (scale * scale);
       speed[i] = s < 0.3 ? 0 : s < 3 ? 1 : s < 14 ? 2 : 3;
-      if (s > REST_SPEED2 || Math.abs(dots[j + 4] - x) > 0.5 || Math.abs(dots[j + 5] - y) > 0.5) restless = true;
+      if (s > REST_SPEED2 || Math.abs(dots[j + 4] - x) > HOME_PX || Math.abs(dots[j + 5] - y) > HOME_PX) restless = true;
     }
     pointer.vx *= 0.82 ** steps;
     pointer.vy *= 0.82 ** steps;
@@ -217,10 +221,23 @@ function mount(heading: HTMLElement): () => void {
 
     if (restless || pointer.near) quietSince = now;
     if (now - quietSince > IDLE_AFTER_MS || !inView) {
+      if (!restless) settle();
       canvas.dataset.state = 'idle';
       return;
     }
     raf = requestAnimationFrame(frame);
+  };
+
+  const settle = () => {
+    for (let i = 0; i < count; i++) {
+      const j = i * 6;
+      dots[j] = dots[j + 4];
+      dots[j + 1] = dots[j + 5];
+      dots[j + 2] = 0;
+      dots[j + 3] = 0;
+      speed[i] = 0;
+    }
+    draw();
   };
 
   const wake = () => {
