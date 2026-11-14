@@ -72,8 +72,10 @@ test('on load the static still and the plain-text name never show; the live hero
     const w = window as unknown as { frames: number; staticFrames: number };
     return { frames: w.frames, staticFrames: w.staticFrames };
   });
-  expect(frames).toBeGreaterThan(10);
   expect(staticFrames).toBe(0);
+  // Only proves the sampler ran: CI's software GL drew 10 frames in these 4 s (and 7 under a local
+  // 12x CPU throttle), so a higher floor fails on a slow runner, not on the hero.
+  expect(frames).toBeGreaterThanOrEqual(3);
   await expect(page.locator('[data-hero]')).toHaveAttribute('data-hero-state', 'live');
   await expect.poll(() => opacity(page, '[data-hero] h1')).toBe(1);
 });

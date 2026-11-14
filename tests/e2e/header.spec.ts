@@ -19,7 +19,11 @@ test('the header hides after scrolling down past 30% of the viewport and returns
   await expect(header).toHaveCSS('position', 'fixed');
   await scrollBy(page, 700);
   await expect.poll(() => headerState(page)).toBe(true);
-  await expect.poll(async () => (await header.boundingBox())!.y + (await header.boundingBox())!.height).toBeLessThanOrEqual(0);
+  // Measure once the slide has finished: CI once read 0.0054 px mid-transition. A slide that never
+  // finishes still fails, as a timeout.
+  await header.evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
+  const box = (await header.boundingBox())!;
+  expect(box.y + box.height).toBeLessThanOrEqual(0);
   await scrollBy(page, -120);
   await expect.poll(() => headerState(page)).toBe(false);
   await expect.poll(async () => (await header.boundingBox())!.y).toBe(0);
