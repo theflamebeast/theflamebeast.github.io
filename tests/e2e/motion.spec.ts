@@ -178,3 +178,21 @@ test('control: without using the skip link, the second Tab lands in the header',
   const inHeader = await page.evaluate(() => document.activeElement?.closest('header') != null);
   expect(inHeader).toBe(true);
 });
+
+test('a split paragraph keeps its words readable and gets no aria-label, which a paragraph may not carry', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const lede = page.locator('.about-lede');
+  await expect(lede.locator('.reveal-line').first()).toBeAttached();
+  await expect(lede).not.toHaveAttribute('aria-label', /.*/);
+  expect(await page.locator('p[aria-label]').count()).toBe(0);
+  const text = await lede.evaluate((el) => (el as HTMLElement).innerText.replace(/\s+/g, ' ').trim());
+  expect(text.length).toBeGreaterThan(40);
+});
+
+test('control: a split heading is still named for assistive tech', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#about-title .reveal-line').first()).toBeAttached();
+  await expect(page.locator('#about-title')).toHaveAccessibleName('About');
+});

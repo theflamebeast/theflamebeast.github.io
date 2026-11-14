@@ -18,6 +18,8 @@ export function initReveals(): () => void {
     for (const el of document.querySelectorAll<HTMLElement>('[data-reveal="lines"]')) {
       SplitText.create(el, {
         type: 'lines',
+        // Auto adds an aria-label, which only suits elements that can carry one: a heading, not a <p>.
+        aria: el.matches('h1, h2, h3, h4, h5, h6') ? 'auto' : 'none',
         mask: 'lines',
         linesClass: 'reveal-line',
         autoSplit: true,
