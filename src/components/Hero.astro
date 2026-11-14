@@ -5,6 +5,16 @@ import { SITE } from '../data/site';
 ---
 
 <section class="hero" data-hero aria-labelledby="hero-name">
+  <script is:inline>
+    // Runs before the hero paints: hold it dark until the live ink and dot name are ready, so the
+    // static still and plain name never flash first. Without JS this never runs, and the static
+    // hero is all there is; under reduced motion it stays static too.
+    try {
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.currentScript.parentElement.dataset.heroState = 'pending';
+      }
+    } catch {}
+  </script>
   <div class="hero-still" data-ink-still aria-hidden="true">
     <Picture
       src={inkStill}
@@ -42,6 +52,27 @@ import { SITE } from '../data/site';
     const still = hero?.querySelector('[data-ink-still]');
     if (!hero || !still || prefersReducedMotion()) return;
 
+    // pending: dark, waiting (also set by the inline script before first paint). live: the ink and
+    // dot name are up and the still stays hidden under the canvas. No state: the static hero (no
+    // WebGL, or the context was lost).
+    hero.dataset.heroState = 'pending';
+    let alive = true;
+    let inkLive = false;
+    let offscreen = false;
+    let fontsReady = false;
+    const reveal = () => {
+      if (alive && fontsReady && (inkLive || offscreen)) hero.dataset.heroState = 'live';
+    };
+    // The dots build when fonts are ready; two frames later they have painted.
+    void document.fonts.ready.then(() =>
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          fontsReady = true;
+          reveal();
+        }),
+      ),
+    );
+
     const canvas = document.createElement('canvas');
     canvas.dataset.ink = '';
     canvas.dataset.running = 'false';
@@ -54,9 +85,18 @@ import { SITE } from '../data/site';
         canvas.dataset.running = String(state === 'running');
         // A paused canvas keeps its last frame, so it stays shown; a lost one is blank.
         if (state !== 'paused') canvas.dataset.live = String(state === 'running');
+        if (state === 'running') {
+          inkLive = true;
+          reveal();
+        } else if (state === 'lost') {
+          inkLive = false;
+          delete hero.dataset.heroState;
+        }
       },
     });
     if (!fluid) {
+      alive = false;
+      delete hero.dataset.heroState;
       canvas.remove();
       return;
     }
@@ -71,6 +111,11 @@ import { SITE } from '../data/site';
     const sync = () => (inView && !document.hidden ? fluid.start() : fluid.stop());
     const visibility = new IntersectionObserver((entries) => {
       inView = entries[entries.length - 1].isIntersecting;
+      // Loaded scrolled past the hero: nothing to wait for; the ink starts when it comes back.
+      if (!inView && !inkLive) {
+        offscreen = true;
+        reveal();
+      }
       sync();
     });
     visibility.observe(hero);
@@ -128,6 +173,8 @@ import { SITE } from '../data/site';
     document.addEventListener('visibilitychange', sync, options);
 
     return () => {
+      alive = false;
+      delete hero.dataset.heroState;
       if (hint) {
         hint.hidden = true;
         delete hint.dataset.used;
@@ -174,6 +221,26 @@ import { SITE } from '../data/site';
 
   .hero :global([data-ink][data-live='true']) {
     opacity: 1;
+  }
+
+  /* Dark until the live ink and dot name are ready, so the static still and plain name never flash
+     first; once live, the still stays hidden under the canvas. */
+  .hero[data-hero-state='pending'] .hero-still,
+  .hero[data-hero-state='pending'] .hero-name,
+  .hero[data-hero-state='live'] .hero-still {
+    opacity: 0;
+  }
+
+  /* The page's scripts never arrived: only this lifts the wait, after a short pause. */
+  .hero[data-hero-state='pending'] .hero-still,
+  .hero[data-hero-state='pending'] .hero-name {
+    animation: hero-static 0.4s 2.5s forwards;
+  }
+
+  @keyframes hero-static {
+    to {
+      opacity: 1;
+    }
   }
 
   /* Shade under the nav, and the ink melts into the page instead of ending on a hard edge. */
@@ -258,6 +325,7 @@ import { SITE } from '../data/site';
   }
 
   .hero-name {
+    transition: opacity 0.9s ease;
     margin-block: 1.25rem 1.5rem;
     font-size: var(--step-hero);
     font-weight: 700;

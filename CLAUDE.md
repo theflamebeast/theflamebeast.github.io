@@ -64,7 +64,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/data/site.ts` | name, links, education, skills, certs |
 | `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default), `links.ts` (`isExternal`) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss, `press`/`release`: holding the mouse button pours bright ink), `shaders.ts`, `palette.ts` (the fire hue, red through orange to amber, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
-| `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
+| `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, after a lost WebGL context, and if the page's scripts never arrive; never while the live hero loads (`Hero.astro`'s `data-hero-state`: `pending` keeps the hero dark, `live` fades in the ink and dot name) |
 | `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`, `HOVER`, `canHover`), `scroll.ts` (Lenis on the GSAP ticker; same-page `#` links glide through its own `<body>` click handler, `html[data-triggers]`), `header.ts` (`initHeader`: `data-solid` past 40 px, `html[data-header-hidden]` on scrolling down past 30% of the viewport, never while the picker is open, focus is inside or under reduced motion), `picker.ts` (`initWorkPicker`: opens on hover at 720 px and up, click, tap, Enter or Space; Escape returns focus to Work), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `dots.ts` (`initDotType`: every `[data-dots]` heading, the hero name and case-study titles, drawn as a dot grid the pointer sweeps aside; the real text stays in the page, transparent while the dots are up; stops drawing once settled; nothing under reduced motion), `scrub.ts` (rows and `[data-parallax]`; 720 px and up only), `copy.ts` (click the footer's Email tile to copy the address), `spotlight.ts` (the project cards' cursor light; hover screens only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro` |
 | `src/components/Button.astro` | the one button: ink-wash hover, no lean; `.btn`, `.btn-fill`, `.btn-text` |
 | `src/components/Link.astro` | the one anchor for any link that may leave the site (buttons, footer tiles, Server Insight's links, the cert link, the picker's Server Insight row) |
@@ -165,10 +165,12 @@ Each one happened.
   instant; keep it there (`navigation.spec.ts` samples the animations through a navigation, and
   fails without the rule). Not `skipTransition()`: that leaves the router's promises rejecting with
   an unhandled `AbortError` on every navigation.
-- **Anything that covers content at load must lift without JS.** The old ink preloader was set by an
-  inline `<head>` script and only a CSS animation could lift it when the page's scripts never
-  arrived. It is gone (round 4); `navigation.spec.ts` blocks every `.js` file and checks nothing
-  covers the page.
+- **Anything that hides content at load must come back without JS.** The old ink preloader was set
+  by an inline `<head>` script and only a CSS animation could lift it when the page's scripts never
+  arrived; it is gone (round 4). The hero now holds itself dark (`data-hero-state="pending"`, set by
+  an inline script before first paint) until the live ink and dot name are ready, and the same rule
+  applies: the `hero-static` CSS animation shows the static hero after 2.5 s if nothing else does
+  (`hero.spec.ts` blocks every `.js` file and checks). Never make that reveal JS-only.
 - **Same-page `#` links broke two ways at once.** Lenis's `anchors` option scrolls on any matching
   click even when other code cancelled it (the Work toggle scrolled to `#work` while opening the
   picker), and the router's own same-page hash handling restores the old scroll position, so

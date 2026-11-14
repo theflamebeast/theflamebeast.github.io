@@ -43,6 +43,49 @@ test('the hint shows while the sim runs and fades after the first stir', async (
   await expect(hint).toHaveCSS('opacity', '0');
 });
 
+const opacity = (page: Page, sel: string) =>
+  page.locator(sel).evaluate((el) => parseFloat(getComputedStyle(el).opacity));
+
+test('on load the static still and the plain-text name never show; the live hero fades in', async ({ page }) => {
+  // Every frame from the first paint: is the still showing, or the name as plain (not dot) type?
+  await page.addInitScript(() => {
+    const w = window as unknown as { frames: number; staticFrames: number };
+    w.frames = 0;
+    w.staticFrames = 0;
+    const tick = () => {
+      const still = document.querySelector('[data-hero] [data-ink-still]');
+      const name = document.querySelector('[data-hero] h1');
+      if (still && name) {
+        w.frames++;
+        const s = getComputedStyle(name);
+        const plainName = parseFloat(s.opacity) > 0.05 && s.color !== 'rgba(0, 0, 0, 0)';
+        if (parseFloat(getComputedStyle(still).opacity) > 0.05 || plainName) w.staticFrames++;
+      }
+      if (performance.now() < 4000) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  await page.goto('/');
+  await expect(page.locator(INK)).toHaveAttribute('data-running', 'true');
+  await page.waitForTimeout(4200);
+  const { frames, staticFrames } = await page.evaluate(() => {
+    const w = window as unknown as { frames: number; staticFrames: number };
+    return { frames: w.frames, staticFrames: w.staticFrames };
+  });
+  expect(frames).toBeGreaterThan(10);
+  expect(staticFrames).toBe(0);
+  await expect(page.locator('[data-hero]')).toHaveAttribute('data-hero-state', 'live');
+  await expect.poll(() => opacity(page, '[data-hero] h1')).toBe(1);
+});
+
+test('if the page scripts never arrive, the static hero shows after a short wait', async ({ page }) => {
+  await page.route('**/*.js', (r) => r.abort());
+  await page.goto('/');
+  await expect(page.locator('[data-hero]')).toHaveAttribute('data-hero-state', 'pending');
+  await expect.poll(() => opacity(page, '[data-hero] [data-ink-still]'), { timeout: 5000 }).toBe(1);
+  await expect.poll(() => opacity(page, '[data-hero] h1'), { timeout: 5000 }).toBe(1);
+});
+
 test('no rotating arrows anywhere', async ({ page }) => {
   for (const path of ['/', '/work/stashout']) {
     await page.goto(path);
@@ -107,6 +150,8 @@ test('no WebGL2: the still is visible, there is no canvas, zero console errors',
   await page.goto('/');
   await page.waitForLoadState('networkidle');
   await expect(page.locator(STILL)).toBeVisible();
+  // Straight away, not after the scripts-never-arrived fallback: the hero gives up on going live.
+  await expect.poll(() => opacity(page, '[data-hero] [data-ink-still]'), { timeout: 1500 }).toBe(1);
   await expect(page.locator(INK)).toHaveCount(0);
   await expect(page.locator('[data-ink-hint]')).toBeHidden();
   await expect(page.locator('[data-hero] h1')).toHaveText('Anish Gupta');
@@ -142,6 +187,7 @@ test('a lost WebGL context falls back to the still, and the sim returns when it 
   await expect(canvas).toHaveAttribute('data-running', 'false');
   await expect(canvas).toHaveCSS('opacity', '0');
   await expect(page.locator(STILL)).toBeVisible();
+  await expect.poll(() => opacity(page, '[data-hero] [data-ink-still]')).toBe(1);
   await page.evaluate(() => (window as unknown as { loseContext: WEBGL_lose_context }).loseContext.restoreContext());
   await expect(canvas).toHaveAttribute('data-running', 'true');
   await expect(canvas).toHaveCSS('opacity', '1');
