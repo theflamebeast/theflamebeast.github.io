@@ -164,6 +164,9 @@ function mount(heading: HTMLElement): () => void {
     size = Math.max(1.5 * scale, step * 0.62);
     built = true;
     heading.dataset.dotsOn = '';
+    // Resizing a canvas clears it, and the loop that would repaint may not be running (the
+    // visibility observer has not reported yet at startup, or the dots are already home).
+    draw();
   };
 
   const draw = () => {
@@ -337,7 +340,6 @@ function mount(heading: HTMLElement): () => void {
     if (!alive) return;
     refreshColours(performance.now());
     build();
-    draw();
     visibility.observe(canvas);
     resize.observe(heading);
   });

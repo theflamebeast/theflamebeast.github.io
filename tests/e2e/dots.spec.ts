@@ -66,3 +66,29 @@ test('without JS the headings are ordinary type', async ({ browser }) => {
   await expect(page.locator(HERO)).toHaveCSS('color', 'rgb(233, 237, 243)');
   await context.close();
 });
+
+const lit = (page: Page, heading: string) =>
+  page.locator(`${heading} canvas[data-dots-canvas]`).evaluate((c: HTMLCanvasElement) => {
+    const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+    let n = 0;
+    for (let i = 3; i < d.length; i += 4) if (d[i] > 0) n++;
+    return n;
+  });
+
+test('the hero name is actually painted in dots, untouched, as soon as the page loads', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator(`${HERO} canvas[data-dots-canvas]`)).toHaveAttribute('data-dots-canvas', '');
+  await expect.poll(() => lit(page, HERO), { timeout: 5000 }).toBeGreaterThan(1500);
+});
+
+test('a case-study title is painted in dots too', async ({ page }) => {
+  await page.goto('/work/flameburst');
+  await expect.poll(() => lit(page, CASE), { timeout: 5000 }).toBeGreaterThan(500);
+});
+
+test('the dots are still painted after the window is resized', async ({ page }) => {
+  await page.goto('/');
+  await expect.poll(() => lit(page, HERO), { timeout: 5000 }).toBeGreaterThan(1500);
+  await page.setViewportSize({ width: 1000, height: 800 });
+  await expect.poll(() => lit(page, HERO), { timeout: 5000 }).toBeGreaterThan(1000);
+});
