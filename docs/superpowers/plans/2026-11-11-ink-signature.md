@@ -225,6 +225,9 @@ it.each([
 
 ### Task 3: Arrows out, hero hint, next-project cover
 
+(Amended 2026-11-14, round 4 Task R7: the next-project cover is always shown on every device; the
+hover and focus wipe described below is gone.)
+
 **Files:**
 - Delete: `src/components/Arrow.astro`
 - Modify: `src/components/Hero.astro`, `src/pages/work/[slug].astro`, `src/motion/scrub.ts`,

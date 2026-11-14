@@ -20,6 +20,6 @@ test('on a touch screen the next-project cover is always shown', async ({ page }
   await page.goto('/work/stashout');
   const cover = page.locator('[data-next-cover]');
   await cover.scrollIntoViewIfNeeded();
-  await expect(cover).toHaveCSS('clip-path', 'inset(0px)');
+  await expect(cover).toHaveCSS('clip-path', 'none');
   await expect(cover.locator('img')).toBeVisible();
 });

@@ -112,6 +112,9 @@ curved-curtain page transition.
 - **No "Play" link yet** (designer's call): on 2026-11-10 neither `stashout.io` nor
   `www.stashout.io` resolves in DNS, and the Stashout repo's `DEPLOY.md` uses that domain only as an
   example. The project data gets an optional live-URL field; the button appears only when it is set.
+  Amended 2026-11-14: `stashout.io` now serves a Coming Soon page, so Stashout links to it as a plain
+  `stashout.io` button (first, before Architecture, which replaces the "Architecture tour" label).
+  The live-URL "Play" button stays unused until the game can be played.
 - Media: a short gameplay clip of a real raid, recorded by the builder with the Stashout repo's own
   game driver (its `drive-the-game` skill), plus UI screenshots from that repo's `ui-shots/` folder
   (39 PNGs, gitignored there, so copy the chosen ones in). Never use `admin-*.png` or `auth.png`, and
@@ -130,7 +133,8 @@ curved-curtain page transition.
 **FlameBurst**
 - Creator, server administrator and full-stack developer, Sep 2020 to Sep 2025. Link
   `https://www.flameburst.net`, labelled honestly: the site currently shows that the server is on
-  hiatus.
+  hiatus. Amended 2026-11-14: the link reads `flameburst.net`, with no status note, since the site
+  says it itself.
 - What I built, from the resume: a Linux Minecraft server for 25+ concurrent players, first on Oracle
   Cloud and then a dedicated host as load grew; JVM garbage-collection and thread tuning that removed
   peak-hour latency spikes; custom Java plugins on the Paper/Purpur API for automation, moderation and

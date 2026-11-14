@@ -39,17 +39,16 @@ for (const p of PAGES) {
   });
 }
 
-test('the next-project cover is clipped until the link is hovered or focused', async ({ page }) => {
+test('the next-project cover is always shown, with no hover or focus needed', async ({ page }) => {
   await page.goto('/work/stashout');
   const cover = page.locator('[data-next-cover]');
   await cover.scrollIntoViewIfNeeded();
-  await expect(cover).toHaveCSS('clip-path', 'inset(100% 0px 0px)');
-  await page.locator('[data-next-project] a').hover();
-  await expect(cover).toHaveCSS('clip-path', 'inset(0px)');
   await page.mouse.move(0, 0);
-  await expect(cover).toHaveCSS('clip-path', 'inset(100% 0px 0px)');
-  await page.locator('[data-next-project] a').focus();
-  await expect(cover).toHaveCSS('clip-path', 'inset(0px)');
+  await expect(cover).toHaveCSS('clip-path', 'none');
+  await expect(cover.locator('img')).toBeVisible();
+  const box = (await cover.boundingBox())!;
+  expect(box.width).toBeGreaterThan(200);
+  expect(box.height).toBeGreaterThan(100);
 });
 
 test('Stashout has no Play link and no link to its private repo', async ({ page }) => {
@@ -73,14 +72,31 @@ test('Stashout page has a muted, looping, inline video with a poster and mp4 and
   }
 });
 
-test('FlameBurst outbound link says it is on hiatus', async ({ page }) => {
+test('FlameBurst links to its site by name, with no status note (the site says it)', async ({ page }) => {
   await page.goto('/work/flameburst');
-  await expect(page.locator('main a[href="https://www.flameburst.net"]')).toContainText('on hiatus');
+  await expect(page.locator('.case-links a[href="https://www.flameburst.net"]')).toHaveText('flameburst.net');
+  await expect(page.locator('.case-links')).not.toContainText(/hiatus/i);
 });
 
 test('FlameBurst links to its architecture write-up', async ({ page }) => {
   await page.goto('/work/flameburst');
   await expect(page.locator('.case-links a[href="https://www.flameburst.net/architecture"]')).toHaveText('Architecture');
+});
+
+test('Stashout links to stashout.io by name, first, and to its architecture showcase', async ({ page }) => {
+  await page.goto('/work/stashout');
+  const links = page.locator('.case-links a');
+  await expect(links).toHaveText(['stashout.io', 'Architecture']);
+  await expect(links.first()).toHaveAttribute('href', 'https://stashout.io');
+  await expect(links.last()).toHaveAttribute('href', 'https://github.com/theflamebeast/stashout-showcase');
+});
+
+test('both architecture buttons use the same label', async ({ page }) => {
+  for (const path of ['/work/stashout', '/work/flameburst']) {
+    await page.goto(path);
+    await expect(page.locator('.case-links').getByRole('link', { name: 'Architecture', exact: true })).toHaveCount(1);
+    await expect(page.locator('.case-links')).not.toContainText('Architecture tour');
+  }
 });
 
 test('an unknown path responds 404 with a link home', async ({ page }) => {

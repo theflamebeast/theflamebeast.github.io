@@ -91,6 +91,10 @@ Everything committed is world-readable, and anything on `main` is live within a 
   no YouTube, Twitch or guns.lol links. Contact links are GitHub, LinkedIn and email only.
   `theflamebeast` appears only inside the `github.com/theflamebeast` and `theflamebeast.github.io`
   URLs.
+- **Project buttons** (`links` in the project's front matter): the project's own site first, named
+  by its domain with no status note (`stashout.io`, `flameburst.net`), then `Architecture` (the same
+  label on both case studies). `liveUrl` renders a "Play" button; leave it unset until the game can
+  be played. Any new outside host goes on the allowed list in `tests/e2e/guards.spec.ts`.
 - **Projects shown are exactly three:** Stashout and FlameBurst as case studies, Server Insight as a
   compact card. Adding one is a design decision for the owner, not an edit.
 - **`--ink-live` is a fill, line or glow, never text.** `initLiveAccent` writes it on `<html>` every 200 ms from the ink's hue (saturation 0.6, value 1), on the same clock as the hero's ink; under reduced motion the token keeps its resting value. Dark text on it measures at least 4.5:1 through the whole cycle (a unit test checks 1000 points).

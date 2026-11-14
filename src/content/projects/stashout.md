@@ -9,7 +9,9 @@ end: null
 status: active
 stack: [TypeScript, PixiJS, Node.js, uWebSockets.js, WebSockets, Vitest]
 links:
-  - label: Architecture tour
+  - label: stashout.io
+    href: https://stashout.io
+  - label: Architecture
     href: https://github.com/theflamebeast/stashout-showcase
 cover:
   src: ../../assets/projects/stashout/lobby.webp

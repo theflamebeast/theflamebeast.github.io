@@ -9,7 +9,7 @@ end: Sep 2025
 status: hiatus
 stack: [Java, Paper / Purpur API, Velocity, Linux, TypeScript, Next.js]
 links:
-  - label: flameburst.net (on hiatus)
+  - label: flameburst.net
     href: https://www.flameburst.net
   - label: Architecture
     href: https://www.flameburst.net/architecture

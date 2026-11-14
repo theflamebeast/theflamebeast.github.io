@@ -322,31 +322,6 @@ const galleryItems = video && cover ? [cover, ...gallery] : gallery;
     object-fit: cover;
   }
 
-  /* Where hovering exists the cover is wiped in from the bottom on hover or keyboard focus. */
-  @media (hover: hover) {
-    .next-cover {
-      clip-path: inset(100% 0 0 0);
-      transition: clip-path 0.7s var(--ease-out);
-    }
-
-    .next:hover .next-cover,
-    .next:focus-within .next-cover {
-      clip-path: inset(0);
-    }
-  }
-
-  @media (hover: none) {
-    .next-cover {
-      clip-path: inset(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .next-cover {
-      transition: none;
-    }
-  }
-
   .next-link {
     display: inline-block;
     margin-top: 0.75rem;

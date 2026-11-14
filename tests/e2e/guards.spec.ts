@@ -11,7 +11,7 @@ const FORBIDDEN: [RegExp, string][] = [
   [/theflamebeast(?!\.github\.io)(?<!github\.com\/theflamebeast)/, 'handle outside allowed URLs'],
   [/fonts\.(googleapis|gstatic)\.com/, 'third-party font host'],
   [
-    /<a[^>]+href="https?:\/\/(?!localhost|theflamebeast\.github\.io|github\.com\/theflamebeast|www\.linkedin\.com\/in\/anishgupta25|modrinth\.com\/mod\/server-insight|api\.badgr\.io|www\.flameburst\.net)/,
+    /<a[^>]+href="https?:\/\/(?!localhost|theflamebeast\.github\.io|github\.com\/theflamebeast|www\.linkedin\.com\/in\/anishgupta25|modrinth\.com\/mod\/server-insight|api\.badgr\.io|www\.flameburst\.net|stashout\.io)/,
     'unexpected external link',
   ],
   [/\b\d{1,3}(\.\d{1,3}){3}\b/, 'IP address'],
@@ -44,7 +44,8 @@ test('every pattern catches its bad sample and spares the allowed URLs', () => {
 
   const allowed =
     'https://github.com/theflamebeast/server-insight https://theflamebeast.github.io/work ' +
-    '<a href="https://www.linkedin.com/in/anishgupta25"> <a href="https://modrinth.com/mod/server-insight">';
+    '<a href="https://www.linkedin.com/in/anishgupta25"> <a href="https://modrinth.com/mod/server-insight"> ' +
+    '<a href="https://stashout.io"> <a href="https://www.flameburst.net/architecture">';
   for (const [re, why] of FORBIDDEN) expect(allowed.match(re), why).toBeNull();
 });
 
