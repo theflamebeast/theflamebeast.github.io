@@ -16,7 +16,11 @@
 # (This header deliberately does not start with the marker, so the grep that
 # collects those blocks does not match the instructions describing them.)
 #
-ed330e1
+fa010d1
+# 2026-11-14: /codex:review --base ed330e1 (Codex, gpt-6.1-sol, medium) covered ed330e1..fa010d1:
+# the cutover, the two fixes from the review below, the Email tile and progress line removals, the
+# aria-label fix, the invisible-hero-name fix and the Task 8 docs. No findings; it read the diff and
+# did not run the tests. Codex has found 6 of 6 real bugs a review caught here (this run found none).
 # 2026-11-14: /codex:review --base c39b97d (Codex, gpt-6.1-sol, medium) covered c39b97d..ed330e1,
 # the two round-2 review fixes and round 3 (R1 to R6) plus Task 8 so far. It found 2 P2s,
 # both fixed (the skip link now moves focus; a lifted finger clears the dots, though real
