@@ -7,7 +7,6 @@ summary: A client-side Fabric mod with one command that shows what your client c
 role: Solo developer
 start: Jan 2026
 end: null
-status: released
 stack: [Java, Fabric]
 links:
   - label: Modrinth

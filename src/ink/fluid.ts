@@ -19,7 +19,6 @@ const DEFAULTS = {
 };
 
 export type InkParams = Readonly<typeof DEFAULTS>;
-export const INK_PARAMS: InkParams = DEFAULTS;
 export type InkState = 'running' | 'paused' | 'lost';
 
 export interface InkOptions {
@@ -39,7 +38,6 @@ export interface InkFluid {
   /** While pressed, bright ink pours at the pointer every frame, moving or not. */
   press(x: number, y: number): void;
   release(): void;
-  readonly running: boolean;
 }
 
 const MAX_STEP_S = 1 / 60;
@@ -138,7 +136,7 @@ function sameSize(target: Target, [width, height]: [number, number]): boolean {
  * The canvas must already be in the document and sized by CSS.
  */
 export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {}): InkFluid | null {
-  const params = { ...INK_PARAMS, ...opts.params };
+  const params = { ...DEFAULTS, ...opts.params };
   const background = opts.background ?? [0, 0, 0];
 
   const gl = canvas.getContext('webgl2', { alpha: false, antialias: false, depth: false, stencil: false });
@@ -506,10 +504,6 @@ export function createInkFluid(canvas: HTMLCanvasElement, opts: InkOptions = {})
         );
       }
       idleMs = 0;
-    },
-
-    get running() {
-      return raf !== 0;
     },
   };
 }

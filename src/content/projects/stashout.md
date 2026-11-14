@@ -6,7 +6,6 @@ summary: A multiplayer extraction shooter that runs in the browser, on one deter
 role: Solo developer
 start: Jul 2026
 end: null
-status: active
 stack: [TypeScript, PixiJS, Node.js, uWebSockets.js, WebSockets, Vitest]
 links:
   - label: stashout.io

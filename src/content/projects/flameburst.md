@@ -6,7 +6,6 @@ summary: A Minecraft network I ran for five years, with custom Java plugins, ser
 role: Creator, server administrator and full-stack developer
 start: Sep 2020
 end: Sep 2025
-status: hiatus
 stack: [Java, Paper / Purpur API, Velocity, Linux, TypeScript, Next.js]
 links:
   - label: flameburst.net

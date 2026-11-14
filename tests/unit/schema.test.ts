@@ -12,7 +12,6 @@ const featured = {
   role: 'Solo developer',
   start: 'Jul 2026',
   end: null,
-  status: 'active',
   stack: ['TypeScript', 'PixiJS'],
   cover: { src: 'cover.webp', alt: 'The Stashout lobby' },
 };
@@ -25,7 +24,6 @@ const compact = {
   role: 'Solo developer',
   start: 'Jan 2026',
   end: null,
-  status: 'released',
   stack: ['Java', 'Fabric'],
 };
 
@@ -79,8 +77,7 @@ describe('project schema', () => {
     expect(schema.safeParse({ ...featured, diagram: 'flowchart' }).success).toBe(false);
   });
 
-  it('rejects an unknown tier and an unknown status', () => {
+  it('rejects an unknown tier', () => {
     expect(schema.safeParse({ ...featured, tier: 'hero' }).success).toBe(false);
-    expect(schema.safeParse({ ...featured, status: 'paused' }).success).toBe(false);
   });
 });

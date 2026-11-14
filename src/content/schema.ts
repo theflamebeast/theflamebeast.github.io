@@ -11,7 +11,6 @@ export function makeProjectSchema<Img extends z.ZodType>(image: () => Img) {
       role: z.string().min(1),
       start: z.string().min(1),
       end: z.string().min(1).nullable(),
-      status: z.enum(['active', 'hiatus', 'released']),
       stack: z.array(z.string().min(1)).min(1),
       links: z.array(z.object({ label: z.string().min(1), href: z.url() })).default([]),
       liveUrl: z.url().optional(),
