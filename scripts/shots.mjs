@@ -35,10 +35,7 @@ async function scrollThrough(page) {
 }
 
 async function open(browser, viewport, reducedMotion) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor: 1, reducedMotion });
-  // The intro plays once per session; mark it seen so it never covers a shot.
-  await context.addInitScript(() => sessionStorage.setItem('ag:intro', '1'));
-  return context;
+  return browser.newContext({ viewport, deviceScaleFactor: 1, reducedMotion });
 }
 
 mkdirSync(OUT, { recursive: true });

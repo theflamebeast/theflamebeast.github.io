@@ -82,6 +82,14 @@ a {
   outline: none;
 }
 
+/* Pages swap instantly. Without this the router's view transition crossfades the old page into the
+   new one. Not skipTransition(): that leaves the router's promises rejecting unhandled. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation: none !important;
+}
+
 .wrap {
   width: 100%;
   max-width: 88rem;

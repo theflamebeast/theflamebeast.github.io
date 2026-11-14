@@ -2,10 +2,6 @@ import { expect, test } from '@playwright/test';
 
 const HERO = '[data-hero] h1[data-dots]';
 
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => sessionStorage.setItem('ag:intro', '1'));
-});
-
 // Chromium also sends a document-level pointerleave when a touch ends, which hides the problem; these
 // events are sent alone, as an engine that doesn't send it would.
 const touchEvent = (page: import('@playwright/test').Page, type: string, x: number, y: number) =>

@@ -4,7 +4,7 @@ import sharp from 'sharp';
 const INK = '[data-hero] canvas[data-ink]';
 const STILL = '[data-hero] [data-ink-still] img';
 const ONLY_THE_CANVAS = `
-  [data-hero] > :not([data-ink]), [data-hero]::after, body > header, [data-ink-wipe] { visibility: hidden !important; }
+  [data-hero] > :not([data-ink]), [data-hero]::after, body > header { visibility: hidden !important; }
 `;
 
 function collectErrors(page: Page): string[] {
@@ -187,7 +187,6 @@ async function pourAtRest(page: Page): Promise<{ released: number; held: number 
   const a = { x: 260, y: 520 };
   const b = { x: 560, y: 760 };
   const run = async (hold: boolean) => {
-    await page.addInitScript(() => sessionStorage.setItem('ag:intro', '1'));
     await page.goto('/');
     await expect(page.locator('[data-hero] canvas[data-ink]')).toHaveAttribute('data-running', 'true');
     await page.addStyleTag({ content: ONLY_THE_CANVAS });

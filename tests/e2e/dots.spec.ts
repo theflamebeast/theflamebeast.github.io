@@ -3,10 +3,6 @@ import { expect, test, type Page } from '@playwright/test';
 const HERO = '[data-hero] h1[data-dots]';
 const CASE = 'main h1[data-dots]';
 
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => sessionStorage.setItem('ag:intro', '1'));
-});
-
 const pixels = (page: Page, heading: string) =>
   page.locator(`${heading} canvas[data-dots-canvas]`).evaluate((c: HTMLCanvasElement) => c.toDataURL());
 
