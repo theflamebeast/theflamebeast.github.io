@@ -81,7 +81,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both), `shots.mjs` (`npm run build && node scripts/shots.mjs`: full-page screenshots of every page at 1440 and 390, with and without reduced motion, plus the open Work picker, 14 files in the gitignored `shots/`; look at every one) |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
-| `.github/workflows/deploy.yml` | CI on every push, and every Monday to refresh the download figure; deploys to Pages only from `main` |
+| `.github/workflows/deploy.yml` | CI on every push to `main`, and every Monday to refresh the download figure; deploys to Pages only from `main`. Only the deploy job holds `pages` and `id-token` write; CI has no retries, on purpose (a retry would have hidden the skipped-transition `AbortError`) |
 | `docs/superpowers/` | the design, the plan, and the approved ink prototype |
 
 ## Conventions
@@ -244,4 +244,4 @@ The gate itself is `# The review gate` in `~/.claude/CLAUDE.md`. Local facts:
 - Default `/code-review medium`. The areas worth naming are `src/ink`, `src/motion`, `src/content`
   and `.github/workflows`; `.md` files and `docs/` rarely repay a billed run.
 - Branch `main`, committed straight to it (the `redesign` branch was fast-forwarded into `main` at
-  the cutover). A push to `main` deploys once the build job passes.
+  the cutover; nothing triggers on it any more). A push to `main` deploys once the build job passes.
