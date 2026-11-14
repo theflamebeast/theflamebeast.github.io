@@ -56,6 +56,7 @@ const og = new URL(ogImage, Astro.site);
 
 <script>
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { quietSkippedTransitions } from '../lib/transitions';
   import { initLiveAccent } from '../motion/accent';
   import { initClock } from '../motion/clock';
   import { initCopyEmail } from '../motion/copy';
@@ -68,6 +69,8 @@ const og = new URL(ogImage, Astro.site);
   import { initScrub } from '../motion/scrub';
   import { initSpotlight } from '../motion/spotlight';
   import { initCaseVideo } from '../motion/video';
+
+  quietSkippedTransitions();
 
   onPage(() => {
     const cleanups = [

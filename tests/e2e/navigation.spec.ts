@@ -122,6 +122,28 @@ test('back then forward: the page scrolls, the trigger count equals a fresh load
   expect(errors).toEqual([]);
 });
 
+test('a page swap whose transition gets skipped still lands, with no unhandled AbortError', async ({ page }) => {
+  // A second navigation inside one frame of the first makes the router skip the first transition
+  // (back then forward did this in CI, 1 run in 24 locally). Skipping every transition here makes
+  // that race happen on every click.
+  await page.addInitScript(() => {
+    const start = document.startViewTransition?.bind(document);
+    if (!start) return;
+    document.startViewTransition = ((cb: ViewTransitionUpdateCallback) => {
+      const t = start(cb);
+      t.skipTransition();
+      return t;
+    }) as typeof document.startViewTransition;
+  });
+  const errors = collectErrors(page);
+  await page.goto('/');
+  await page.locator('#work a[href="/work/stashout"]').first().click();
+  await expect(page).toHaveURL(/\/work\/stashout$/);
+  await expect(page.locator('main h1')).toHaveText('Stashout');
+  await page.waitForTimeout(300);
+  expect(errors).toEqual([]);
+});
+
 test('going back straight after a click still ends on a working page', async ({ page }) => {
   // Start on a case study and reach home client-side, so Back has a page of this site to return to.
   await page.goto('/work/flameburst');

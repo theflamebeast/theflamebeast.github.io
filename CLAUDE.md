@@ -62,7 +62,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/assets/projects/<id>/` | case-study images, only ever written by `scripts/import-image.mjs` |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
-| `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default), `links.ts` (`isExternal`) |
+| `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default), `links.ts` (`isExternal`), `transitions.ts` (`quietSkippedTransitions`, see Danger zones) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss, `press`/`release`: holding the mouse button pours bright ink), `shaders.ts`, `palette.ts` (the fire hue, red through orange to amber, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, after a lost WebGL context, and if the page's scripts never arrive; never while the live hero loads (`Hero.astro`'s `data-hero-state`: `pending` keeps the hero dark, `live` fades in the ink and dot name) |
 | `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`, `HOVER`, `canHover`), `scroll.ts` (Lenis on the GSAP ticker; same-page `#` links glide through its own `<body>` click handler, `html[data-triggers]`), `header.ts` (`initHeader`: `data-solid` past 40 px, `html[data-header-hidden]` on scrolling down past 30% of the viewport, never while the picker is open, focus is inside or under reduced motion), `picker.ts` (`initWorkPicker`: opens on hover at 720 px and up, click, tap, Enter or Space; Escape returns focus to Work), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `dots.ts` (`initDotType`: every `[data-dots]` heading, the hero name and case-study titles, drawn as a dot grid the pointer sweeps aside; the real text stays in the page, transparent while the dots are up; stops drawing once settled; nothing under reduced motion), `scrub.ts` (rows and `[data-parallax]`; 720 px and up only), `copy.ts` (click the footer's Email tile to copy the address), `spotlight.ts` (the project cards' cursor light; hover screens only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro` |
@@ -165,6 +165,12 @@ Each one happened.
   instant; keep it there (`navigation.spec.ts` samples the animations through a navigation, and
   fails without the rule). Not `skipTransition()`: that leaves the router's promises rejecting with
   an unhandled `AbortError` on every navigation.
+- **The router skips transitions itself, and never handles the rejection.** A second navigation
+  inside one frame of the first (back then forward) makes Astro skip the first view transition; its
+  `ready` rejects unhandled and the console shows `AbortError: Transition was skipped`. It failed CI
+  once on `bca357b` (1 run in 24 locally). `quietSkippedTransitions()` (`src/lib/transitions.ts`,
+  called once from `Base.astro`) marks every transition's `ready` as handled; `navigation.spec.ts`
+  skips every transition to make the race happen on each click.
 - **Anything that hides content at load must come back without JS.** The old ink preloader was set
   by an inline `<head>` script and only a CSS animation could lift it when the page's scripts never
   arrived; it is gone (round 4). The hero now holds itself dark (`data-hero-state="pending"`, set by
