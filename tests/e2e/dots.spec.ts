@@ -82,6 +82,31 @@ test('a case-study title is painted in dots too', async ({ page }) => {
   await expect.poll(() => lit(page, CASE), { timeout: 5000 }).toBeGreaterThan(500);
 });
 
+test('if no dots can be sampled, the real heading stays visible instead of a blank canvas', async ({ page }) => {
+  // An engine whose text metrics come back empty (an old fontBoundingBoxAscent) samples nothing.
+  await page.addInitScript(() => {
+    CanvasRenderingContext2D.prototype.measureText = () => ({}) as TextMetrics;
+  });
+  await page.goto('/');
+  await page.waitForTimeout(1500);
+  await expect(page.locator(HERO)).not.toHaveAttribute('data-dots-on', /.*/);
+  await expect(page.locator(HERO)).not.toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+});
+
+test('a lost canvas context brings the real heading back, and a restored one repaints the dots', async ({ page }) => {
+  await page.goto('/');
+  await expect.poll(() => lit(page, HERO), { timeout: 5000 }).toBeGreaterThan(1500);
+  const canvas = page.locator(`${HERO} canvas[data-dots-canvas]`);
+  await canvas.evaluate((c) => c.dispatchEvent(new Event('contextlost')));
+  await expect(page.locator(HERO)).not.toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+  await canvas.evaluate((c: HTMLCanvasElement) => {
+    c.getContext('2d')!.clearRect(0, 0, c.width, c.height);
+    c.dispatchEvent(new Event('contextrestored'));
+  });
+  await expect.poll(() => lit(page, HERO), { timeout: 5000 }).toBeGreaterThan(1500);
+  await expect(page.locator(HERO)).toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+});
+
 test('the dots are still painted after the window is resized', async ({ page }) => {
   await page.goto('/');
   await expect.poll(() => lit(page, HERO), { timeout: 5000 }).toBeGreaterThan(1500);

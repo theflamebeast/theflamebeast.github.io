@@ -14,7 +14,8 @@ export function initHeader(): () => void {
   let lastY = window.scrollY;
 
   const show = () => root.removeAttribute('data-header-hidden');
-  const busy = () => header.hasAttribute('data-picker-open') || header.contains(document.activeElement);
+  // Keyboard focus only: a mouse click on Work leaves focus on it, and the header must still hide.
+  const busy = () => header.hasAttribute('data-picker-open') || header.querySelector(':focus-visible') !== null;
 
   const update = () => {
     const y = window.scrollY;

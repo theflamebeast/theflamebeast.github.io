@@ -29,7 +29,8 @@ const href = `/work/${project.id}`;
   </a>
   <div class="card-body">
     <p class="meta" data-reveal="fade">{formatSpan(start, end)}</p>
-    <h3 class="card-title" data-reveal="lines"><a href={href}>{title}</a></h3>
+    <!-- Fades, not split into lines: a line split hides its parts from assistive tech and clones the link. -->
+    <h3 class="card-title" data-reveal="fade"><a href={href}>{title}</a></h3>
     <p class="card-summary" data-reveal="fade">{summary}</p>
     <ul class="card-stack meta" aria-label="Built with">
       {stack.map((s) => <li>{s}</li>)}

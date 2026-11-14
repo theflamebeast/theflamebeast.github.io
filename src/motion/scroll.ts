@@ -5,8 +5,8 @@ import { prefersReducedMotion } from './prefs';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// The one test hook in production code: Task 9's back/forward test compares this count with a
-// fresh load to catch triggers that a page swap leaked.
+// A test hook: the back/forward test in navigation.spec.ts compares this count with a fresh load
+// to catch triggers that a page swap leaked.
 function countTriggers() {
   document.documentElement.dataset.triggers = String(ScrollTrigger.getAll().length);
 }

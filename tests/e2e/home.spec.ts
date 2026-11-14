@@ -21,6 +21,42 @@ test('selected work lists Stashout then FlameBurst linking their case studies', 
   await expect(cards.nth(1).locator('a[href="/work/flameburst"]').first()).toBeVisible();
 });
 
+test('each featured project is a named link a keyboard reaches, with a whole focus ring', async ({ page }) => {
+  const work = page.locator('#work');
+  for (const [name, href] of [
+    ['Stashout', '/work/stashout'],
+    ['FlameBurst', '/work/flameburst'],
+  ]) {
+    const link = work.getByRole('link', { name, exact: true });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute('href', href);
+    await link.scrollIntoViewIfNeeded();
+    await link.focus();
+    await expect(link).toBeFocused();
+    // The ring must not be clipped down to a sliver by a reveal mask around the link.
+    const clipped = await link.evaluate((el) => {
+      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+        const o = getComputedStyle(p).overflow;
+        if (o.includes('clip') || o.includes('hidden')) return p.className;
+      }
+      return '';
+    });
+    expect(clipped).toBe('');
+  }
+});
+
+test('nothing a keyboard can reach sits inside an aria-hidden ancestor', async ({ page }) => {
+  await page.mouse.wheel(0, 20000);
+  await page.waitForTimeout(800);
+  const hidden = await page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, [tabindex]')]
+      .filter((el) => el.tabIndex >= 0 && !el.hasAttribute('disabled'))
+      .filter((el) => el.closest('[aria-hidden="true"]'))
+      .map((el) => el.outerHTML.slice(0, 80)),
+  );
+  expect(hidden).toEqual([]);
+});
+
 test('Server Insight card shows "Fabric mod", a download count and Modrinth + GitHub links', async ({ page }) => {
   const card = page.locator('[data-compact-card]');
   await expect(card.getByRole('heading')).toHaveText('Server Insight');

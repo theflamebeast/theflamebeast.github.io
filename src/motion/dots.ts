@@ -163,7 +163,9 @@ function mount(heading: HTMLElement): () => void {
     }
     size = Math.max(1.5 * scale, step * 0.62);
     built = true;
-    heading.dataset.dotsOn = '';
+    // The real text goes transparent only when there are dots to replace it; an empty sample (an
+    // engine with no text metrics, a font the canvas refused) leaves the heading as plain type.
+    heading.toggleAttribute('data-dots-on', count > 0);
     // Resizing a canvas clears it, and the loop that would repaint may not be running (the
     // visibility observer has not reported yet at startup, or the dots are already home).
     draw();
@@ -322,6 +324,10 @@ function mount(heading: HTMLElement): () => void {
   const fingerLifted = (event: PointerEvent) => {
     if (event.pointerType === 'touch') pointer.near = false;
   };
+  // A lost 2D context (a GPU reset, a canvas the browser discarded in the background) is blank until
+  // restored: show the real heading meanwhile, then rebuild, which repaints.
+  canvas.addEventListener('contextlost', () => delete heading.dataset.dotsOn, { signal: listeners.signal });
+  canvas.addEventListener('contextrestored', () => build(), { signal: listeners.signal });
   window.addEventListener('pointerup', fingerLifted, { passive: true, signal: listeners.signal });
   window.addEventListener('pointercancel', fingerLifted, { passive: true, signal: listeners.signal });
 

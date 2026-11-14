@@ -78,6 +78,26 @@ test('FlameBurst links to its site by name, with no status note (the site says i
   await expect(page.locator('.case-links')).not.toContainText(/hiatus/i);
 });
 
+test('the FlameBurst lead image loads straight away, not lazily', async ({ page }) => {
+  await page.goto('/work/flameburst');
+  const img = page.locator('.case-cover img');
+  await expect(img).toHaveAttribute('fetchpriority', 'high');
+  await expect(img).not.toHaveAttribute('loading', 'lazy');
+});
+
+test('the 404 page asks not to be indexed and claims no canonical address', async ({ page }) => {
+  await page.goto('/no-such-page');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
+  await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
+});
+
+test('control: a real page keeps its canonical address and is indexable', async ({ page }) => {
+  await page.goto('/work/flameburst');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://theflamebeast.github.io/work/flameburst/');
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+});
+
 test('FlameBurst links to its architecture write-up', async ({ page }) => {
   await page.goto('/work/flameburst');
   await expect(page.locator('.case-links a[href="https://www.flameburst.net/architecture"]')).toHaveText('Architecture');

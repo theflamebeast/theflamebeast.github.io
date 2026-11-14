@@ -142,6 +142,17 @@ test('the header does not hide while the picker is open or focus is inside it', 
   expect((await header.boundingBox())!.y).toBe(0);
 });
 
+test('after a mouse opens and closes Work, the header still hides on scrolling down', async ({ page }) => {
+  await page.goto('/');
+  await page.locator(TOGGLE).click();
+  await expect(page.locator(PANEL)).toBeVisible();
+  await page.locator(TOGGLE).click();
+  await expect(page.locator(PANEL)).toBeHidden();
+  // The click left focus on the toggle, but no keyboard user is in the header.
+  await scrollBy(page, 900);
+  await expect.poll(() => headerState(page)).toBe(true);
+});
+
 test('a hidden header comes back when focus enters it', async ({ page }) => {
   await page.goto('/');
   await scrollBy(page, 700);

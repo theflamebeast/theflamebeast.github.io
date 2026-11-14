@@ -91,7 +91,8 @@ test('the router never crossfades between pages', async ({ page }) => {
 
 test('a keyboard-activated link navigates', async ({ page }) => {
   await page.goto('/');
-  const link = page.locator('#work a[href="/work/stashout"]').first();
+  // The title link, the one a keyboard reaches (the card's image link is out of the tab order).
+  const link = page.locator('#work').getByRole('link', { name: 'Stashout', exact: true });
   await link.focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/work\/stashout$/);
