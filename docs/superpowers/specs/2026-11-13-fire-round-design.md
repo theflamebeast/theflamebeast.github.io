@@ -29,7 +29,8 @@ Amends `2026-11-11-ink-signature-design.md`. Where they disagree, this file wins
   owner dropped the Email tile, since the address already shows as the headline, so two tiles
   remain (LinkedIn, GitHub) and the "Open in your mail app" link stays under the headline.
 - **The side lines are plain**, not progress bars, and sit outside the content gutter so they never
-  touch text.
+  touch text. Amended 2026-11-14: the owner also removed the 2 px scroll-progress line along the top
+  (round 2 had added it), so the frame is the two side lines.
 - **The resting accent moves from blue to an ember orange**, a fill never text, with dark text on it
   (it measures at least 4.5:1). Focus rings use it too.
 

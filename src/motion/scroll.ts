@@ -11,22 +11,6 @@ function countTriggers() {
   document.documentElement.dataset.triggers = String(ScrollTrigger.getAll().length);
 }
 
-export function initScrollProgress(): () => void {
-  const bar = document.querySelector<HTMLElement>('[data-progress]');
-  if (!bar) return () => {};
-  const trigger = ScrollTrigger.create({
-    start: 0,
-    end: 'max',
-    onUpdate: (self) => {
-      bar.style.transform = `scaleX(${self.progress})`;
-    },
-  });
-  return () => {
-    trigger.kill();
-    bar.style.transform = '';
-  };
-}
-
 export function initSmoothScroll(): () => void {
   ScrollTrigger.addEventListener('refresh', countTriggers);
   if (prefersReducedMotion()) {

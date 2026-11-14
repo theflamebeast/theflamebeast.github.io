@@ -78,7 +78,7 @@ const og = new URL(ogImage, Astro.site);
   import { onPage } from '../motion/lifecycle';
   import { initWorkPicker } from '../motion/picker';
   import { initReveals } from '../motion/reveal';
-  import { initScrollProgress, initSmoothScroll } from '../motion/scroll';
+  import { initSmoothScroll } from '../motion/scroll';
   import { initScrub } from '../motion/scrub';
   import { initSpotlight } from '../motion/spotlight';
   import { initCaseVideo } from '../motion/video';
@@ -89,7 +89,6 @@ const og = new URL(ogImage, Astro.site);
   onPage(() => {
     const cleanups = [
       initSmoothScroll(),
-      initScrollProgress(),
       initHeader(),
       initWorkPicker(),
       initLiveAccent(),

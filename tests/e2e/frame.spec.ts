@@ -34,3 +34,11 @@ test('the edge lines take the live colour', async ({ page }) => {
   });
   expect(colour).toBe(live);
 });
+
+test('there is no scroll-progress line, and the side lines stay while scrolled', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight / 2));
+  await expect(page.locator('[data-progress]')).toHaveCount(0);
+  await expect(page.locator('[data-edge="left"]')).toBeVisible();
+  await expect(page.locator('[data-edge="right"]')).toBeVisible();
+});
