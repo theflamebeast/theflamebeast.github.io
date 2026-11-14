@@ -62,11 +62,12 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `src/assets/projects/<id>/` | case-study images, only ever written by `scripts/import-image.mjs` |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |
-| `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default) |
+| `src/lib/` | helpers: `projects.ts` (`loadProjects`, the one reader of the collection, sorted and split into featured and compact, with download counts; cached per build), `modrinth.ts` (build-time download count with a fallback), `format.ts` (`formatSpan`, `formatCount`), `clock.ts` (`formatLocalTime`, Eastern by default), `links.ts` (`isExternal`) |
 | `src/ink/` | the WebGL2 fluid simulation: `fluid.ts` (solver, start/stop, context loss, `press`/`release`: holding the mouse button pours bright ink), `shaders.ts`, `palette.ts` (the fire hue, red through orange to amber, and `liveInkRgb` for the page accent), `size.ts` (canvas pixel cap, grid size) |
 | `src/assets/ink-still.webp` | the hero's still: shown without JS or WebGL, under reduced motion, and under the canvas until it fades in |
 | `src/motion/` | every scroll, hover and navigation effect: `lifecycle.ts` (`onPage`), `prefs.ts` (reduced motion, `isWide`, `HOVER`, `canHover`), `scroll.ts` (Lenis on the GSAP ticker; same-page `#` links glide through its own `<body>` click handler, `html[data-triggers]`), `header.ts` (`initHeader`: `data-solid` past 40 px, `html[data-header-hidden]` on scrolling down past 30% of the viewport, never while the picker is open, focus is inside or under reduced motion), `picker.ts` (`initWorkPicker`: opens on hover at 720 px and up, click, tap, Enter or Space; Escape returns focus to Work), `accent.ts` (`--ink-live`, the page accent), `reveal.ts`, `dots.ts` (`initDotType`: every `[data-dots]` heading, the hero name and case-study titles, drawn as a dot grid the pointer sweeps aside; the real text stays in the page, transparent while the dots are up; stops drawing once settled; nothing under reduced motion), `scrub.ts` (rows and `[data-parallax]`; 720 px and up only), `copy.ts` (click the footer's Email tile to copy the address), `spotlight.ts` (the project cards' cursor light; hover screens only), `clock.ts`, `video.ts` (the case-study clip's pause button); all started from one `onPage` in `Base.astro` |
 | `src/components/Button.astro` | the one button: ink-wash hover, no lean; `.btn`, `.btn-fill`, `.btn-text` |
+| `src/components/Link.astro` | the one anchor for any link that may leave the site (buttons, footer tiles, Server Insight's links, the cert link, the picker's Server Insight row) |
 | `src/components/Footer.astro` | the "Contact" headline with its ink sweep on hover, an invitation line, three contact tiles (Email copies the address and says "Copied", LinkedIn, GitHub; inline outline icons; the address appears only in the Email tile), and the glowing top edge |
 | `src/components/Frame.astro` | the frame drawn in the live colour: 1 px lines down both viewport edges with a faint inward glow (no line along the top) |
 | `src/components/Nav.astro` | the fixed header; "Work" is a link to `/#work` until `picker.ts` upgrades it to the picker's toggle |
@@ -120,6 +121,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | Project data | the `projects` collection, read only through `loadProjects()` in `src/lib/projects.ts` |
 | Site facts | `src/data/site.ts` |
 | Importing an image into `src/assets` | `scripts/import-image.mjs` (enforces the media rules) |
+| A link that may leave the site | `src/components/Link.astro` (`isExternal` in `src/lib/links.ts`): another origin opens in a new tab with `rel="noopener noreferrer"` and a hidden "(opens in a new tab)"; never a bare `<a>` for an outside URL |
 
 ## Danger zones
 

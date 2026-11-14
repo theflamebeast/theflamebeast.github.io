@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { formatCount, formatSpan } from '../lib/format';
+import Link from './Link.astro';
 
 interface Props {
   project: CollectionEntry<'projects'>;
@@ -19,7 +20,7 @@ const { title, kind, summary, start, end, links } = project.data;
   <p class="compact-summary">{summary}</p>
   <p class="compact-count">{formatCount(downloads)} downloads</p>
   <ul class="compact-links">
-    {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+    {links.map((l) => <li><Link href={l.href}>{l.label}</Link></li>)}
   </ul>
 </article>
 

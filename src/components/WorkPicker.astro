@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { formatCount, formatSpan } from '../lib/format';
 import { loadProjects } from '../lib/projects';
+import Link from './Link.astro';
 
 const { featured, compact, downloads } = await loadProjects();
 const rows = [
@@ -16,12 +17,12 @@ const rows = [
       {
         rows.map(({ project, href }) => (
           <li>
-            <a class="work-row" data-work-item={project.id} href={href}>
+            <Link class="work-row" data-work-item={project.id} href={href}>
               <span class="work-title">{project.data.title}</span>
               <span class="work-meta meta">
                 {project.data.kind ?? formatSpan(project.data.start, project.data.end)}
               </span>
-            </a>
+            </Link>
           </li>
         ))
       }

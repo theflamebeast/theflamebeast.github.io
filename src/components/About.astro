@@ -1,5 +1,6 @@
 ---
 import { CERTS, EDUCATION, SKILLS } from '../data/site';
+import Link from './Link.astro';
 
 const skillGroups: [string, string[]][] = [
   ['Languages', SKILLS.languages],
@@ -33,7 +34,7 @@ const skillGroups: [string, string[]][] = [
         {
           CERTS.map((c) => (
             <li>
-              <span class="cert-name">{c.url ? <a href={c.url}>{c.name}</a> : c.name}</span>
+              <span class="cert-name">{c.url ? <Link href={c.url}>{c.name}</Link> : c.name}</span>
               <span class="meta">
                 {c.issuer}, {c.year}
               </span>

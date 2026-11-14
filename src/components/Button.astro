@@ -1,4 +1,6 @@
 ---
+import Link from './Link.astro';
+
 interface Props {
   href: string;
   label: string;
@@ -7,10 +9,10 @@ interface Props {
 const { href, label } = Astro.props;
 ---
 
-<a class="btn" href={href}>
+<Link class="btn" href={href}>
   <span class="btn-fill" aria-hidden="true"></span>
   <span class="btn-text">{label}</span>
-</a>
+</Link>
 
 <style>
   .btn {

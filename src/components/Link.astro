@@ -1,0 +1,14 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { isExternal } from '../lib/links';
+
+type Props = HTMLAttributes<'a'> & { href: string };
+
+// The one anchor for links that may leave the site: those open in a new tab, without handing the
+// new page a reference back to this one, and say so to assistive tech. In-site links are unchanged.
+const { href, ...rest } = Astro.props;
+const external = isExternal(href);
+const newTab = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<a href={href} {...rest} {...newTab}><slot />{external && <span class="sr-only"> (opens in a new tab)</span>}</a>

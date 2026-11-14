@@ -1,5 +1,6 @@
 ---
 import { SITE } from '../data/site';
+import Link from './Link.astro';
 
 const year = new Date().getFullYear();
 
@@ -34,7 +35,7 @@ const tiles = [
         {
           tiles.map((t) => (
             <li>
-              <a class="tile" href={t.href} data-contact-tile data-copy-email={t.copy}>
+              <Link class="tile" href={t.href} data-contact-tile data-copy-email={t.copy}>
                 <svg class="tile-icon" viewBox="0 0 24 24" aria-hidden="true">
                   <Fragment set:html={t.icon} />
                 </svg>
@@ -45,7 +46,7 @@ const tiles = [
                 <svg class="tile-action" viewBox="0 0 24 24" aria-hidden="true">
                   <Fragment set:html={t.copy ? COPY : OUT} />
                 </svg>
-              </a>
+              </Link>
             </li>
           ))
         }

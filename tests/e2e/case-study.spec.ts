@@ -74,7 +74,7 @@ test('Stashout page has a muted, looping, inline video with a poster and mp4 and
 
 test('FlameBurst links to its site by name, with no status note (the site says it)', async ({ page }) => {
   await page.goto('/work/flameburst');
-  await expect(page.locator('.case-links a[href="https://www.flameburst.net"]')).toHaveText('flameburst.net');
+  await expect(page.locator('.case-links a[href="https://www.flameburst.net"] .btn-text')).toHaveText('flameburst.net');
   await expect(page.locator('.case-links')).not.toContainText(/hiatus/i);
 });
 
@@ -100,13 +100,13 @@ test('control: a real page keeps its canonical address and is indexable', async 
 
 test('FlameBurst links to its architecture write-up', async ({ page }) => {
   await page.goto('/work/flameburst');
-  await expect(page.locator('.case-links a[href="https://www.flameburst.net/architecture"]')).toHaveText('Architecture');
+  await expect(page.locator('.case-links a[href="https://www.flameburst.net/architecture"] .btn-text')).toHaveText('Architecture');
 });
 
 test('Stashout links to stashout.io by name, first, and to its architecture showcase', async ({ page }) => {
   await page.goto('/work/stashout');
   const links = page.locator('.case-links a');
-  await expect(links).toHaveText(['stashout.io', 'Architecture']);
+  await expect(links.locator('.btn-text')).toHaveText(['stashout.io', 'Architecture']);
   await expect(links.first()).toHaveAttribute('href', 'https://stashout.io');
   await expect(links.last()).toHaveAttribute('href', 'https://github.com/theflamebeast/stashout-showcase');
 });
@@ -114,7 +114,7 @@ test('Stashout links to stashout.io by name, first, and to its architecture show
 test('both architecture buttons use the same label', async ({ page }) => {
   for (const path of ['/work/stashout', '/work/flameburst']) {
     await page.goto(path);
-    await expect(page.locator('.case-links').getByRole('link', { name: 'Architecture', exact: true })).toHaveCount(1);
+    await expect(page.locator('.case-links .btn-text').getByText('Architecture', { exact: true })).toHaveCount(1);
     await expect(page.locator('.case-links')).not.toContainText('Architecture tour');
   }
 });
