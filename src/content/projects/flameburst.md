@@ -23,10 +23,10 @@ gallery:
     alt: Players fighting in the red Blitz arena, surrounded by fire
   - src: ../../assets/projects/flameburst/bounty-sunset.webp
     alt: A player with a 100,000 bounty on their head, standing on a cliff at sunset
-  - src: ../../assets/projects/flameburst/spawn-aerial.webp
-    alt: An aerial view of the spawn's courtyard and its surrounding towers
-  - src: ../../assets/projects/flameburst/site-stats.webp
-    alt: The flameburst.net stats page, showing network-wide totals for players, joins, kills and blocks broken
+  - src: ../../assets/projects/flameburst/weapons.webp
+    alt: A set of the server's weapons laid out on black, a flaming axe, a pale staff, a scythe, a sword, a curved blade and a red trident
+  - src: ../../assets/projects/flameburst/chamber.webp
+    alt: An underground chamber with a red and orange checkered floor under glass, lit by glowing blocks at its corners
 diagram: network
 ---
 

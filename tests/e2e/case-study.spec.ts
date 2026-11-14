@@ -90,6 +90,11 @@ test('the FlameBurst gallery is one wide image then two rows of two, like Stasho
   await expect(shots.first().locator('img')).toHaveAttribute('alt', /courtyard/i);
   await expect(page.locator('main img[alt*="lake"]')).toHaveCount(0);
   await expect(page.locator('main img[alt*="wiki"]')).toHaveCount(0);
+  // The last two are the weapon set and the glass-roofed chamber; the aerial and stats shots are gone.
+  await expect(shots.nth(3).locator('img')).toHaveAttribute('alt', /weapons/i);
+  await expect(shots.nth(4).locator('img')).toHaveAttribute('alt', /chamber/i);
+  await expect(page.locator('main img[alt*="aerial"]')).toHaveCount(0);
+  await expect(page.locator('main img[alt*="stats page"]')).toHaveCount(0);
 });
 
 test('the FlameBurst lead image loads straight away, not lazily', async ({ page }) => {
