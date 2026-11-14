@@ -11,12 +11,10 @@ from `main`). The rebuild followed:
   `docs/superpowers/specs/2026-11-11-ink-signature-design.md` (round 2) and
   `docs/superpowers/specs/2026-11-13-fire-round-design.md` (round 3); where they disagree the newest
   wins
-- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks). Its Tasks 1 to 7 and
-  Task 11 (the cutover) are done, and `2026-11-13-fire-round.md` (Tasks R1 to R6) is done; Tasks 8
-  (polish), 9, 10, 12 and 13 remain. The first plan, `2026-11-10-portfolio-redesign.md`, built
+- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks). Its Tasks 1 to 8 and
+  Task 11 (the cutover) are done, and `2026-11-13-fire-round.md` (Tasks R1 to R6) is done; Tasks 9
+  (owner copy review), 10 (Codex review), 12 and 13 remain. The first plan, `2026-11-10-portfolio-redesign.md`, built
   Tasks 1 to 7 and is history from there on.
-
-Paths below marked "(Task N)" don't exist yet; that task creates them.
 
 Shared workflow rules: ~/.claude/CLAUDE.md § Every repo. This file only holds what is local.
 
@@ -79,7 +77,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | `public/favicon.svg` | the "AG" monogram |
 | `public/og.png` | the Open Graph image, 1200x630, captured from the live hero |
 | `public/media/` | the Stashout raid clip, 12 s, no audio, as `.webm` (VP9) and `.mp4` (H.264); its poster lives in `src/assets/projects/stashout/` |
-| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both); screenshots arrive in Task 8 |
+| `scripts/` | `vitest.mjs` (drive-letter launcher), `import-image.mjs` + `media-rules.mjs` (guarded image import), `capture-stills.mjs` (rewrites `ink-still.webp` and `og.png` from a fresh build: `npm run build && node scripts/capture-stills.mjs --seed N`, then look at both), `shots.mjs` (`npm run build && node scripts/shots.mjs`: full-page screenshots of every page at 1440 and 390, with and without reduced motion, plus the open Work picker, 14 files in the gitignored `shots/`; look at every one) |
 | `tests/unit/` | Vitest |
 | `tests/e2e/` | Playwright: `*.spec.ts` desktop, `*.phone.spec.ts` phone, `*.reduced.spec.ts` reduced motion |
 | `.github/workflows/deploy.yml` | CI on every push, and every Monday to refresh the download figure; deploys to Pages only from `main` |
@@ -172,6 +170,11 @@ Each one happened.
   instead: after handlers on the link itself, before the router on `document`. Cancelling the click
   also cancelled the browser's focus move, so "Skip to content" left the next Tab in the header;
   the handler now focuses the target (`tabindex="-1"` where it isn't focusable).
+- **The hero name was invisible for a day, live.** While the dots are up the real heading is
+  transparent, so a blank dot canvas means no name at all. Resizing a canvas clears it, and the
+  start-up `ResizeObserver` callback rebuilt the dots before anything was awake to repaint them; the
+  tests only asked that a canvas existed. `build()` in `dots.ts` now paints its own result, and
+  `dots.spec.ts` counts painted pixels. Look at the hero in a screenshot after any change there.
 - **Playwright waits forever on a 404 home page.** Its `webServer` only counts the server as ready on
   a non-404 status, so a build with no `/` shows up as a 60 s timeout, not a test failure.
 
@@ -188,29 +191,42 @@ Each one happened.
 | `npm run build` | static build into `dist/` |
 | `npm run e2e` | Playwright against `npm run preview` on `:4321`; needs a fresh `dist/` and `npx playwright install chromium` once |
 | `npm run verify` | all four above, in order |
+| `node scripts/shots.mjs` | the visual gate: 14 screenshots in `shots/` (build first) |
+| `CHROME_PATH=<playwright's chromium> npx -y lighthouse@13.6.0 http://localhost:4321/ --form-factor=mobile --only-categories=performance,accessibility --output=json --output-path=shots/lh.json --chrome-flags="--headless=new"` | the Lighthouse gate, against `npm run preview`; repeat for `/work/stashout/`. Not a dependency: `npx` fetches it |
 
 ### Done-checklist gates
 
-**Typecheck, Unit, Build, E2E**, plus **Visual** (screenshots looked at) and **Lighthouse** once
-Task 8's scripts exist, then the standard tail: Review, Committed, Pushed, CI (the `deploy` workflow
-run for that commit), and **Live** (after cutover: the site returns 200).
+**Typecheck, Unit, Build, E2E**, plus **Visual** (`node scripts/shots.mjs`, every shot looked at)
+and **Lighthouse** (mobile; accessibility at least 95 everywhere, performance at least 90 on the case
+studies) for a change to what a page looks like or loads, then the standard tail: Review, Committed,
+Pushed, CI (the `deploy` workflow run for that commit), and **Live** (the site returns 200).
+
+Lighthouse on `/` is the exception to 90: headless Chrome renders the ink in software GL, which
+costs about 1.9 s of blocking time that a real GPU does not pay (home scored 72, ink off 81, a much
+cheaper sim 80; the case studies score 97 to 100). Judge home by the ink-off number and the audits,
+not the headline.
 
 ```
 ✅ Typecheck — npm run check, 0 errors
-✅ Unit — npm test, 14 passed
-✅ Build — npm run build, 3 pages
-✅ E2E — npm run e2e, 21 passed
+✅ Unit — npm test, 69 passed
+✅ Build — npm run build, 4 pages
+✅ E2E — npm run e2e, 124 passed
+✅ Visual — node scripts/shots.mjs, 14 shots looked at
+✅ Lighthouse — mobile: /work/stashout 97 performance, 100 accessibility
 ⏳ Review — owner-run; self-reviewed the diff
 ✅ Committed — <sha>
 ✅ Pushed — origin/main
 ✅ CI — deploy workflow, build job success
+✅ Live — https://theflamebeast.github.io/ returns 200
 ```
 
 ### Review
 
 The gate itself is `# The review gate` in `~/.claude/CLAUDE.md`. Local facts:
 
-- The marker in `.claude/last-reviewed` starts at `50f65ff`, a **baseline**, not a review.
+- The marker in `.claude/last-reviewed` is the sha last reviewed (it began at `50f65ff`, a baseline).
+  Codex has reviewed three times and found every real bug a review caught here; the `# OPEN:`
+  blocks are findings not yet fixed.
 - Default `/code-review medium`. The areas worth naming are `src/ink`, `src/motion`, `src/content`
   and `.github/workflows`; `.md` files and `docs/` rarely repay a billed run.
 - Branch `main`, committed straight to it (the `redesign` branch was fast-forwarded into `main` at
