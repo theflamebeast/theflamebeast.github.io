@@ -11,9 +11,10 @@ from `main`). The rebuild followed:
   `docs/superpowers/specs/2026-11-11-ink-signature-design.md` (round 2) and
   `docs/superpowers/specs/2026-11-13-fire-round-design.md` (round 3); where they disagree the newest
   wins
-- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks). Its Tasks 1 to 8 and
-  Task 11 (the cutover) are done, and `2026-11-13-fire-round.md` (Tasks R1 to R6) is done; Tasks 9
-  (owner copy review), 10 (Codex review), 12 and 13 remain. `2026-11-14-round-4.md` (Tasks R7 to
+- Plan: `docs/superpowers/plans/2026-11-11-ink-signature.md` (13 tasks), all done as of
+  2026-11-14 (Task 11 was the cutover, 12 archived the old resources site, 13 rewrote the GitHub
+  profile README in its own repo), and `2026-11-13-fire-round.md` (Tasks R1 to R6) is done.
+  `2026-11-14-round-4.md` (Tasks R7 to
   R9: the next-project cover always shown, link labels and a `stashout.io` button, removing the ink
   cover from page changes and the first visit) is done too. The first plan,
   `2026-11-10-portfolio-redesign.md`, built Tasks 1 to 7 and is history from there on.
