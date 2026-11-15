@@ -20,10 +20,6 @@ gallery:
     alt: The trader screen, where you buy weapons and gear and load out your character before a raid
   - src: ../../assets/projects/stashout/hud.webp
     alt: In a raid at night, with the weapon slots and health bar on screen
-  - src: ../../assets/projects/stashout/map-editor.webp
-    alt: The built-in map editor, laying out roads, buildings and spawn zones for a raid map
-  - src: ../../assets/projects/stashout/skins.webp
-    alt: Choosing a character skin, its colour and its armband
 video:
   mp4: /media/stashout-raid.mp4
   webm: /media/stashout-raid.webm

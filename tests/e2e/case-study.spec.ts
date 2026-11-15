@@ -97,6 +97,17 @@ test('the FlameBurst gallery is one wide image then two rows of two, like Stasho
   await expect(page.locator('main img[alt*="stats page"]')).toHaveCount(0);
 });
 
+test('the Stashout gallery is the lobby wide, then the trader and the HUD', async ({ page }) => {
+  await page.goto('/work/stashout');
+  const shots = page.locator('.gallery .shot');
+  await expect(shots).toHaveCount(3);
+  const boxes = await shots.evaluateAll((els) => els.map((el) => el.getBoundingClientRect()).map((r) => [Math.round(r.top), Math.round(r.width)]));
+  expect(new Set(boxes.map(([top]) => top)).size).toBe(2);
+  expect(boxes[0][1]).toBeGreaterThan(boxes[1][1] * 1.8);
+  await expect(page.locator('main img[alt*="map editor"]')).toHaveCount(0);
+  await expect(page.locator('main img[alt*="skin"]')).toHaveCount(0);
+});
+
 test('the FlameBurst lead image loads straight away, not lazily', async ({ page }) => {
   await page.goto('/work/flameburst');
   const img = page.locator('.case-cover img');
