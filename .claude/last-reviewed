@@ -16,7 +16,9 @@
 # (This header deliberately does not start with the marker, so the grep that
 # collects those blocks does not match the instructions describing them.)
 #
-16ec06c
+3ad433e
+# 2026-11-15: Codex (gpt-6.1-sol, medium) reviewed 16ec06c..3ad433e (two docs commits and the Stashout
+# gallery trimmed to three images), run by Claude before pushing. No findings; tests not run by it.
 # 2026-11-14: Codex (gpt-6.1-sol, medium) reviewed 677b910..16ec06c (the shared Diagram component, run by Claude
 # before pushing) and 6e27f1a..677b910 (the owner's run: the transition fix, the gallery, the test
 # fixes, CI permissions, colour tokens, dead code, media rules). No findings in either; it read the
