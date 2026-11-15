@@ -228,7 +228,7 @@ not the headline.
 ✅ E2E — npm run e2e, 124 passed (after round 4)
 ✅ Visual — node scripts/shots.mjs, 14 shots looked at
 ✅ Lighthouse — mobile: /work/stashout 97 performance, 100 accessibility
-⏳ Review — owner-run; self-reviewed the diff
+✅ Review — Codex review --base <marker>, no findings; marker advanced
 ✅ Committed — <sha>
 ✅ Pushed — origin/main
 ✅ CI — deploy workflow, build job success
@@ -240,9 +240,10 @@ not the headline.
 The gate itself is `# The review gate` in `~/.claude/CLAUDE.md`. Local facts:
 
 - The marker in `.claude/last-reviewed` is the sha last reviewed (it began at `50f65ff`, a baseline).
-  Codex has reviewed five times and found every real bug a review caught here (6); the `# OPEN:`
-  blocks are findings not yet fixed.
-- Default `/code-review medium`. The areas worth naming are `src/ink`, `src/motion`, `src/content`
-  and `.github/workflows`; `.md` files and `docs/` rarely repay a billed run.
+  Codex has reviewed eight times and found every real bug a review caught here (6, all in the first
+  four runs); the `# OPEN:` blocks are findings not yet fixed.
+- The areas to look hardest at are `src/ink`, `src/motion`, `src/content` and `.github/workflows`.
+  High stakes here, for the extra Claude reviewer: anything that can put a phone number, a secret or
+  a private project on the public site, and the deploy workflow's permissions.
 - Branch `main`, committed straight to it (the `redesign` branch was fast-forwarded into `main` at
   the cutover; nothing triggers on it any more). A push to `main` deploys once the build job passes.
