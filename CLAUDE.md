@@ -120,6 +120,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 | Media queries for motion | `src/motion/prefs.ts` (`REDUCED_MOTION`, `wideQuery`, `isWide`) |
 | Project data | the `projects` collection, read only through `loadProjects()` in `src/lib/projects.ts` |
 | Site facts | `src/data/site.ts` |
+| A case-study diagram's frame, scroll box, caption and SVG styles | `src/components/Diagram.astro`; `NetcodeDiagram` and `NetworkDiagram` hold only their SVG |
 | Importing an image into `src/assets` | `scripts/import-image.mjs` (enforces the media rules) |
 | A link that may leave the site | `src/components/Link.astro` (`isExternal` in `src/lib/links.ts`): another origin opens in a new tab with `rel="noopener noreferrer"` and a hidden "(opens in a new tab)"; never a bare `<a>` for an outside URL |
 

@@ -1,0 +1,98 @@
+---
+interface Props {
+  caption: string;
+}
+
+const { caption } = Astro.props;
+---
+
+<figure class="diagram wrap" data-reveal="fade">
+  <div class="diagram-scroll">
+    <slot />
+  </div>
+  <figcaption class="meta">{caption}</figcaption>
+</figure>
+
+<style>
+  .diagram {
+    padding-block: var(--section) 0;
+  }
+
+  .diagram-scroll {
+    overflow-x: auto;
+    padding: clamp(1rem, 3vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  /* The SVG arrives through the slot, so its parts are styled from here. */
+  .diagram-scroll :global(svg) {
+    min-width: 640px;
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+    color: var(--text);
+  }
+
+  .diagram-scroll :global(.lane-label text) {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+    text-transform: uppercase;
+  }
+
+  .diagram-scroll :global(.divider) {
+    stroke: var(--line-strong);
+    stroke-dasharray: 4 6;
+  }
+
+  .diagram-scroll :global(.node rect) {
+    fill: var(--surface-2);
+    stroke: var(--line-strong);
+  }
+
+  .diagram-scroll :global(.node.accent rect) {
+    fill: var(--accent);
+    stroke: none;
+  }
+
+  .diagram-scroll :global(.node text) {
+    fill: currentColor;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 500;
+    text-anchor: middle;
+  }
+
+  .diagram-scroll :global(.node.accent text) {
+    fill: var(--accent-ink);
+  }
+
+  .diagram-scroll :global(.node text.sub) {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  .diagram-scroll :global(.edge path) {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    color: var(--muted);
+  }
+
+  .diagram-scroll :global(.edge-label text) {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-anchor: middle;
+  }
+
+  figcaption {
+    margin-top: 1rem;
+  }
+</style>
