@@ -16,7 +16,11 @@
 # (This header deliberately does not start with the marker, so the grep that
 # collects those blocks does not match the instructions describing them.)
 #
-6e27f1a
+16ec06c
+# 2026-11-14: Codex (gpt-6.1-sol, medium) reviewed 677b910..16ec06c (the shared Diagram component, run by Claude
+# before pushing) and 6e27f1a..677b910 (the owner's run: the transition fix, the gallery, the test
+# fixes, CI permissions, colour tokens, dead code, media rules). No findings in either; it read the
+# diffs and did not run the tests.
 # 2026-11-14: /codex:review --base 0d308f5 (Codex, gpt-6.1-sol, medium) covered 0d308f5..6e27f1a:
 # the whole-branch review fixes, the contact block, outside links in new tabs, the hero load and the
 # docs reword. No findings; it read the diff and did not run the tests.
