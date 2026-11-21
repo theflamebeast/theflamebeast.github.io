@@ -15,15 +15,14 @@ describe('formatCount', () => {
   it.each([
     [0, '0'],
     [999, '999'],
-    [1000, '1k+'],
-    [1831, '1.8k+'],
-    [1999, '1.9k+'],
-    [2000, '2k+'],
-    [2050, '2k+'],
-    [12345, '12.3k+'],
-    [999_999, '999.9k+'],
-    [1_250_000, '1.2M+'],
-  ])('formatCount(%i) is %s, never above the real count', (n, out) => {
+    [1000, '1K'],
+    [1831, '1.8K'],
+    [1966, '2K'],
+    [2050, '2.1K'],
+    [12345, '12.3K'],
+    [999_999, '1M'],
+    [1_250_000, '1.3M'],
+  ])('formatCount(%i) is %s, rounded to the nearest like Modrinth', (n, out) => {
     expect(formatCount(n)).toBe(out);
   });
 });

@@ -76,7 +76,7 @@ test('Server Insight previews its download figure', async ({ page }) => {
   await page.locator('[data-work-item="server-insight"]').hover();
   const preview = page.locator('[data-work-preview="server-insight"]');
   await expect(preview).toHaveAttribute('data-active', '');
-  await expect(preview).toContainText(/\d+(\.\d)?k\+/);
+  await expect(preview).toContainText(/\d+(\.\d)?[KM]/);
   await expect(preview).toContainText('downloads on Modrinth');
 });
 

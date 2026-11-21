@@ -2,9 +2,10 @@ export function formatSpan(start: string, end: string | null): string {
   return `${start} to ${end ?? 'present'}`;
 }
 
-/** Rounded down, never above the real count: 1999 reads "1.9k+", 2000 reads "2k+". */
+/** Rounded to the nearest tenth, as Modrinth shows it: 1966 reads "2K", 2340 reads "2.3K". */
 export function formatCount(n: number): string {
   if (n < 1000) return String(n);
-  const [unit, suffix] = n < 1_000_000 ? [1000, 'k+'] : [1_000_000, 'M+'];
-  return `${Math.floor(n / (unit / 10)) / 10}${suffix}`;
+  const tenthsOfK = Math.round(n / 100);
+  if (tenthsOfK < 10_000) return `${tenthsOfK / 10}K`;
+  return `${Math.round(n / 100_000) / 10}M`;
 }

@@ -61,7 +61,7 @@ test('Server Insight card shows "Fabric mod", a download count and Modrinth + Gi
   const card = page.locator('[data-compact-card]');
   await expect(card.getByRole('heading')).toHaveText('Server Insight');
   await expect(card).toContainText('Fabric mod');
-  await expect(card).toContainText(/\b\d+(\.\d)?k\+ downloads/);
+  await expect(card).toContainText(/\b\d+(\.\d)?[KM] downloads/);
   await expect(card.locator('a[href="https://modrinth.com/mod/server-insight"]')).toHaveCount(1);
   await expect(card.locator('a[href="https://github.com/theflamebeast/server-insight"]')).toHaveCount(1);
 });
