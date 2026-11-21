@@ -70,6 +70,19 @@ test('Server Insight has no case-study page', async ({ request }) => {
   expect((await request.get('/work/server-insight')).status()).toBe(404);
 });
 
+test('About shows the portrait, loaded and described, in the column left of the text', async ({ page }) => {
+  await page.goto('/');
+  const img = page.locator('#about [data-portrait] img');
+  await img.scrollIntoViewIfNeeded();
+  await expect(img).toHaveAttribute('alt', /Anish Gupta/);
+  await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth)).toBeGreaterThan(0);
+  const pic = (await img.boundingBox())!;
+  const lede = (await page.locator('.about-lede').boundingBox())!;
+  expect(pic.x + pic.width).toBeLessThanOrEqual(lede.x);
+  expect(pic.width).toBeGreaterThan(200);
+  expect(Math.abs(pic.width - pic.height)).toBeLessThan(2);
+});
+
 test('About lists exactly the three certs and no Georgia State', async ({ page }) => {
   const about = page.locator('#about');
   await expect(about.locator('[data-certs] li')).toHaveCount(3);

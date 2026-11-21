@@ -1,5 +1,7 @@
 ---
-import { CERTS, EDUCATION, SKILLS } from '../data/site';
+import { Picture } from 'astro:assets';
+import portrait from '../assets/portrait.webp';
+import { CERTS, EDUCATION, SKILLS, SITE } from '../data/site';
 import Link from './Link.astro';
 
 const skillGroups: [string, string[]][] = [
@@ -10,7 +12,19 @@ const skillGroups: [string, string[]][] = [
 ---
 
 <section class="about wrap" id="about" aria-labelledby="about-title">
-  <h2 class="section-title" id="about-title" data-reveal="lines">About</h2>
+  <div class="about-side">
+    <h2 class="section-title" id="about-title" data-reveal="lines">About</h2>
+    <figure class="portrait" data-portrait data-reveal="fade">
+      <Picture
+        src={portrait}
+        alt={`A pencil-style portrait of ${SITE.name}, in glasses and a hoodie`}
+        formats={['avif', 'webp']}
+        widths={[320, 640, 960]}
+        sizes="(min-width: 861px) 20rem, 16rem"
+        loading="lazy"
+      />
+    </figure>
+  </div>
   <div class="about-body">
     <p class="about-lede" data-reveal="lines">
       I'm studying computer science at the {EDUCATION.school}, graduating in {EDUCATION.expected}. I like owning the
@@ -54,6 +68,27 @@ const skillGroups: [string, string[]][] = [
     padding-block: var(--section);
   }
 
+  .about-side {
+    display: grid;
+    align-content: start;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .portrait {
+    width: min(100%, 20rem);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+  }
+
+  .portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .about-body {
     display: grid;
     gap: clamp(2.5rem, 5vw, 4rem);
@@ -92,6 +127,10 @@ const skillGroups: [string, string[]][] = [
   @media (max-width: 860px) {
     .about {
       grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      width: min(100%, 16rem);
     }
   }
 </style>
