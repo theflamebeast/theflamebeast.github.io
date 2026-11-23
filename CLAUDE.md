@@ -59,7 +59,7 @@ Everything committed is world-readable, and anything on `main` is live within a 
 
 | Path | What it is |
 |---|---|
-| `src/pages/` | routes: `index.astro`, `work/[slug].astro` (one case study per featured project), `404.astro`, and `llms.txt.ts` (a plain-text summary of the site for AI tools, generated at build time from `site.ts` and `loadProjects()`, so it cannot drift; `guards.spec.ts` scans the built file like any other) |
+| `src/pages/` | routes: `index.astro`, `work/[slug].astro` (one case study per featured project), `404.astro`, and the generated files `llms.txt.ts` (a plain-text summary for AI tools), `sitemap.xml.ts` (home plus each featured project) and `robots.txt.ts` (allow all, points at the sitemap), all built from `site.ts` and `loadProjects()` so they cannot drift; `guards.spec.ts` scans the built files like any other. The home page also writes Person JSON-LD into the head through `Base.astro`'s `jsonLd` prop (`index.astro` builds it from `site.ts`) |
 | `src/assets/projects/<id>/` | case-study images, only ever written by `scripts/import-image.mjs` |
 | `src/content/`, `src/content.config.ts` | the `projects` collection; `schema.ts` holds `makeProjectSchema`, testable without Astro |
 | `src/data/site.ts` | name, links, education, skills, certs |

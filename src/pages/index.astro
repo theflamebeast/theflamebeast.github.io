@@ -6,7 +6,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import CompactCard from '../components/CompactCard.astro';
 import ScreenshotRows from '../components/ScreenshotRows.astro';
 import About from '../components/About.astro';
-import { SITE } from '../data/site';
+import { EDUCATION, SITE } from '../data/site';
 import { loadProjects } from '../lib/projects';
 
 const { featured, compact, downloads } = await loadProjects();
@@ -15,9 +15,22 @@ const rowImages: ImageMetadata[] = featured.flatMap((p) => [
   ...(p.data.cover ? [p.data.cover.src] : []),
   ...p.data.gallery.map((g) => g.src),
 ]);
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.name,
+  url: `${SITE.url}/`,
+  jobTitle: SITE.role,
+  alumniOf: EDUCATION.school,
+  sameAs: [SITE.links.github, SITE.links.linkedin],
+};
 ---
 
-<Base title={`${SITE.name}, ${SITE.role.toLowerCase()}`} description={`${SITE.name}: ${SITE.tagline}`}>
+<Base
+  title={`${SITE.name}, ${SITE.role.toLowerCase()}`}
+  description={`${SITE.name}: ${SITE.tagline}`}
+  jsonLd={person}
+>
   <Hero />
 
   <section class="work wrap" id="work" aria-labelledby="work-title">
